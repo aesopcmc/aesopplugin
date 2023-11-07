@@ -1,0 +1,29 @@
+api-version: '1.19'
+author: Aesop
+depend: [EpicPluginLib]
+description: 一个测试插件
+main: top.mcos.AesopPlugin
+name: AesopPlugin
+version: '${project.version}'
+website: https://mcos.top/
+prefix: '伊索插件'
+
+commands:
+  aesopplugin:
+    aliases:
+      - aep
+    description: '主要命令'
+
+permissions:
+  aesopplugin.player:
+    description: 玩家通用指令.
+    default: true
+    children:
+      aesopplugin.help: true
+  aesopplugin.admin:
+    description: OP指令.
+    default: op
+    children:
+      aesopplugin.reload: true
+      aesopplugin.msg: true
+      aesopplugin.task: true

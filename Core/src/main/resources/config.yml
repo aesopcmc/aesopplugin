@@ -1,0 +1,15 @@
+tasks:
+    refresh-map:
+      enable: true
+      name: '定时刷新地图'
+      cron: ''
+    publish-anno:
+      enable: true
+      name: '定时公告'
+      cron: ''
+commands:
+    cm1:
+      command: '/void showxxx'
+      cron: '* * 10 * ?'
+
+
