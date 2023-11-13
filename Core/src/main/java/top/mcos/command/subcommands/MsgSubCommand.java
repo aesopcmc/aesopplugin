@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
+import top.mcos.message.SchedulerMessageHandle;
 
 /**
  * 消息命令：/xxx msg
@@ -51,7 +52,7 @@ public final class MsgSubCommand extends Command implements Helpable {
     @Override
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
-            possibleCompletions.add("default");
+            possibleCompletions.add("send");
             possibleCompletions.add("out");
             //if (args.length == 2) {
             //    for (String soundType : SoundType.getPresentSoundNames()) {
@@ -78,8 +79,9 @@ public final class MsgSubCommand extends Command implements Helpable {
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            if("default".equals(args[1])) {
-                AesopPlugin.logger.log(player, "你好!" + player.getDisplayName() + "&a今天天气真晴朗”");
+            if("send".equals(args[1])) {
+                SchedulerMessageHandle.sendAllOnlinePlayers(args[2]);
+                AesopPlugin.logger.log("已发送");
             } else if ("out".equals(args[1])) {
                 AesopPlugin.logger.log(player, "out");
             } else {

@@ -3,22 +3,13 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TranslatableComponent;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
-import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
-
-import java.lang.reflect.Field;
+import top.mcos.message.MsgPayload;
 
 /**
  * 消息命令：/xxx msg
@@ -67,15 +58,6 @@ public final class TaskSubCommand extends Command implements Helpable {
         };
     }
 
-    //private String getInvalidArgsMessage(String label, CommandSender sender, String[] args) {
-    //    var lang = PlayMoreSounds.getLanguage();
-    //    return lang.get("General.Invalid Arguments").replace("<label>", label)
-    //            .replace("<label2>", args[0]).replace("<args>", "<" +
-    //                    lang.get("Play.Sound") + "> " + (sender instanceof Player ? "[" + lang.get("General.Player")
-    //                    + "]" : "<" + lang.get("General.Player") + ">") + " [" + lang.get("Play.Volume") + "] [" +
-    //                    lang.get("Play.Pitch") + "]");
-    //}
-
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if(sender instanceof Player) {
@@ -88,26 +70,15 @@ public final class TaskSubCommand extends Command implements Helpable {
                 //AesopPlugin.logger.log(player, "设为："+ setFlag);
 
                 player.sendTitle("已执行run...", "", 10, 40, 10);
-
-
-                try {
-                    var packet = new ClientboundSetActionBarTextPacket(CraftChatMessage.fromStringOrNull("你好啊123覅方法"));
-
-                    Field networkManagerH = PlayerConnection.class.getDeclaredField("h");
-                    networkManagerH.setAccessible(true);
-                    NetworkManager networkManager = (NetworkManager) networkManagerH.get(((CraftPlayer) player).getHandle().b);
-
-                    networkManager.a((Packet<?>) packet);
-
-                    //ComponentBuilder builder = new ComponentBuilder("");
-                    //builder.append(new TranslatableComponent(""));
-                    //sender.spigot().sendMessage(builder.create());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
             } else if ("show".equals(args[1])) {
-                boolean flag = config.getBoolean("tasks.refresh-map.enable");
-                AesopPlugin.logger.log(player, "输出："+ flag);
+                AesopPlugin.logger.log(player, "发送开始");
+
+                MsgPayload mp = new MsgPayload(player, "你吃饭了吗");
+                mp.sendPacket(100);
+                // 测试显示配置
+                //boolean flag = config.getBoolean("tasks.refresh-map.enable");
+                //AesopPlugin.logger.log(player, "输出："+ flag);
+
             } else {
                 AesopPlugin.logger.log(player, "&c参数有误");
                 this.onHelp();

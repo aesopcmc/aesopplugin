@@ -6,6 +6,7 @@ import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.mcos.message.SchedulerMessageHandle;
 
 import java.util.HashSet;
 
@@ -46,6 +47,9 @@ public final class AesopPlugin extends JavaPlugin {
 
         //加载命令
         CommandLoader.getCommands();
+
+        // 启动监听消息队列，有消息，则发送
+        SchedulerMessageHandle.initScheduler();
 
         logger.log("&a成功加载插件");
     }

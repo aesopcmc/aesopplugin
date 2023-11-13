@@ -5,6 +5,8 @@ tasks:
       cron: ''
     publish-anno:
       enable: true
+      speed: 200
+      display-width: 20
       name: '定时公告'
       cron: ''
 commands:
