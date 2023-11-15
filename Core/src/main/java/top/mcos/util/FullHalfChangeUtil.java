@@ -87,6 +87,24 @@ public class FullHalfChangeUtil {
         return new String(charArray);
     }
 
+    /**
+     * 半角字符串转换全角字符串方法
+     * @param char1 单个字符
+     * @param isSpaceChange 是否转换空格 true转换，false不转换
+     * @return  全角字符串
+     */
+    public static char half2FullChange(char char1, boolean isSpaceChange){
+        //对半角字符转换的char数组遍历
+        int charIntValue = (int) char1;
+        //如果符合转换关系,将对应下标之间加上偏移量65248;如果是半角空格的话,直接做转换
+        if (charIntValue >= HALF_CHAR_START && charIntValue <= HALF_CHAR_END) {
+            charIntValue = (char) (charIntValue + 65248);
+        } else if (charIntValue == CONVERT_OFFSET && isSpaceChange) {
+            charIntValue = FULL_SPACE;
+        }
+        return (char)charIntValue;
+    }
+
     public static void main(String[] args) {
         String fullStr = "１！～　９？";
         String halfStr = "1!~ 9?";
