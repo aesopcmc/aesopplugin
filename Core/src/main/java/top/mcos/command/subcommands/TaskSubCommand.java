@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
-import top.mcos.message.MsgPayload;
 
 /**
  * 消息命令：/xxx msg
@@ -71,13 +70,9 @@ public final class TaskSubCommand extends Command implements Helpable {
 
                 player.sendTitle("已执行run...", "", 10, 40, 10);
             } else if ("show".equals(args[1])) {
-                AesopPlugin.logger.log(player, "发送开始");
-
-                MsgPayload mp = new MsgPayload(player, "你吃饭了吗");
-                mp.sendPacket(100);
                 // 测试显示配置
-                //boolean flag = config.getBoolean("tasks.refresh-map.enable");
-                //AesopPlugin.logger.log(player, "输出："+ flag);
+                boolean flag = config.getBoolean("tasks.refresh-map.enable");
+                AesopPlugin.logger.log(player, "输出："+ flag);
 
             } else {
                 AesopPlugin.logger.log(player, "&c参数有误");

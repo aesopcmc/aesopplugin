@@ -5,6 +5,7 @@ import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
+import top.mcos.util.MessageConvertUtil;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -45,18 +46,37 @@ public class SchedulerMessageHandle {
         });
     }
 
+    /**
+     * 发送消息给所有在线玩家
+     * @param message 消息内容，支持颜色代码
+     */
     public static void sendAllOnlinePlayers(String message) {
         if(isEnable()) {
+            //组装消息
+            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("tasks.publish-anno.display-width");
+            String[] messagePiles = MessageConvertUtil.convertMsg(message, displayWidth);
+
+            //发送消息
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             for (Player player : onlinePlayers) {
-                msgPayloadQueue.offer(new MsgPayload(player, message));
+                msgPayloadQueue.offer(new MsgPayload(player, messagePiles));
             }
         }
     }
 
+    /**
+     * 发送消息给指定用户
+     * @param player 用户
+     * @param message 消息内容，支持颜色代码
+     */
     public static void sendToPlayer(Player player, String message) {
         if(isEnable()) {
-            msgPayloadQueue.offer(new MsgPayload(player, message));
+            //组装消息
+            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("tasks.publish-anno.display-width");
+            String[] messagePiles = MessageConvertUtil.convertMsg(message, displayWidth);
+
+            //发送消息
+            msgPayloadQueue.offer(new MsgPayload(player, messagePiles));
         }
     }
 

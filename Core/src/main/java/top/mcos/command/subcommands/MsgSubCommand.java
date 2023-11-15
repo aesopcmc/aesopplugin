@@ -3,6 +3,7 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +81,12 @@ public final class MsgSubCommand extends Command implements Helpable {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             if("send".equals(args[1])) {
-                SchedulerMessageHandle.sendAllOnlinePlayers(args[2]);
+                if(args.length>2) {
+                    SchedulerMessageHandle.sendAllOnlinePlayers(args[2]);
+                } else {
+                    String message = AesopPlugin.getInstance().getConfig().getString("tasks.publish-anno.message");
+                    SchedulerMessageHandle.sendAllOnlinePlayers(message);
+                }
                 AesopPlugin.logger.log("已发送");
             } else if ("out".equals(args[1])) {
                 AesopPlugin.logger.log(player, "out");

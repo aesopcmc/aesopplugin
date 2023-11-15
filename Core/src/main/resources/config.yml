@@ -9,6 +9,7 @@ tasks:
       display-width: 20
       name: '定时公告'
       cron: ''
+      message: '&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。'
 commands:
     cm1:
       command: '/void showxxx'
