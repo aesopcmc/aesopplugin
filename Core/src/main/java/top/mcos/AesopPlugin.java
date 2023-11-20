@@ -6,7 +6,9 @@ import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.mcos.message.SchedulerMessageHandle;
+import top.mcos.listener.PlayerListener;
+import top.mcos.message.MessageHandler;
+import top.mcos.scheduler.SchedulerHandler;
 
 import java.util.HashSet;
 
@@ -45,17 +47,25 @@ public final class AesopPlugin extends JavaPlugin {
         //若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
         this.saveDefaultConfig();
 
+        //注册监听
+        getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
+
         //加载命令
         CommandLoader.getCommands();
 
+        // 启动任务调度器
+        SchedulerHandler.init();
+
         // 启动监听消息队列，有消息，则发送
-        SchedulerMessageHandle.initScheduler();
+        MessageHandler.init();
 
         logger.log("&a成功加载插件");
     }
 
     @Override
     public void onDisable() {
+        MessageHandler.clear();
+        SchedulerHandler.shutdown();
         logger.log("&c插件已卸载");
     }
 

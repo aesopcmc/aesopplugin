@@ -1,0 +1,10 @@
+1.在windows的cmd下执行：
+ssh-keygen -t rsa
+一路回车
+
+2.接下来，使用 scp 命令将公钥复制到远程服务器~/.ssh/的目录下，并重命名公钥为authorized_keys：
+scp C:\Users\username\.ssh\id_rsa.pub username@remote_server:~/.ssh/authorized_keys
+
+3.后续使用scp命令将不需要输入密码
+
+
