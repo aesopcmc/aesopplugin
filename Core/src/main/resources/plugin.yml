@@ -4,7 +4,8 @@ depend: [EpicPluginLib]
 description: 一个测试插件
 main: top.mcos.AesopPlugin
 name: AesopPlugin
-version: '${project.version}'
+#${project.version}
+version: '1.1'
 website: https://mcos.top/
 prefix: '伊索插件'
 

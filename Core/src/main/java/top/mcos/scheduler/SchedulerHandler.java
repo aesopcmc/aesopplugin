@@ -46,7 +46,7 @@ public final class SchedulerHandler {
                     SchedulerFactory schedulerFactory = new StdSchedulerFactory();
                     scheduler = schedulerFactory.getScheduler();
                     scheduler.start();
-                    AesopPlugin.logger.log("成功启动任务调度器");
+                    AesopPlugin.logger.log("已启动定时任务调度器");
                 } catch (SchedulerException e) {
                     e.printStackTrace();
                     AesopPlugin.logger.log("任务调度器创建失败", ConsoleLogger.Level.ERROR);

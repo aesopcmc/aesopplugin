@@ -41,9 +41,12 @@ public final class ReloadSubCommand extends Command implements Helpable {
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         try {
+            //重新读取配置
             AesopPlugin.getInstance().reloadConfig();
+
             SchedulerHandler.init();
-            MessageHandler.init();
+            MessageHandler.loadConfigMessages();
+
             AesopPlugin.logger.log("&a插件刷新成功");
         } catch (Throwable e) {
             e.printStackTrace();

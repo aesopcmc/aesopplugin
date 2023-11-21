@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
-import top.mcos.message.MessageHandler;
 
 /**
  * 消息命令：/xxx msg
@@ -80,12 +79,24 @@ public final class MsgSubCommand extends Command implements Helpable {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             if("send".equals(args[1])) {
-                if(args.length>2) {
-                    MessageHandler.sendAllOnlinePlayers(args[2]);
-                } else {
-                    String message = AesopPlugin.getInstance().getConfig().getString("tasks.publish-anno.message");
-                    MessageHandler.sendAllOnlinePlayers(message);
-                }
+                //MessageHandler.sendAllOnlinePlayers("测试");
+                //Bukkit.broadcastMessage("&a服务器即将&c关机: " + args[2]);
+
+                // 测试发送center消息
+                //NetworkManager networkManager = null;
+                //try {
+                //    networkManager = (NetworkManager) MessageHandler.networkManagerH.get(((CraftPlayer) player).getHandle().b);
+                //} catch (IllegalAccessException e) {
+                //    AesopPlugin.logger.log("实例化网络管理器出错", ConsoleLogger.Level.ERROR);
+                //    e.printStackTrace();
+                //}
+                //String title = "主标题";
+                //String subtitle = "子标题xxx";
+                //ClientboundSetTitleTextPacket text = new ClientboundSetTitleTextPacket(CraftChatMessage.fromStringOrNull(title));
+                //ClientboundSetSubtitleTextPacket subtext = new ClientboundSetSubtitleTextPacket(CraftChatMessage.fromStringOrNull(subtitle));
+                //networkManager.a((Packet<?>) text);
+                //networkManager.a((Packet<?>) subtext);
+
                 AesopPlugin.logger.log("已发送");
             } else if ("out".equals(args[1])) {
                 AesopPlugin.logger.log(player, "out");

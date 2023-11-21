@@ -1,8 +1,8 @@
 # 工具生成cron表达式: https://cron.qqe2.com/
-##############################
-###        cron表达式       ###
-##############################
 #
+# #############################
+# ######### cron表达式 #########
+# #############################
 #    *  *  *  *  *  ?  [非必填]
 #    |  |  |  |  |  |  |
 #    秒 分  时 日 月 周  年
@@ -30,14 +30,14 @@
 #   0 0 2 1 * ?   表示在每月的1日的凌晨2点调整任务
 #   0 15 10 ? * MON-FRI   表示周一到周五每天上午10:15执行作业
 #
-##############################
-###         注意事项        ###
-##############################
+# #############################
+# ######### 注意事项  ##########
+# #############################
 # 1.表达式如果设置为相同的时间，将会只执行其中一个
 
 config:
   notice:
-    bottom:
+    actionbar:
       enable: true
       # 消息显示间隔，单位毫秒
       delay-times: 210
@@ -54,31 +54,31 @@ tasks:
   notice:
     msg1:
       enable: true
-      cron: '0/2 * * * * ?'
+      cron: '0/5 * * * * ?'
       start: ''
       end: ''
-      position: 'center|bottom'
+      position: 'center|actionbar'
       message: '&a1-秒一次的消息，钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。'
     msg2:
       enable: true
       cron: '1 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|bottom'
+      position: 'center|actionbar'
       message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。悠哉悠哉，辗转反侧。参差荇菜，左右采之。窈窕淑女，琴瑟友之。参差荇菜，左右芼之。窈窕淑女，钟鼓乐之。。'
     msg3:
       enable: true
       cron: '2 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|bottom'
+      position: 'center|actionbar'
       message: '&b3-汉皇重色思倾国，御宇多年求不得。'
     msg4:
       enable: true
       cron: '3 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|bottom'
+      position: 'center|actionbar'
       message: '&e4-回眸一笑百媚生，六宫粉黛无颜色。'
 commands:
     cm1:

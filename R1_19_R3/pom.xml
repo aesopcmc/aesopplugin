@@ -8,8 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>top.mcos.nms.provided</groupId>
     <artifactId>R1_19_R3</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,6 +19,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>top.mcos</groupId>
+            <artifactId>Core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>nms</groupId>
             <artifactId>193</artifactId>

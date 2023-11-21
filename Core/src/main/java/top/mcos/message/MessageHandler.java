@@ -1,18 +1,16 @@
 package top.mcos.message;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
-import net.minecraft.server.network.PlayerConnection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
+import top.mcos.util.MessageConvertUtil;
 import top.mcos.scheduler.SchedulerHandler;
 import top.mcos.scheduler.NoticeJob;
-import top.mcos.util.MessageConvertUtil;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -20,45 +18,36 @@ import java.util.concurrent.*;
 public final class MessageHandler {
     //public static Stack<MsgPayload> msgPayloadStack = new Stack<>();
     private static ConcurrentLinkedQueue<List<MsgPayload>> msgPayloadQueue = new ConcurrentLinkedQueue<>();
-    public static Field networkManagerH;
 
-    static {
-        try {
-            networkManagerH = PlayerConnection.class.getDeclaredField("h");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("实例化网络管理H出错", ConsoleLogger.Level.ERROR);
-        }
-        networkManagerH.setAccessible(true);
+    private MessageHandler() { }
 
+    public static void init() {
         // 启动消息监听线程
         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), bukkitTask -> {
-            while (isEnable()) {
+            while (AesopPlugin.pluginActive) {
                 // 获取一组消息。一组消息由一个消息单元和多个在线用户组成
                 List<MsgPayload> poll = msgPayloadQueue.poll();
-                if(poll!=null) {
+                if(poll!=null && isEnable()) {
                     // 消息滚动延迟，单位毫秒
-                    long delayTimes = AesopPlugin.getInstance().getConfig().getLong("config.notice.bottom.delay-times");
+                    long delayTimes = AesopPlugin.getInstance().getConfig().getLong("config.notice.actionbar.delay-times");
                     final long dt = delayTimes <= 0 ? 100 : delayTimes;
-                    long tryLockTimes = AesopPlugin.getInstance().getConfig().getLong("config.notice.bottom.trylock-times");
+                    long tryLockTimes = AesopPlugin.getInstance().getConfig().getLong("config.notice.actionbar.trylock-times");
                     final long tt = tryLockTimes <= 0 ? 60000 : tryLockTimes;
-
                     for (MsgPayload msgPayload : poll) {
                         //Bukkit.getScheduler().callSyncMethod(AesopPlugin.getInstance(), () -> msgPayload.sendPacket(dt));
-                        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), () -> msgPayload.sendPacket(dt,tt));
+                        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), () -> msgPayload.sendPacket(dt, tt));
                     }
                 }
             }
             msgPayloadQueue.clear();
         });
+        AesopPlugin.logger.log("已启动消息监听");
     }
-
-    private MessageHandler() { }
 
     /**
      * 监听消息队列，有消息，则发送
      */
-    public static void init() {
+    public static void loadConfigMessages() {
         if(!isEnable()) return;
         msgPayloadQueue.clear();
         // 加载配置，注册定时任务，注入数据
@@ -111,7 +100,7 @@ public final class MessageHandler {
             if(onlinePlayers.size()<1) return;
 
             //组装消息
-            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("config.notice.bottom.display-width");
+            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("config.notice.actionbar.display-width");
             String[] messagePiles = MessageConvertUtil.convertMsg(message, displayWidth);
 
             //发送消息
@@ -131,18 +120,17 @@ public final class MessageHandler {
     public static void sendToPlayer(Player player, String message) {
         if(isEnable()) {
             //组装消息
-            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("config.notice.bottom.display-width");
+            int displayWidth = AesopPlugin.getInstance().getConfig().getInt("config.notice.actionbar.display-width");
             String[] messagePiles = MessageConvertUtil.convertMsg(message, displayWidth);
 
             //发送消息
             List<MsgPayload> list = new ArrayList<>();
             list.add(new MsgPayload(player, messagePiles));
             msgPayloadQueue.offer(list);
-
         }
     }
 
     public static boolean isEnable() {
-        return AesopPlugin.getInstance().getConfig().getBoolean("config.notice.bottom.enable");
+        return AesopPlugin.getInstance().getConfig().getBoolean("config.notice.actionbar.enable");
     }
 }

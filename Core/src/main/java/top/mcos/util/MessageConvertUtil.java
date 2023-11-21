@@ -1,10 +1,6 @@
 package top.mcos.util;
 
 import org.apache.commons.lang3.StringUtils;
-import top.mcos.message.MsgPayload;
-import top.mcos.util.FullHalfChangeUtil;
-
-import java.util.Arrays;
 
 /**
  *
@@ -68,17 +64,4 @@ public class MessageConvertUtil {
         return messagePiles;
     }
 
-    /**
-     * 旧的写法
-     */
-    //private static void initMsg() {
-    //    String padMessage = StringUtils.center(this.message, this.message.length()+displayWidth*2+1, " ");
-    //    int parts = padMessage.length() - displayWidth;
-    //    this.messagePiles = new String[parts];
-    //    padMessage = FullHalfChangeUtil.half2FullChange(padMessage, false);
-    //    for(int i = 0; i<parts; i++) {
-    //        String msg = padMessage.substring(i, displayWidth + i);
-    //        this.messagePiles[i] = msg.replaceAll("(^\\s+)", "$1$1").replaceAll("(\\s+$)", "$1$1");
-    //    }
-    //}
 }
