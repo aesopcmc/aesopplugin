@@ -38,9 +38,10 @@
 config:
   notice:
     actionbar:
+      # 是否启用滚动消息，true是 false否
       enable: true
       # 消息显示间隔，单位毫秒
-      delay-times: 210
+      delay-times: 280
       # 消息线程等待超过时长，自动放弃发送消息，单位毫秒
       trylock-times: 60000
       # 消息显示宽度，单位字符
@@ -57,28 +58,30 @@ tasks:
       cron: '0/5 * * * * ?'
       start: ''
       end: ''
-      position: 'center|actionbar'
+      position: 'title|actionbar'
       message: '&a1-秒一次的消息，钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。'
+      #子标题消息，仅在position类型为title时生效
+      sub-message: ''
     msg2:
       enable: true
       cron: '1 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|actionbar'
+      position: 'title|actionbar'
       message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。悠哉悠哉，辗转反侧。参差荇菜，左右采之。窈窕淑女，琴瑟友之。参差荇菜，左右芼之。窈窕淑女，钟鼓乐之。。'
     msg3:
       enable: true
       cron: '2 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|actionbar'
+      position: 'title|actionbar'
       message: '&b3-汉皇重色思倾国，御宇多年求不得。'
     msg4:
       enable: true
       cron: '3 57 21 * * ?'
       start: ''
       end: ''
-      position: 'center|actionbar'
+      position: 'title|actionbar'
       message: '&e4-回眸一笑百媚生，六宫粉黛无颜色。'
 commands:
     cm1:

@@ -3,6 +3,7 @@ package top.mcos.scheduler;
 import org.quartz.*;
 import top.mcos.AesopPlugin;
 import top.mcos.message.MessageHandler;
+import top.mcos.message.PositionTypeEnum;
 
 import java.util.Optional;
 
@@ -16,8 +17,12 @@ public class NoticeJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         String message = Optional.ofNullable(jobDataMap.get("message")).map(Object::toString).orElse(null);
-        //String position = Optional.ofNullable(jobDataMap.get("position")).map(Object::toString).orElse(null);
-        MessageHandler.sendAllOnlinePlayers(message);
+        String position = Optional.ofNullable(jobDataMap.get("position")).map(Object::toString).orElse(null);
+        if(PositionTypeEnum.ACTIONBAR.getName().equals(position)) {
+            MessageHandler.sendAllOnlinePlayers(message);
+        } else if (PositionTypeEnum.TITLE.getName().equals(position)) {
+            // TODO
+        }
         AesopPlugin.logger.log("执行NoticeJob");
     }
 }

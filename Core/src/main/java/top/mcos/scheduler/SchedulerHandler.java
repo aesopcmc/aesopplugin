@@ -4,8 +4,11 @@ import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
+import top.mcos.config.ConfigLoader;
+import top.mcos.config.NoticeMessageConfig;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -36,29 +39,30 @@ public final class SchedulerHandler {
     }
 
     public static synchronized void init() {
+        // 1、创建调度器Scheduler
         try {
-            if(scheduler!=null) {
-                shutdown();
-            }
-            if(scheduler==null || scheduler.isShutdown()) {
-                // 1、创建调度器Scheduler
-                try {
-                    SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-                    scheduler = schedulerFactory.getScheduler();
-                    scheduler.start();
-                    AesopPlugin.logger.log("已启动定时任务调度器");
-                } catch (SchedulerException e) {
-                    e.printStackTrace();
-                    AesopPlugin.logger.log("任务调度器创建失败", ConsoleLogger.Level.ERROR);
-                }
-            }
+            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            scheduler = schedulerFactory.getScheduler();
+            scheduler.start();
+            AesopPlugin.logger.log("已启动定时任务调度器");
         } catch (SchedulerException e) {
             e.printStackTrace();
-            AesopPlugin.logger.log("任务调度器创建失败2", ConsoleLogger.Level.ERROR);
+            AesopPlugin.logger.log("任务调度器创建失败", ConsoleLogger.Level.ERROR);
         }
     }
 
     // todo 注册任务、激活所有任务、激活指定任务、暂停指定任务、暂停所有任务、移除所有任务
+
+    public static void registerNoticeMessageJobs() {
+        for (NoticeMessageConfig notice : ConfigLoader.noticeMessageConfigs) {
+            Map<String, Object> jobParams = new HashMap<>();
+            jobParams.put("positionType", notice.getPositionType().getName());
+            jobParams.put("message", notice.getMessage());
+            jobParams.put("subMessage", notice.getSubMessage());
+            registerJob(NoticeJob.class, notice.getTaskKey(), "noticeGroup", notice.getStart(),
+                    notice.getEnd(), notice.getCron(), jobParams);
+        }
+    }
 
     public static void registerJob(Class<? extends Job> clazz, String jobName, String groupName, Date startAt, Date endAt, String cron, Map<String, Object> jobParams) {
         try {
@@ -89,7 +93,12 @@ public final class SchedulerHandler {
         }
     }
 
-    public static void start() {
+    public static synchronized void clear() {
+        shutdown();
+        init();
+    }
+
+    public static synchronized void start() {
         try {
             scheduler.start();
             AesopPlugin.logger.log("成功启动任务调度器。");
@@ -99,7 +108,7 @@ public final class SchedulerHandler {
         }
     }
 
-    public static void shutdown() {
+    public static synchronized void shutdown() {
         try {
             scheduler.shutdown();
             AesopPlugin.logger.log("任务调度器已停止。");

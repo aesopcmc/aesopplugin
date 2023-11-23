@@ -1,4 +1,4 @@
-package top.mcos.message;
+package top.mcos.listener;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;

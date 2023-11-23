@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage;
 import org.bukkit.entity.Player;
+import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsProvider;
 
 import java.lang.reflect.Field;
@@ -58,6 +59,7 @@ public class R1_19_R3 implements NmsProvider {
 		NetworkManager manager = getNetworkManager(player);
 
 		for (String messagePile : messagePiles) {
+			if(MessageHandler.isSendBreak()) break;
 			String s = ChatColor.translateAlternateColorCodes('&', messagePile);
 			var packet = new ClientboundSetActionBarTextPacket(CraftChatMessage.fromStringOrNull(s));
 			manager.a((Packet<?>) packet);

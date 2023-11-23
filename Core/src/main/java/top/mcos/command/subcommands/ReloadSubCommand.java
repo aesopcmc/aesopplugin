@@ -6,8 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
+import top.mcos.config.ConfigLoader;
 import top.mcos.message.MessageHandler;
 import top.mcos.scheduler.SchedulerHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 重载插件：/xxx reload
@@ -41,11 +44,18 @@ public final class ReloadSubCommand extends Command implements Helpable {
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         try {
-            //重新读取配置
-            AesopPlugin.getInstance().reloadConfig();
-
-            SchedulerHandler.init();
-            MessageHandler.loadConfigMessages();
+            MessageHandler.setSendBreak(true);
+            // 清理定时任务
+            SchedulerHandler.clear();
+            // 清理消息队列
+            MessageHandler.clearQueue();
+            // 稍作延迟，等待所有消息线程推出
+            TimeUnit.SECONDS.sleep(1);
+            MessageHandler.setSendBreak(false);
+            // 重新读取配置
+            ConfigLoader.reload();
+            // 重新注册消息通知任务
+            SchedulerHandler.registerNoticeMessageJobs();
 
             AesopPlugin.logger.log("&a插件刷新成功");
         } catch (Throwable e) {

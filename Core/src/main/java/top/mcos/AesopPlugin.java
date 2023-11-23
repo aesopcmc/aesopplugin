@@ -7,6 +7,7 @@ import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.mcos.config.ConfigLoader;
 import top.mcos.listener.PlayerListener;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsBuilder;
@@ -14,17 +15,15 @@ import top.mcos.nms.spi.NmsProvider;
 import top.mcos.scheduler.SchedulerHandler;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public final class AesopPlugin extends JavaPlugin {
     private static @Nullable AesopPlugin instance;
     public static @Nullable HashSet<Runnable> onInstance;
-
     public static @Nullable NmsProvider nmsProvider;
-    public static boolean pluginActive;
 
     public static final @NotNull Logger logger = new Logger("&6[&b伊索插件&6]&f ");
+    private static boolean pluginActive;
 
     public AesopPlugin() {
         instance = this;
@@ -66,8 +65,10 @@ public final class AesopPlugin extends JavaPlugin {
             }
         }
 
-        //若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
+        // 若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
         this.saveDefaultConfig();
+        // 加载配置数据 TODO
+        ConfigLoader.reload();
 
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
@@ -75,12 +76,12 @@ public final class AesopPlugin extends JavaPlugin {
         //加载命令
         CommandLoader.getCommands();
 
+        // 启动监听消息队列，有消息，则发送
+        MessageHandler.initQueue();
         // 启动任务调度器监听任务
         SchedulerHandler.init();
-        // 启动监听消息队列，有消息，则发送
-        MessageHandler.init();
-        // 加载配置文件，注册消息
-        MessageHandler.loadConfigMessages();
+        // 注册任务
+        SchedulerHandler.registerNoticeMessageJobs();
 
         logger.log("&a成功加载插件");
     }
@@ -88,8 +89,9 @@ public final class AesopPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         pluginActive = false;
-        MessageHandler.clear();
         SchedulerHandler.shutdown();
+        MessageHandler.clearQueue();
+        MessageHandler.setSendBreak(true);
         logger.log("&c插件已卸载");
     }
 
@@ -115,5 +117,9 @@ public final class AesopPlugin extends JavaPlugin {
 
     public static AesopPlugin getInstance() {
         return instance;
+    }
+
+    public static boolean isPluginActive() {
+        return pluginActive;
     }
 }
