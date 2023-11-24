@@ -33,25 +33,26 @@ public class ActionbarMessagePayload implements MessagePayload {
      * 发送数据包
      */
     public boolean sendPacket() {
-        Lock lock = PlayerLock.getPlayerLock(player.getUniqueId().toString());
-        boolean locked = false;
-        try {
-            //将消息排队发送，防止一个玩家同时收到多个消息
-            if(lock.tryLock(ConfigLoader.trylock_times, TimeUnit.MILLISECONDS)) {
-                locked = true;
-                AesopPlugin.logger.log("当前执行的线程：【"+Thread.currentThread().getName()+"】");
-                AesopPlugin.nmsProvider.sendActionbar(player, messagePiles, ConfigLoader.delay_times);
-            }
-        } catch (InterruptedException e) {
-            AesopPlugin.logger.log(player.getName() + ":消息发送已被中断", ConsoleLogger.Level.WARN);
-        } finally {
-            if(locked) {
-                lock.unlock();
-            } else {
-                AesopPlugin.logger.log("线程【"+Thread.currentThread().getName()+"】放弃锁");
+        if(ConfigLoader.notice_actionbar_enabled) {
+            Lock lock = PlayerLock.getPlayerLock(player.getUniqueId().toString());
+            boolean locked = false;
+            try {
+                //将消息排队发送，防止一个玩家同时收到多个消息
+                if (lock.tryLock(ConfigLoader.trylock_times, TimeUnit.MILLISECONDS)) {
+                    locked = true;
+                    AesopPlugin.logger.log("当前执行的线程：【" + Thread.currentThread().getName() + "】");
+                    AesopPlugin.nmsProvider.sendActionbar(player, messagePiles, ConfigLoader.delay_times);
+                }
+            } catch (InterruptedException e) {
+                AesopPlugin.logger.log(player.getName() + ":消息发送已被中断", ConsoleLogger.Level.WARN);
+            } finally {
+                if (locked) {
+                    lock.unlock();
+                } else {
+                    AesopPlugin.logger.log("线程【" + Thread.currentThread().getName() + "】放弃锁");
+                }
             }
         }
-
         return true;
     }
 }

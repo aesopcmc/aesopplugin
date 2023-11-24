@@ -17,11 +17,12 @@ public class NoticeJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         String message = Optional.ofNullable(jobDataMap.get("message")).map(Object::toString).orElse(null);
-        String position = Optional.ofNullable(jobDataMap.get("position")).map(Object::toString).orElse(null);
-        if(PositionTypeEnum.ACTIONBAR.getName().equals(position)) {
-            MessageHandler.sendAllOnlinePlayers(message);
-        } else if (PositionTypeEnum.TITLE.getName().equals(position)) {
-            // TODO
+        String subMessage = Optional.ofNullable(jobDataMap.get("subMessage")).map(Object::toString).orElse(null);
+        String positionType = Optional.ofNullable(jobDataMap.get("positionType")).map(Object::toString).orElse(null);
+        if(PositionTypeEnum.actionbar.name().equals(positionType)) {
+            MessageHandler.pushActionbarMessage(message);
+        } else if (PositionTypeEnum.title.name().equals(positionType)) {
+            MessageHandler.pushTitleMessage(message, subMessage);
         }
         AesopPlugin.logger.log("执行NoticeJob");
     }

@@ -38,8 +38,11 @@ public class R1_19_R3 implements NmsProvider {
 	
 	@Override
 	public Object[] createTitlePacket(String title, String subtitle, int in, int keep, int out) {
-		if (title.isEmpty()) title = " ";
-		if (subtitle.isEmpty()) subtitle = " ";
+		if (title==null || title.isEmpty()) title = " ";
+		if (subtitle==null || subtitle.isEmpty()) subtitle = " ";
+		title = ChatColor.translateAlternateColorCodes('&', title);
+		subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
+
 		ClientboundSetTitlesAnimationPacket animation = new ClientboundSetTitlesAnimationPacket(in, keep, out);
 		ClientboundSetTitleTextPacket text = new ClientboundSetTitleTextPacket(CraftChatMessage.fromStringOrNull(title));
 		ClientboundSetSubtitleTextPacket subtext = new ClientboundSetSubtitleTextPacket(CraftChatMessage.fromStringOrNull(subtitle));

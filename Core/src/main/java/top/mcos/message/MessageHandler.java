@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 import top.mcos.message.payload.ActionbarMessagePayload;
+import top.mcos.message.payload.TitleMessagePayload;
 import top.mcos.util.MessageConvertUtil;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public final class MessageHandler {
             while (AesopPlugin.isPluginActive()) {
                 // 获取一组消息。一组消息由一个消息单元和多个在线用户组成
                 List<MessagePayload> poll = msgPayloadQueue.poll();
-                if(poll!=null && ConfigLoader.notice_actionbar_enabled) {
+                if(poll!=null) {
                     for (MessagePayload messagePayload : poll) {
                         //Bukkit.getScheduler().callSyncMethod(AesopPlugin.getInstance(), () -> msgPayload.sendPacket(dt));
                         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), messagePayload::sendPacket);
@@ -45,11 +46,11 @@ public final class MessageHandler {
     }
 
     /**
-     * 发送消息给所有在线玩家
+     * 推送滚动消息进队列
      * @param message 消息内容，支持颜色代码
      */
-    public static void sendAllOnlinePlayers(String message) {
-        if(ConfigLoader.notice_actionbar_enabled && !StringUtils.isBlank(message)) {
+    public static void pushActionbarMessage(String message) {
+        if(ConfigLoader.notice_actionbar_enabled && StringUtils.isNotBlank(message)) {
             // 获取玩家
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             if(onlinePlayers.size()<1) return;
@@ -65,6 +66,27 @@ public final class MessageHandler {
             msgPayloadQueue.offer(list);
         }
     }
+
+    /**
+     * 推送标题消息进队列
+     * @param message 消息内容，支持颜色代码
+     * @param subMessage 消息内容，支持颜色代码
+     */
+    public static void pushTitleMessage(String message, String subMessage) {
+        if(ConfigLoader.notice_title_enabled && StringUtils.isNotBlank(message)) {
+            // 获取玩家
+            Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+            if(onlinePlayers.size()<1) return;
+
+            List<MessagePayload> list = new ArrayList<>();
+            for (Player onlinePlayer : onlinePlayers) {
+                list.add(new TitleMessagePayload(onlinePlayer, message, subMessage));
+            }
+
+            msgPayloadQueue.offer(list);
+        }
+    }
+
 
     /**
      * 发送消息给指定用户

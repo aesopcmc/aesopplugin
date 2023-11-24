@@ -55,12 +55,14 @@ public final class SchedulerHandler {
 
     public static void registerNoticeMessageJobs() {
         for (NoticeMessageConfig notice : ConfigLoader.noticeMessageConfigs) {
-            Map<String, Object> jobParams = new HashMap<>();
-            jobParams.put("positionType", notice.getPositionType().getName());
-            jobParams.put("message", notice.getMessage());
-            jobParams.put("subMessage", notice.getSubMessage());
-            registerJob(NoticeJob.class, notice.getTaskKey(), "noticeGroup", notice.getStart(),
-                    notice.getEnd(), notice.getCron(), jobParams);
+            if(notice.getEnable()) {
+                Map<String, Object> jobParams = new HashMap<>();
+                jobParams.put("positionType", notice.getPositionType().name());
+                jobParams.put("message", notice.getMessage());
+                jobParams.put("subMessage", notice.getSubMessage());
+                registerJob(NoticeJob.class, notice.getTaskKey(), "noticeGroup", notice.getStart(),
+                        notice.getEnd(), notice.getCron(), jobParams);
+            }
         }
     }
 

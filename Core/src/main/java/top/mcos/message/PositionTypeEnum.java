@@ -4,16 +4,16 @@ package top.mcos.message;
  * 消息类型
  */
 public enum PositionTypeEnum {
-    ACTIONBAR("actionbar"),
-    TITLE("title"),
+    actionbar("滚动消息"),
+    title("标题消息"),
     ;
-    private String name;
+    private String desc;
 
     PositionTypeEnum(String name) {
-        this.name = name;
+        this.desc = name;
     }
 
-    public String getName() {
-        return name;
+    public String getDesc() {
+        return desc;
     }
 }
