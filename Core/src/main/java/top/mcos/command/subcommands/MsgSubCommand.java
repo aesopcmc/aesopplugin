@@ -3,10 +3,15 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.popcraft.chunky.api.ChunkyAPI;
 import top.mcos.AesopPlugin;
 
 /**
@@ -65,15 +70,6 @@ public final class MsgSubCommand extends Command implements Helpable {
         };
     }
 
-    //private String getInvalidArgsMessage(String label, CommandSender sender, String[] args) {
-    //    var lang = PlayMoreSounds.getLanguage();
-    //    return lang.get("General.Invalid Arguments").replace("<label>", label)
-    //            .replace("<label2>", args[0]).replace("<args>", "<" +
-    //                    lang.get("Play.Sound") + "> " + (sender instanceof Player ? "[" + lang.get("General.Player")
-    //                    + "]" : "<" + lang.get("General.Player") + ">") + " [" + lang.get("Play.Volume") + "] [" +
-    //                    lang.get("Play.Pitch") + "]");
-    //}
-
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if(sender instanceof Player) {
@@ -97,8 +93,33 @@ public final class MsgSubCommand extends Command implements Helpable {
                 //networkManager.a((Packet<?>) text);
                 //networkManager.a((Packet<?>) subtext);
 
-                AesopPlugin.logger.log("已发送");
+                /*
+                多世界
+                 */
+                //MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+                //MVWorldManager mvWorldManager = core.getMVWorldManager();
+                ////long seed = (new Random()).nextLong();
+                //mvWorldManager.regenWorld("zy", true, true, null, true);
+                //AesopPlugin.logger.log("世界已重置");
+
+                /*
+                区块生成
+                 */
+                //ChunkyAPI chunky = Bukkit.getServer().getServicesManager().load(ChunkyAPI.class);
+                //AesopPlugin.logger.log("开始加载区块...");
+                //chunky.startTask("zy", "square", 0, 0, 600, 600, "concentric");
+
+                /*
+                执行命令
+                 */
+                String cmdline = "gamerule doDaylightCycle "+args[2];
+                ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
+                Bukkit.getServer().dispatchCommand(consoleSender, cmdline);
+
+                AesopPlugin.logger.log("结束指令");
             } else if ("out".equals(args[1])) {
+                ChunkyAPI chunky = Bukkit.getServer().getServicesManager().load(ChunkyAPI.class);
+                AesopPlugin.logger.log(player, "isRunning:"+chunky.isRunning("zy"));
                 AesopPlugin.logger.log(player, "out");
             } else {
                 AesopPlugin.logger.log(player, "&c参数有误");

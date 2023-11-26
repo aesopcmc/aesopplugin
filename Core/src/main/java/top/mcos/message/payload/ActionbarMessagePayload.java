@@ -33,15 +33,15 @@ public class ActionbarMessagePayload implements MessagePayload {
      * 发送数据包
      */
     public boolean sendPacket() {
-        if(ConfigLoader.notice_actionbar_enabled) {
+        if(ConfigLoader.commonConfig.isNoticeActionbarEnabled()) {
             Lock lock = PlayerLock.getPlayerLock(player.getUniqueId().toString());
             boolean locked = false;
             try {
                 //将消息排队发送，防止一个玩家同时收到多个消息
-                if (lock.tryLock(ConfigLoader.trylock_times, TimeUnit.MILLISECONDS)) {
+                if (lock.tryLock(ConfigLoader.commonConfig.getTrylockTimes(), TimeUnit.MILLISECONDS)) {
                     locked = true;
                     AesopPlugin.logger.log("当前执行的线程：【" + Thread.currentThread().getName() + "】");
-                    AesopPlugin.nmsProvider.sendActionbar(player, messagePiles, ConfigLoader.delay_times);
+                    AesopPlugin.nmsProvider.sendActionbar(player, messagePiles, ConfigLoader.commonConfig.getDelayTimes());
                 }
             } catch (InterruptedException e) {
                 AesopPlugin.logger.log(player.getName() + ":消息发送已被中断", ConsoleLogger.Level.WARN);

@@ -1,15 +1,19 @@
 package top.mcos.scheduler;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.NoticeMessageConfig;
+import top.mcos.config.configs.NoticeMessageConfig;
+import top.mcos.config.configs.RegenWorldConfig;
+import top.mcos.scheduler.jobs.DemoJob;
+import top.mcos.scheduler.jobs.NoticeJob;
+import top.mcos.scheduler.jobs.RegenWorldJob;
+import top.mcos.util.BeanMapUtil;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,14 +57,33 @@ public final class SchedulerHandler {
 
     // todo 注册任务、激活所有任务、激活指定任务、暂停指定任务、暂停所有任务、移除所有任务
 
-    public static void registerNoticeMessageJobs() {
+    public static void registerJobs() {
+        List<String> afterNoticeKeys = new ArrayList<>();
+        for (RegenWorldConfig regen : ConfigLoader.regenWorldConfigs) {
+            if (regen.getEnable()) {
+                String jobName = regen.getWorld()+"-task";
+                if(StringUtils.isNotBlank(regen.getAfterNoticeKey())) {
+                    afterNoticeKeys.add(regen.getAfterNoticeKey());
+                }
+                try {
+                    Map<String, Object> jobParams = BeanMapUtil.beanToMap(regen);
+                    registerJob(RegenWorldJob.class, jobName, "regenGroup", null, null,
+                            regen.getCron(), jobParams);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    AesopPlugin.logger.log("<< 定时任务【"+jobName+"】激活失败，已跳过", ConsoleLogger.Level.ERROR);
+                }
+            }
+        }
+
         for (NoticeMessageConfig notice : ConfigLoader.noticeMessageConfigs) {
-            if(notice.getEnable()) {
+            if(notice.getEnable() && !afterNoticeKeys.contains(notice.getKey())) {
+                String jobName = notice.getKey()+"-task";
                 Map<String, Object> jobParams = new HashMap<>();
                 jobParams.put("positionType", notice.getPositionType().name());
                 jobParams.put("message", notice.getMessage());
                 jobParams.put("subMessage", notice.getSubMessage());
-                registerJob(NoticeJob.class, notice.getTaskKey(), "noticeGroup", notice.getStart(),
+                registerJob(NoticeJob.class, jobName, "noticeGroup", notice.getStart(),
                         notice.getEnd(), notice.getCron(), jobParams);
             }
         }

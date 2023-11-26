@@ -55,7 +55,7 @@ public final class ReloadSubCommand extends Command implements Helpable {
             // 重新读取配置
             ConfigLoader.reload();
             // 重新注册消息通知任务
-            SchedulerHandler.registerNoticeMessageJobs();
+            SchedulerHandler.registerJobs();
 
             AesopPlugin.logger.log("&a插件刷新成功");
         } catch (Throwable e) {

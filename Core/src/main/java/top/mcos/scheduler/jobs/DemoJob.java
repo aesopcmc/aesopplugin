@@ -1,4 +1,4 @@
-package top.mcos.scheduler;
+package top.mcos.scheduler.jobs;
 
 import org.quartz.*;
 

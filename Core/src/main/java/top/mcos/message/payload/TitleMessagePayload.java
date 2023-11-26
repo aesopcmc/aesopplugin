@@ -25,9 +25,11 @@ public class TitleMessagePayload implements MessagePayload {
      * 发送数据包
      */
     public boolean sendPacket() {
-        if(ConfigLoader.notice_title_enabled) {
+        if(ConfigLoader.commonConfig.isNoticeTitleEnabled()) {
             Object[] titlePacket = AesopPlugin.nmsProvider.createTitlePacket(message, subMessage,
-                    ConfigLoader.notice_title_fadein, ConfigLoader.notice_title_keep, ConfigLoader.notice_title_fadeout);
+                    ConfigLoader.commonConfig.getNoticeTitleFadein(),
+                    ConfigLoader.commonConfig.getNoticeTitleKeep(),
+                    ConfigLoader.commonConfig.getNoticeTitleFadeout());
             AesopPlugin.nmsProvider.sendTitles(player, titlePacket);
         }
         return true;

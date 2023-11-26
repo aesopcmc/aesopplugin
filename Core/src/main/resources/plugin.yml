@@ -1,6 +1,7 @@
 api-version: '1.19'
 author: Aesop
 depend: [EpicPluginLib]
+softdepend: ['Multiverse-Core','Chunky']
 description: 一个测试插件
 main: top.mcos.AesopPlugin
 name: AesopPlugin

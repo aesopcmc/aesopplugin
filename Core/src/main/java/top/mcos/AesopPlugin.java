@@ -3,6 +3,7 @@ package top.mcos;
 import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Bukkit;
+import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -67,21 +68,20 @@ public final class AesopPlugin extends JavaPlugin {
 
         // 若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
         this.saveDefaultConfig();
-        // 加载配置数据 TODO
+        // 加载配置数据
         ConfigLoader.reload();
-
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
-
         //加载命令
         CommandLoader.getCommands();
-
         // 启动监听消息队列，有消息，则发送
         MessageHandler.initQueue();
         // 启动任务调度器监听任务
         SchedulerHandler.init();
+        // 初始化第三方插件挂钩
+        HookHandler.init();
         // 注册任务
-        SchedulerHandler.registerNoticeMessageJobs();
+        SchedulerHandler.registerJobs();
 
         logger.log("&a成功加载插件");
     }

@@ -50,13 +50,13 @@ public final class MessageHandler {
      * @param message 消息内容，支持颜色代码
      */
     public static void pushActionbarMessage(String message) {
-        if(ConfigLoader.notice_actionbar_enabled && StringUtils.isNotBlank(message)) {
+        if(ConfigLoader.commonConfig.isNoticeActionbarEnabled() && StringUtils.isNotBlank(message)) {
             // 获取玩家
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             if(onlinePlayers.size()<1) return;
 
             //组装消息
-            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.display_width);
+            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.commonConfig.getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();
@@ -73,7 +73,7 @@ public final class MessageHandler {
      * @param subMessage 消息内容，支持颜色代码
      */
     public static void pushTitleMessage(String message, String subMessage) {
-        if(ConfigLoader.notice_title_enabled && StringUtils.isNotBlank(message)) {
+        if(ConfigLoader.commonConfig.isNoticeTitleEnabled() && StringUtils.isNotBlank(message)) {
             // 获取玩家
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             if(onlinePlayers.size()<1) return;
@@ -94,9 +94,9 @@ public final class MessageHandler {
      * @param message 消息内容，支持颜色代码
      */
     public static void sendToPlayer(Player player, String message) {
-        if(ConfigLoader.notice_actionbar_enabled) {
+        if(ConfigLoader.commonConfig.isNoticeActionbarEnabled()) {
             //组装消息
-            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.display_width);
+            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.commonConfig.getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();
