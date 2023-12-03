@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.ServiceLoader;
 
 public final class AesopPlugin extends JavaPlugin {
-    private static @Nullable AesopPlugin instance;
+    private static AesopPlugin instance;
     public static @Nullable HashSet<Runnable> onInstance;
     public static @Nullable NmsProvider nmsProvider;
 
@@ -69,7 +69,7 @@ public final class AesopPlugin extends JavaPlugin {
         // 若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
         this.saveDefaultConfig();
         // 加载配置数据
-        ConfigLoader.reload();
+        ConfigLoader.load();
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
         //加载命令

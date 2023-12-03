@@ -53,7 +53,7 @@ public final class ReloadSubCommand extends Command implements Helpable {
             TimeUnit.SECONDS.sleep(1);
             MessageHandler.setSendBreak(false);
             // 重新读取配置
-            ConfigLoader.reload();
+            ConfigLoader.load();
             // 重新注册消息通知任务
             SchedulerHandler.registerJobs();
 

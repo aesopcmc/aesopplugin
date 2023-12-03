@@ -1,7 +1,6 @@
 package top.mcos.scheduler;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
@@ -11,7 +10,6 @@ import top.mcos.config.configs.RegenWorldConfig;
 import top.mcos.scheduler.jobs.DemoJob;
 import top.mcos.scheduler.jobs.NoticeJob;
 import top.mcos.scheduler.jobs.RegenWorldJob;
-import top.mcos.util.BeanMapUtil;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -57,35 +55,18 @@ public final class SchedulerHandler {
 
     // todo 注册任务、激活所有任务、激活指定任务、暂停指定任务、暂停所有任务、移除所有任务
 
+    /**
+     *  注册任务
+     */
     public static void registerJobs() {
-        List<String> afterNoticeKeys = new ArrayList<>();
-        for (RegenWorldConfig regen : ConfigLoader.regenWorldConfigs) {
-            if (regen.getEnable()) {
-                String jobName = regen.getWorld()+"-task";
-                if(StringUtils.isNotBlank(regen.getAfterNoticeKey())) {
-                    afterNoticeKeys.add(regen.getAfterNoticeKey());
-                }
-                try {
-                    Map<String, Object> jobParams = BeanMapUtil.beanToMap(regen);
-                    registerJob(RegenWorldJob.class, jobName, "regenGroup", null, null,
-                            regen.getCron(), jobParams);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    AesopPlugin.logger.log("<< 定时任务【"+jobName+"】激活失败，已跳过", ConsoleLogger.Level.ERROR);
-                }
-            }
+        // 注册世界生成任务
+        for (RegenWorldConfig config : ConfigLoader.commonConfig.getRegenWorldConfigs()) {
+            if (config.isEnable()) RegenWorldJob.registerJob(config);
         }
 
-        for (NoticeMessageConfig notice : ConfigLoader.noticeMessageConfigs) {
-            if(notice.getEnable() && !afterNoticeKeys.contains(notice.getKey())) {
-                String jobName = notice.getKey()+"-task";
-                Map<String, Object> jobParams = new HashMap<>();
-                jobParams.put("positionType", notice.getPositionType().name());
-                jobParams.put("message", notice.getMessage());
-                jobParams.put("subMessage", notice.getSubMessage());
-                registerJob(NoticeJob.class, jobName, "noticeGroup", notice.getStart(),
-                        notice.getEnd(), notice.getCron(), jobParams);
-            }
+        // 注册消息广播任务
+        for (NoticeMessageConfig config : ConfigLoader.commonConfig.getNoticeMessageConfigs()) {
+            if(config.isEnable()) NoticeJob.registerJob(config);
         }
     }
 
@@ -99,22 +80,22 @@ public final class SchedulerHandler {
                     .startNow()//立即生效
                     .endAt(endAt) //表示触发器结束触发的时间;
                 .startAt(startAt==null ? new Date() : startAt) //表示触发器首次被触发的时间;
-                .withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed()).build();
             scheduler.scheduleJob(jobDetail, trigger);
-            AesopPlugin.logger.log(">> 定时任务【"+jobName+"】已激活");
+            AesopPlugin.logger.log("定时任务【"+jobName+"】已激活");
         } catch (SchedulerException e) {
             e.printStackTrace();
-            AesopPlugin.logger.log("<< 定时任务【"+jobName+"】激活失败!", ConsoleLogger.Level.ERROR);
+            AesopPlugin.logger.log("任务加载失败！", ConsoleLogger.Level.ERROR);
         }
     }
 
     public static void unRegisterJob(String jobName, String groupName) {
         try {
             scheduler.deleteJob(JobKey.jobKey(jobName, groupName));
-            AesopPlugin.logger.log(">> 成功移除任务【"+jobName+"】");
+            AesopPlugin.logger.log("成功移除任务【"+jobName+"】");
         } catch (SchedulerException e) {
             e.printStackTrace();
-            AesopPlugin.logger.log("<< 移除任务【"+jobName+"】失败!", ConsoleLogger.Level.ERROR);
+            AesopPlugin.logger.log("移除任务【"+jobName+"】失败!", ConsoleLogger.Level.ERROR);
         }
     }
 

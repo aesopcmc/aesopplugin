@@ -37,7 +37,7 @@
 
 config:
   regen-world:
-#    chunky-check-loading: true # 检查是否有未完成的区块加载任务，继续执行加载
+    # chunky-check-loading: true # 检查是否有未完成的区块加载任务，继续执行加载
     chunky-loading-notice:
       enable: true
       message: '&e【{world-name}】&c正在进行地图预加载，请勿进入服务器，以免影响加载进度！当前进度&e{per}%，&c剩余时间&e{remain-times}'
@@ -46,9 +46,9 @@ config:
     actionbar:
       # 是否启用滚动消息，true是 false否
       enable: true
-      # 消息显示间隔，单位毫秒
+      # 消息滚动速度间隔，单位毫秒
       delay-times: 280
-      # 消息线程等待超过时长，自动放弃发送消息，单位毫秒
+      # 消息太多导致线程排队等待时，等待超过时长，自动放弃发送消息，单位毫秒
       trylock-times: 60000
       # 消息显示宽度，单位字符
       display-width: 20
@@ -62,27 +62,46 @@ config:
       # 显出时长
       fadeout: 10
 tasks:
+  # 重置世界定时任务
   regen-world:
-    world:
+    # 世界名称，指定具体的世界名称，可添加多个世界配置
+    zy:
       enable: true
       cron: '0 0 10 * * ?'
       new-seed: true # 是否创建新的种子。若为false，将忽略random-seed 和 seed 参数
       random-seed: true # 随机种子，new-seed为true时生效
       seed: '' # 指定种子，random-seed为false时生效
-      keep-game-rules: true # 是否保持世界原来的规则
-      after-load-chunky: true # 世界重置后，是否执行预加载地图
-      after-load-chunky-radius: 500 # 预加载地图半角，中心点固定为0，0
-      after-notice-key: 'msgworld' # 世界重置后，发送指定消息key的通知。该的消息启用状态将由世界重置机制控制
-      after-run-commands: #世界重置后，执行的控制台指令，从上到下按顺序执行
-        - 'gamerule keepInventory true'
+      # 是否保持世界原来的规则，例如死亡不掉落、世界难度、火焰蔓延等配置保持与重置世界前一致
+      keep-game-rules: true
+      # 世界重置后，是否执行预加载地图，需要安装
+      loaded-chunky: true
+      # 预加载地图半径 半径中心点为（0，0）
+      loaded-chunky-radius: 500.0
+      # 消息名称key。世界重置后，发送指定消息通知。
+      # 被指向的消息，将会由程序自动改变消息的属性：enable、start、end、message
+      loaded-notice-key: 'msg0'
+      # 世界重置后，发送通知内容。
+      # 该配置会修改消息任务的message值
+      loaded-notice-message: '&a【{world-name}】已重置，快去探索新天地吧~'
+      # 世界重置后，在延迟多久后发送通知，单位小时
+      # 可能有后续的区块预加载任务，设定一个合适的延后提醒时机，在预加载任务完成后再提醒玩家会比较合理
+      # 该配置会修改消息任务的start值
+      loaded-notice-delay-hours: 6
+      # 世界重置后，发送通知持续时长，单位小时
+      # 该配置会修改消息任务的end值
+      loaded-notice-keep-hours: 24
+      # 世界重置后，执行的控制台指令，从上到下按顺序执行。空数据请填入[]
+      loaded-run-commands: []
+  # 定时消息任务
   notice:
-    msgworld:
+    # 消息名称，名称可自定义，可添加多个消息配置
+    msg0:
       enable: false
-      cron: '0/30 * * * * ?'
+      cron: '0 0 0/1 * * ?'
       start: ''
       end: ''
       position: 'actionbar'
-      message: '&a资源世界已重置，快去探索新天地吧~'
+      message: ''
       sub-message: ''
     msg1:
       enable: false
@@ -114,7 +133,7 @@ tasks:
       end: ''
       position: 'actionbar'
       message: '&e4-回眸一笑百媚生，六宫粉黛无颜色。'
-commands:
+  commands:
     cm1:
       command: '/void showxxx'
       cron: '* * 10 * ?'

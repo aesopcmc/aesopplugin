@@ -3,6 +3,7 @@ package top.mcos.scheduler;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.quartz.JobExecutionContext;
 import top.mcos.AesopPlugin;
+import top.mcos.config.configs.NoticeMessageConfig;
 
 public abstract class AbstractJob {
     protected void log(JobExecutionContext context, String message) {
@@ -12,4 +13,5 @@ public abstract class AbstractJob {
         message = "&9"+context.getJobDetail().getKey().getName() + " >> &7" + message;
         AesopPlugin.logger.log(message, level);
     }
+
 }
