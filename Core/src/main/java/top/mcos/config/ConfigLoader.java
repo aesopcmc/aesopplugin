@@ -4,8 +4,8 @@ import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import top.mcos.AesopPlugin;
-import top.mcos.config.configs.CommonConfig;
-import top.mcos.config.configs.NoticeMessageConfig;
+import top.mcos.config.configs.BaseConfig;
+import top.mcos.config.configs.NoticeConfig;
 import top.mcos.config.configs.RegenWorldConfig;
 
 import java.lang.reflect.Field;
@@ -18,25 +18,25 @@ import java.util.*;
  * 配置文件加载
  */
 public class ConfigLoader {
-    public static CommonConfig commonConfig;
+    public static BaseConfig baseConfig;
 
     public static synchronized void load() {
         //重新读取配置
         AesopPlugin.getInstance().reloadConfig();
-        commonConfig = readConfig(CommonConfig.class, null);
-        if(commonConfig==null) {
-            commonConfig = new CommonConfig();
+        baseConfig = readConfig(BaseConfig.class, null);
+        if(baseConfig ==null) {
+            baseConfig = new BaseConfig();
 
         }
-        System.out.println("主配置："+commonConfig);
-        List<NoticeMessageConfig> msgs = commonConfig.getNoticeMessageConfigs();
-        for (NoticeMessageConfig s : msgs) {
-            System.out.println("消息条目："+s);
-        }
-        List<RegenWorldConfig> regens = commonConfig.getRegenWorldConfigs();
-        for (RegenWorldConfig s : regens) {
-            System.out.println("重置世界条目："+s);
-        }
+        //System.out.println("主配置："+ baseConfig);
+        //List<NoticeConfig> msgs = baseConfig.getNoticeConfigs();
+        //for (NoticeConfig s : msgs) {
+        //    System.out.println("消息条目："+s);
+        //}
+        //List<RegenWorldConfig> regens = baseConfig.getRegenWorldConfigs();
+        //for (RegenWorldConfig s : regens) {
+        //    System.out.println("重置世界条目："+s);
+        //}
         //loadRegenWorlds();
         //loadNoticeMessages();
     }

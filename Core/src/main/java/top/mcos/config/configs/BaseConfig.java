@@ -18,7 +18,9 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
-public class CommonConfig {
+public class BaseConfig {
+    @PathValue("config.debug")
+    private boolean debug;
     @PathValue("config.regen-world.chunky-loading-notice.enable")
     private boolean chunkyLoadingNoticeEnable;
     @PathValue("config.regen-world.chunky-loading-notice.message")
@@ -44,5 +46,7 @@ public class CommonConfig {
 
     private List<RegenWorldConfig> regenWorldConfigs = new ArrayList<>();
 
-    private List<NoticeMessageConfig> noticeMessageConfigs = new ArrayList<>();
+    private List<NoticeConfig> noticeConfigs = new ArrayList<>();
+
+    private List<CommandConfig> commandConfigs = new ArrayList<>();
 }

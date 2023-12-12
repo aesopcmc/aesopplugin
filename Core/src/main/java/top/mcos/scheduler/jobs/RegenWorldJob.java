@@ -11,7 +11,7 @@ import org.popcraft.chunky.api.ChunkyAPI;
 import org.quartz.*;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.configs.NoticeMessageConfig;
+import top.mcos.config.configs.NoticeConfig;
 import top.mcos.config.configs.RegenWorldConfig;
 import top.mcos.hook.HookHandler;
 import top.mcos.hook.providers.ChunkyProvider;
@@ -29,11 +29,10 @@ import java.util.stream.Collectors;
 public class RegenWorldJob extends AbstractJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("执行regen任务。。。");
         try {
+            log(context, "执行任务");
             JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
             Map<String, Object> wrappedMap = jobDataMap.getWrappedMap();
-
             RegenWorldConfig config = BeanMapUtil.mapToBean(wrappedMap, RegenWorldConfig.class);
             List<String> afterRunCommands = config.getLoadedRunCommands();
             /*
@@ -63,22 +62,22 @@ public class RegenWorldJob extends AbstractJob implements Job {
                  */
                 String afterNoticeKey = config.getLoadedNoticeKey();
                 if(StringUtils.isNotBlank(afterNoticeKey)) {
-                    Map<String, NoticeMessageConfig> noticeConfigMap = ConfigLoader.commonConfig.getNoticeMessageConfigs()
-                            .stream().collect(Collectors.toMap(NoticeMessageConfig::getKey, c -> c));
+                    Map<String, NoticeConfig> noticeConfigMap = ConfigLoader.baseConfig.getNoticeConfigs()
+                            .stream().collect(Collectors.toMap(NoticeConfig::getKey, c -> c));
                     // 获取消息通知配置
-                    NoticeMessageConfig noticeMessageConfig = noticeConfigMap.get(afterNoticeKey);
+                    NoticeConfig noticeConfig = noticeConfigMap.get(afterNoticeKey);
                     // 取消注册消息
-                    NoticeJob.unRegisterJob(noticeMessageConfig);
+                    NoticeJob.unRegisterJob(noticeConfig);
                     // 更改配置
-                    noticeMessageConfig.setEnable(true);
+                    noticeConfig.setEnable(true);
                     String message = config.getLoadedNoticeMessage().replace("{world-name}", aliasWorldName);
-                    noticeMessageConfig.setMessage(message);
-                    noticeMessageConfig.setStart(DateUtils.addHours(new Date(), config.getLoadedNoticeDelayHours()));
-                    noticeMessageConfig.setEnd(DateUtils.addHours(noticeMessageConfig.getStart(), config.getLoadedNoticeKeepHours()));
+                    noticeConfig.setMessage(message);
+                    noticeConfig.setStart(DateUtils.addHours(new Date(), config.getLoadedNoticeDelayHours()));
+                    noticeConfig.setEnd(DateUtils.addHours(noticeConfig.getStart(), config.getLoadedNoticeKeepHours()));
                     // 保存配置
-                    ConfigLoader.saveConfig(noticeMessageConfig);
+                    ConfigLoader.saveConfig(noticeConfig);
                     // 重新注册消息
-                    NoticeJob.registerJob(noticeMessageConfig);
+                    NoticeJob.registerJob(noticeConfig);
                 }
 
                 /*

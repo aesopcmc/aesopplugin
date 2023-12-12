@@ -5,8 +5,10 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.configs.NoticeMessageConfig;
+import top.mcos.config.configs.CommandConfig;
+import top.mcos.config.configs.NoticeConfig;
 import top.mcos.config.configs.RegenWorldConfig;
+import top.mcos.scheduler.jobs.CommandJob;
 import top.mcos.scheduler.jobs.DemoJob;
 import top.mcos.scheduler.jobs.NoticeJob;
 import top.mcos.scheduler.jobs.RegenWorldJob;
@@ -60,13 +62,18 @@ public final class SchedulerHandler {
      */
     public static void registerJobs() {
         // 注册世界生成任务
-        for (RegenWorldConfig config : ConfigLoader.commonConfig.getRegenWorldConfigs()) {
+        for (RegenWorldConfig config : ConfigLoader.baseConfig.getRegenWorldConfigs()) {
             if (config.isEnable()) RegenWorldJob.registerJob(config);
         }
 
         // 注册消息广播任务
-        for (NoticeMessageConfig config : ConfigLoader.commonConfig.getNoticeMessageConfigs()) {
+        for (NoticeConfig config : ConfigLoader.baseConfig.getNoticeConfigs()) {
             if(config.isEnable()) NoticeJob.registerJob(config);
+        }
+
+        // 注册指令任务
+        for (CommandConfig config : ConfigLoader.baseConfig.getCommandConfigs()) {
+            if(config.isEnable()) CommandJob.registerJob(config);
         }
     }
 

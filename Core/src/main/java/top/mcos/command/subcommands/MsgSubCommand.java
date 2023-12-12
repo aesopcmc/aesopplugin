@@ -112,9 +112,13 @@ public final class MsgSubCommand extends Command implements Helpable {
                 /*
                 执行命令
                  */
-                String cmdline = "gamerule doDaylightCycle "+args[2];
-                ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
-                Bukkit.getServer().dispatchCommand(consoleSender, cmdline);
+                //String cmdline = "gamerule doDaylightCycle "+args[2];
+                //ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
+                //Bukkit.getServer().dispatchCommand(consoleSender, cmdline);
+
+                /**
+                 * 获取插件路径
+                 */
 
                 AesopPlugin.logger.log("结束指令");
             } else if ("out".equals(args[1])) {

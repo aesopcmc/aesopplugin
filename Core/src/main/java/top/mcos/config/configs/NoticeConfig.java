@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @ToString
 @PathEntity("tasks.notice")
-public class NoticeMessageConfig {
+public class NoticeConfig {
     @PathKey
     private String key;
     @PathValue("tasks.notice.{key}.enable")
