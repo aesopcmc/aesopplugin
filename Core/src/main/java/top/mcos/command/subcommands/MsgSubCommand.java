@@ -5,14 +5,31 @@ import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import de.slikey.effectlib.Effect;
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.effect.TextEffect;
+import de.slikey.effectlib.util.DynamicLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.popcraft.chunky.api.ChunkyAPI;
 import top.mcos.AesopPlugin;
+
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * 消息命令：/xxx msg
@@ -70,6 +87,7 @@ public final class MsgSubCommand extends Command implements Helpable {
         };
     }
 
+
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if(sender instanceof Player) {
@@ -119,6 +137,55 @@ public final class MsgSubCommand extends Command implements Helpable {
                 /**
                  * 获取插件路径
                  */
+                //Location location = player.getLocation();
+                //AesopPlugin.getInstance().getServer().getWorld("world").playEffect(location, );
+
+                /**
+                 * EffectLib 类库使用示例：
+                 * https://github.com/u9g/effectlib-visualizer/blob/main/src/main/java/dev/u9g/effectspreviewer/Commands.java
+                 */
+                EffectManager effectManager = new EffectManager(AesopPlugin.getInstance());
+                //TextEffect textEffect = new TextEffect(effectManager);
+                //textEffect.text = "我就是特效哈哈哈";
+                //textEffect.size=90;
+                //textEffect.color= Color.BLUE;
+                //textEffect.delay=10;
+                //textEffect.duration=10;
+                //textEffect.setFont(new Font("", Font.BOLD, 30));
+                //textEffect.setTargetEntity(player);
+                //textEffect.start();
+
+                TextEffect effect = new TextEffect(effectManager);
+                World world = Bukkit.getWorld("world");
+                Location location = new Location(world, -4, 67, 61, 45, 0);
+
+                // 设置位置
+                effect.setDynamicOrigin(new DynamicLocation(location));
+                //private final BiFunction<Player, Integer, Location> xForwardFromPlayer = (player, x) -> player.getLocation().add(0,2,0).add(player.getLocation().getDirection().multiply(x));
+                //effect.setDynamicOrigin(new DynamicLocation(xForwardFromPlayer.apply(player, 9)));
+
+                // 设置粒子特效（暂时只能选择不需要特效数据的）
+                //effect.particle = Particle.ELECTRIC_SPARK;
+                effect.particle = Particle.SOUL_FIRE_FLAME;
+                //effect.particleData=''
+
+                // 设置文本
+                effect.text = "圣诞节快乐hello";
+
+                // 时间间隔，数值越小，显示越快
+                effect.period = 10;
+                try {
+                    InputStream fi = MsgSubCommand.class.getClassLoader().getResourceAsStream("font/DouyinSansBold.ttf");
+                    Font font = Font.createFont(Font.PLAIN, fi);
+                    font = font.deriveFont(Font.PLAIN, 30);
+                    effect.setFont(font);
+                    //effect.size = 16;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                effect.start();
+                //effect.cancel();
 
                 AesopPlugin.logger.log("结束指令");
             } else if ("out".equals(args[1])) {

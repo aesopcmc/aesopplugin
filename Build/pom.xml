@@ -44,6 +44,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
+                <!--effectlib 开始-->
+                <!--<configuration>
+                    <minimizeJar>false</minimizeJar>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                    <relocations>
+                        &lt;!&ndash; Other relocations can go here, e.g. bstats &ndash;&gt;
+                        <relocation>
+                            <pattern>de.slikey</pattern>
+                            <shadedPattern>my.own.plugin.namespace.slikey</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>com.elmakers.mine.bukkit:EffectLib</artifact>
+                            <excludes>
+                                <exclude>plugin.yml</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>-->
+                <!--effectlib 结束-->
+
                 <executions>
                     <execution>
                         <phase>package</phase>

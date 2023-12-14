@@ -132,3 +132,32 @@ tasks:
       commands:
         - ''
         - ''
+  # 粒子特效
+  firework:
+    f1:
+      enable: true
+      cron: '0/10 * * * * ?'
+      start: ''
+      end: ''
+      # 效果较好的粒子 SOUL_FIRE_FLAME FLAME
+      particle: 'FLAME' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
+      text: '圣诞节快乐！'
+      text-size: 25
+      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+      subtext: 'Merry Christmas'
+      subtext-size: 18
+      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+    f2:
+      enable: true
+      cron: '0/10 * * * * ?'
+      start: ''
+      end: ''
+      particle: 'SNOWBALL' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
+      text: '圣诞节快乐！'
+      text-size: 25
+      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+      subtext: 'Merry Christmas'
+      subtext-size: 18
+      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+
+

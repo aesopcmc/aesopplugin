@@ -2,6 +2,7 @@ package top.mcos;
 
 import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
@@ -20,11 +21,15 @@ import java.util.ServiceLoader;
 
 public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
+    private static boolean pluginActive;
+    /**
+     * 粒子特效管理器
+     */
+    private static EffectManager effectManager;
     public static @Nullable HashSet<Runnable> onInstance;
     public static @Nullable NmsProvider nmsProvider;
 
     public static final @NotNull Logger logger = new Logger("&6[&b伊索插件&6]&f ");
-    private static boolean pluginActive;
 
     public AesopPlugin() {
         instance = this;
@@ -43,6 +48,9 @@ public final class AesopPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         pluginActive = true;
+        // 加载粒子特效支持库
+        effectManager = new EffectManager(AesopPlugin.getInstance());
+
         // 简易命令注册示例
         //PluginCommand msg = this.getCommand("msg");
         //msg.setExecutor(new CommandMsg());
@@ -121,5 +129,9 @@ public final class AesopPlugin extends JavaPlugin {
 
     public static boolean isPluginActive() {
         return pluginActive;
+    }
+
+    public static EffectManager getEffectManager() {
+        return effectManager;
     }
 }

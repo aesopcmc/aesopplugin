@@ -6,10 +6,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.CommandConfig;
+import top.mcos.config.configs.FireworkConfig;
 import top.mcos.config.configs.NoticeConfig;
 import top.mcos.config.configs.RegenWorldConfig;
 import top.mcos.scheduler.jobs.CommandJob;
 import top.mcos.scheduler.jobs.DemoJob;
+import top.mcos.scheduler.jobs.FireworkJob;
 import top.mcos.scheduler.jobs.NoticeJob;
 import top.mcos.scheduler.jobs.RegenWorldJob;
 
@@ -74,6 +76,11 @@ public final class SchedulerHandler {
         // 注册指令任务
         for (CommandConfig config : ConfigLoader.baseConfig.getCommandConfigs()) {
             if(config.isEnable()) CommandJob.registerJob(config);
+        }
+
+        // 注册粒子特效任务
+        for (FireworkConfig config : ConfigLoader.baseConfig.getFireworkConfigs()) {
+            if(config.isEnable()) FireworkJob.registerJob(config);
         }
     }
 
