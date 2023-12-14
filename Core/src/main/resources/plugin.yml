@@ -6,7 +6,7 @@ description: 一个测试插件
 main: top.mcos.AesopPlugin
 name: AesopPlugin
 #${project.version}
-version: '1.1'
+version: '1.2'
 website: https://mcos.top/
 prefix: '伊索插件'
 
