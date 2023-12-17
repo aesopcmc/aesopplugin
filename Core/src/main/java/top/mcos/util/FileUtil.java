@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Random;
 
 public class FileUtil {
     public static void printFileContent(Object obj) throws IOException {
@@ -45,9 +46,8 @@ public class FileUtil {
         //font = font.deriveFont(Font.PLAIN, 25);
         //System.out.println(font);
 
-        String[] names = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        System.out.println(Arrays.toString(names));
+        //String[] names = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        //System.out.println("支持的字体：" + Arrays.toString(names));
     }
-
 
 }

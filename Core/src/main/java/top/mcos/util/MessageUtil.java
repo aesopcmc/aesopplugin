@@ -1,15 +1,16 @@
 package top.mcos.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 
 /**
  *
  */
-public class MessageConvertUtil {
+public class MessageUtil {
     public static void main(String[] args) {
         //MsgPayload msgPayload = new MsgPayload(null, "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。");
         String message = "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。";
-        String[] messagePiles = MessageConvertUtil.convertMsg(message, 20);
+        String[] messagePiles = MessageUtil.convertMsg(message, 20);
         for (String s : messagePiles) {
             System.out.println(s);
         }
@@ -62,6 +63,10 @@ public class MessageConvertUtil {
             i++;
         }
         return messagePiles;
+    }
+
+    public static String symbol(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
 }

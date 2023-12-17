@@ -94,9 +94,6 @@ public class FireworkJob extends AbstractJob implements Job {
             //effect2.setFont(new Font("DejaVu Sans", Font.PLAIN, (int) subtextSize));
             effect2.setFont(Font.createFont(Font.PLAIN, fi2).deriveFont(Font.PLAIN, config.getSubtextSize()));
             effect2.start();
-
-            String[] names = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-            System.out.println("支持的字体：" + Arrays.toString(names));
         }catch (Throwable e) {
             e.printStackTrace();
             log(context, "执行任务出错", ConsoleLogger.Level.ERROR);

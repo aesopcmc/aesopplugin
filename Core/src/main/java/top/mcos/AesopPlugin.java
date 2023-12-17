@@ -4,12 +4,14 @@ import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
+import top.mcos.config.activitiy.NSKeys;
 import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.config.ConfigLoader;
+import top.mcos.listener.EntityDamageListener;
 import top.mcos.listener.PlayerListener;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsBuilder;
@@ -78,8 +80,10 @@ public final class AesopPlugin extends JavaPlugin {
         this.saveDefaultConfig();
         // 加载配置数据
         ConfigLoader.load();
+        NSKeys.init(this);
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
+        getServer().getPluginManager().registerEvents(new EntityDamageListener(), AesopPlugin.getInstance());
         //加载命令
         CommandLoader.getCommands();
         // 启动监听消息队列，有消息，则发送

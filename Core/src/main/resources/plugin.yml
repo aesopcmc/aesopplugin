@@ -29,3 +29,4 @@ permissions:
       aesopplugin.reload: true
       aesopplugin.msg: true
       aesopplugin.task: true
+      aesopplugin.activity: true

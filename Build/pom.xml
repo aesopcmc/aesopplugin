@@ -67,6 +67,15 @@
                 </configuration>-->
                 <!--effectlib 结束-->
 
+                <configuration>
+                    <!--custom-block-data-->
+                    <!--<relocations>
+                        <relocation>
+                            <pattern>com.jeff_media.customblockdata</pattern>
+                            <shadedPattern>YOUR.PACKAGE.NAME.customblockdata</shadedPattern>
+                        </relocation>
+                    </relocations>-->
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

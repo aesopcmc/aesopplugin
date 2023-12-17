@@ -7,7 +7,7 @@ import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 import top.mcos.message.payload.ActionbarMessagePayload;
 import top.mcos.message.payload.TitleMessagePayload;
-import top.mcos.util.MessageConvertUtil;
+import top.mcos.util.MessageUtil;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -56,7 +56,7 @@ public final class MessageHandler {
             if(onlinePlayers.size()<1) return;
 
             //组装消息
-            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
+            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();
@@ -96,7 +96,7 @@ public final class MessageHandler {
     public static void sendToPlayer(Player player, String message) {
         if(ConfigLoader.baseConfig.isNoticeActionbarEnabled()) {
             //组装消息
-            String[] messagePiles = MessageConvertUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
+            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();
