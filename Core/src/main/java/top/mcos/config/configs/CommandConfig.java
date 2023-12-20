@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 执行控制台指令任务配置
+ */
 @Setter
 @Getter
 @ToString

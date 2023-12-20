@@ -26,7 +26,6 @@ public class ConfigLoader {
         baseConfig = readConfig(BaseConfig.class, null);
         if(baseConfig ==null) {
             baseConfig = new BaseConfig();
-
         }
         //System.out.println("主配置："+ baseConfig);
         //List<NoticeConfig> msgs = baseConfig.getNoticeConfigs();

@@ -2,17 +2,15 @@ package top.mcos.listener;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.PolarBear;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MainHand;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import top.mcos.AesopPlugin;
 import top.mcos.config.activitiy.NSKeys;
+import top.mcos.util.RandomUtil;
 
 import java.util.Random;
 
@@ -30,10 +28,7 @@ public class EntityDamageListener implements Listener {
             if(isTwig!=null && isTwig) {
                 //AesopPlugin.logger.log("圣诞树枝攻击事件， damager:" + damager.getName() +", entity:" + entity.getName());
                 // 是圣诞树枝，添加药水效果（漂浮1-5秒）
-                Random rand = new Random();
-                int min = 20;
-                int max = 100;
-                int duration = rand.nextInt(max - min + 1) + min; // 单位tick
+                int duration = RandomUtil.get(20, 100); // 单位tick
                 entityPlayer.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration, 2, true, true));
             }
         }

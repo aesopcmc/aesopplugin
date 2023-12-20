@@ -62,6 +62,17 @@ config:
       keep: 80
       # 显出时长
       fadeout: 10
+  # 活动配置
+  activity:
+    # 记录活动按钮位置，
+    # 通过指令 /aep act give获得的按钮，然后放置之后记录的位置
+    # 注意：暂时需要手动移除
+    handle-block-locations: []
+    # 定义圣诞雪球总数量，收集满指定数量，即可领取圣诞礼物
+    snowball-count: 5
+    # 圣诞雪球按钮位置
+    handle-snowball-button-locations: []
+
 #定时任务
 tasks:
   # 重置世界定时任务【需要安装多世界插件】

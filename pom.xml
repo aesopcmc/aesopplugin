@@ -12,6 +12,7 @@
         <module>Core</module>
         <module>R1_19_R3</module>
         <module>Build</module>
+        <module>Database</module>
     </modules>
 
     <properties>
@@ -94,6 +95,14 @@
             <artifactId>EffectLib</artifactId>
             <version>9.4</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!--https://github.com/j256/ormlite-core-->
+        <!--文档https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html-->
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>6.1</version>
         </dependency>
        <!-- &lt;!&ndash;nbteditor&ndash;&gt;
         <dependency>

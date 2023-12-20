@@ -5,6 +5,7 @@ import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import top.mcos.config.activitiy.NSKeys;
+import top.mcos.database.config.SqliteDatabase;
 import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,7 @@ import java.util.ServiceLoader;
 public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
     private static boolean pluginActive;
+
     /**
      * 粒子特效管理器
      */
@@ -32,6 +34,11 @@ public final class AesopPlugin extends JavaPlugin {
     public static @Nullable NmsProvider nmsProvider;
 
     public static final @NotNull Logger logger = new Logger("&6[&b伊索插件&6]&f ");
+
+    /**
+     * 数据库实例
+     */
+    private SqliteDatabase database;
 
     public AesopPlugin() {
         instance = this;
@@ -80,7 +87,12 @@ public final class AesopPlugin extends JavaPlugin {
         this.saveDefaultConfig();
         // 加载配置数据
         ConfigLoader.load();
+
         NSKeys.init(this);
+
+        //System.out.println("插件目录："+getDataFolder());
+        database = new SqliteDatabase(getDataFolder().getPath());
+
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
         getServer().getPluginManager().registerEvents(new EntityDamageListener(), AesopPlugin.getInstance());
@@ -137,5 +149,9 @@ public final class AesopPlugin extends JavaPlugin {
 
     public static EffectManager getEffectManager() {
         return effectManager;
+    }
+
+    public SqliteDatabase getDatabase() {
+        return database;
     }
 }

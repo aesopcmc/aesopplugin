@@ -2,24 +2,17 @@ package top.mcos.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.entity.Horse;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  */
 public class MessageUtil {
-    public static void main(String[] args) {
-        //MsgPayload msgPayload = new MsgPayload(null, "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。");
-        String message = "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。";
-        String[] messagePiles = MessageUtil.convertMsg(message, 20);
-        for (String s : messagePiles) {
-            System.out.println(s);
-        }
-        //String msg = "人生呐  -";
-        //System.out.println(msg);
-        //System.out.println(msg.replaceAll("(^\\s+)", "$1$1").replaceAll("(\\s+$)", "$1$1"));
-    }
-
-    public static String[] convertMsg(String message, int displayWidth) {
+     public static String[] convertMsg(String message, int displayWidth) {
         String[] messagePiles;
 
         String padMessage = StringUtils.center(message, message.length()+displayWidth*2+1, " ");
@@ -68,5 +61,27 @@ public class MessageUtil {
     public static String symbol(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+    private static final Pattern HEX_PATTERN = Pattern.compile("&(#\\w{6})");
+    public static String colorize(String str) {
+        // todo
+        Matcher matcher = HEX_PATTERN.matcher(ChatColor.translateAlternateColorCodes('&', str));
+        StringBuffer buffer = new StringBuffer();
 
+        while (matcher.find())
+            matcher.appendReplacement(buffer, ChatColor.valueOf(matcher.group(1)).toString());
+        return matcher.appendTail(buffer).toString();
+    }
+
+    //public static void main(String[] args) {
+    //    //MsgPayload msgPayload = new MsgPayload(null, "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。");
+    //    String message = "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。";
+    //    String[] messagePiles = MessageUtil.convertMsg(message, 20);
+    //    for (String s : messagePiles) {
+    //        System.out.println(s);
+    //    }
+    //    //String msg = "人生呐  -";
+    //    //System.out.println(msg);
+    //    //System.out.println(msg.replaceAll("(^\\s+)", "$1$1").replaceAll("(\\s+$)", "$1$1"));
+    //}
+    //
 }

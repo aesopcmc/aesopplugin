@@ -43,6 +43,12 @@ public class BaseConfig {
     private int noticeTitleKeep;
     @PathValue("config.notice.title.fadeout")
     private int noticeTitleFadeout;
+    @PathValue("config.activity.handle-block-locations")
+    private List<String> actHandleBlockLocations = new ArrayList<>();
+    @PathValue("config.activity.snowball-count")
+    private int actSnowballCount;
+    @PathValue("config.activity.handle-snowball-button-locations")
+    private List<String> actHandleSnowballButtonLocations = new ArrayList<>();
 
     private List<RegenWorldConfig> regenWorldConfigs = new ArrayList<>();
 
