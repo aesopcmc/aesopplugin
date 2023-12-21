@@ -1,5 +1,7 @@
 package top.mcos.listener;
 
+import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -156,17 +158,22 @@ public class PlayerListener implements Listener {
                 if(it!=null)it.setPercent(20);// 设置中将概率
             }
 
-            // 添加物品到玩家背包
-            player.getInventory().addItem(itemStacks.toArray(new ItemStack[]{}));
+            // 包含进事务块
+            AesopPlugin.callInTransaction(()->{
+                // 保存领取记录
+                GiftClaimRecord giftlog = giftClaimRecordDao.saveGift(player.getUniqueId().toString(),
+                        player.getName(), player.getAddress().getHostName());
+                giftItems.forEach(item -> {
+                    item.setRecordId(giftlog.getId());
+                });
+                // 保存领取的物品条目
+                giftItemDao.create(giftItems);
 
-            // 保存领取记录
-            GiftClaimRecord giftlog = giftClaimRecordDao.saveGift(player.getUniqueId().toString(),
-                    player.getName(), player.getAddress().getHostName());
-            giftItems.forEach(item -> {
-                item.setRecordId(giftlog.getId());
+                // 添加物品到玩家背包
+                player.getInventory().addItem(itemStacks.toArray(new ItemStack[]{}));
+
+                return null;
             });
-            // 保存领取的物品条目
-            giftItemDao.create(giftItems);
 
             AesopPlugin.logger.log(player, "&a恭喜您^_^，成功领取一份圣诞节礼物，请检查你的背包！");
             AesopPlugin.logger.log(player, "&d❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄ ₍⁽ˊᵕˋ⁾₎ ❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄");

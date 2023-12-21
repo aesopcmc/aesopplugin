@@ -1,7 +1,9 @@
 package top.mcos.database.dao.impl;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.domain.GiftClaimRecord;
@@ -9,6 +11,7 @@ import top.mcos.database.enums.GiftTypeEnum;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public class GiftClaimRecordDaoImpl extends BaseDaoImpl<GiftClaimRecord, Long> implements GiftClaimRecordDao {
     public GiftClaimRecordDaoImpl(ConnectionSource connectionSource, Class<GiftClaimRecord> dataClass) throws SQLException {
@@ -61,6 +64,26 @@ public class GiftClaimRecordDaoImpl extends BaseDaoImpl<GiftClaimRecord, Long> i
         record.setIpaddress(playerIpaddr);
         create(record);
         return record;
+    }
+
+    @Override
+    public List<GiftClaimRecord> list(GiftTypeEnum giftTypeEnum, String playerName, String orderByColumn, Boolean ascending) throws SQLException {
+        //QueryBuilder<GiftClaimRecord, Long> builder = queryBuilder();
+        //if(StringUtils.isNotBlank(orderByColumn)) {
+        //    builder.orderBy(orderByColumn, ascending == null || ascending);
+        //}
+        Where<GiftClaimRecord, Long> where = queryBuilder().where();
+        where.raw("1=1");
+        if (giftTypeEnum!=null) {
+            where.and().eq("giftType", giftTypeEnum.getIndex());
+        }
+        if(playerName!=null) {
+            where.and().eq("playerName", playerName);
+        }
+        if(StringUtils.isNotBlank(orderByColumn)) {
+            where.queryBuilder().orderBy(orderByColumn, ascending == null || ascending);
+        }
+        return where.query();
     }
 
 }

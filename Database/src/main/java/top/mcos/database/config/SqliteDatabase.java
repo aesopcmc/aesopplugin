@@ -38,6 +38,8 @@ public class SqliteDatabase {
         // https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html#Column-Arguments
         // 连接查询
         // https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html#Join-Queries
+        // 条件更新
+        // https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html#Building-Statements
 
         try {
             // 获得JDBC连接

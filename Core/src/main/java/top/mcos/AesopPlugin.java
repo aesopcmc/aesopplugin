@@ -2,6 +2,8 @@ package top.mcos;
 
 import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.support.ConnectionSource;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import top.mcos.config.activitiy.NSKeys;
@@ -19,8 +21,10 @@ import top.mcos.nms.spi.NmsBuilder;
 import top.mcos.nms.spi.NmsProvider;
 import top.mcos.scheduler.SchedulerHandler;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.ServiceLoader;
+import java.util.concurrent.Callable;
 
 public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
@@ -119,6 +123,10 @@ public final class AesopPlugin extends JavaPlugin {
         logger.log("&c插件已卸载");
     }
 
+    public SqliteDatabase getDatabase() {
+        return database;
+    }
+
     /**
      * 启用线程去执行一个程序。如果插件已加载，则可立即运行。
      * 参数：
@@ -138,7 +146,6 @@ public final class AesopPlugin extends JavaPlugin {
         }
     }
 
-
     public static AesopPlugin getInstance() {
         return instance;
     }
@@ -151,7 +158,13 @@ public final class AesopPlugin extends JavaPlugin {
         return effectManager;
     }
 
-    public SqliteDatabase getDatabase() {
-        return database;
+    /**
+     * 使用数据库事务处理业务逻辑
+     * @param callable 业务逻辑回调
+     * @throws SQLException sql异常
+     */
+    public static void callInTransaction(Callable<?> callable) throws SQLException {
+        ConnectionSource connectionSource = getInstance().getDatabase().getConnectionSource();
+        TransactionManager.callInTransaction(connectionSource, callable);
     }
 }

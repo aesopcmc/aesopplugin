@@ -79,7 +79,7 @@ tasks:
   regen-world:
     # 世界名称，指定具体的世界名称，可添加多个世界配置
     zy:
-      enable: true
+      enable: false
       cron: '0 0 5 * * ?'
       new-seed: true # 是否创建新的种子。若为false，将忽略random-seed 和 seed 参数
       random-seed: true # 随机种子，new-seed为true时生效
@@ -117,7 +117,7 @@ tasks:
       message: ''
       sub-message: ''
     msg1:
-      enable: true
+      enable: false
       cron: '0/30 * * * * ?' # 每30秒执行一次
       start: ''
       end: ''
@@ -126,7 +126,7 @@ tasks:
       #子标题消息，仅在position类型为title时生效
       sub-message: '&a子标题我是说似乎'
     msg2:
-      enable: true
+      enable: false
       cron: '0/20 * * * * ?'
       start: ''
       end: ''
@@ -146,7 +146,7 @@ tasks:
   # 粒子特效
   firework:
     f1:
-      enable: true
+      enable: false
       cron: '0/10 * * * * ?'
       start: ''
       end: ''
@@ -159,7 +159,7 @@ tasks:
       subtext-size: 18
       subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
     f2:
-      enable: true
+      enable: false
       cron: '0/10 * * * * ?'
       start: ''
       end: ''

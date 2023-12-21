@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import top.mcos.database.dao.impl.GiftClaimRecordDaoImpl;
+import top.mcos.database.enums.GiftTypeEnum;
 
 /**
  * 礼物领取记录
@@ -35,6 +36,7 @@ public class GiftClaimRecord {
 
     /**
      * 礼物类型
+     * 枚举值：{@link GiftTypeEnum}
      * 1圣诞节礼物 2春节礼物
      * 11雪球 22xxx 33xx
      */
