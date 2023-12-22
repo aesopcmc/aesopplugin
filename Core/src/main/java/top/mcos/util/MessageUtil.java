@@ -12,7 +12,9 @@ import java.util.regex.Pattern;
  *
  */
 public class MessageUtil {
-     public static String[] convertMsg(String message, int displayWidth) {
+    private static final Pattern HEX_PATTERN = Pattern.compile("&(#\\w{6})");
+
+    public static String[] convertMsg(String message, int displayWidth) {
         String[] messagePiles;
 
         String padMessage = StringUtils.center(message, message.length()+displayWidth*2+1, " ");
@@ -58,18 +60,28 @@ public class MessageUtil {
         return messagePiles;
     }
 
+    /**
+     * 支持&x颜色
+     * @param message
+     * @return
+     */
     public static String symbol(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-    private static final Pattern HEX_PATTERN = Pattern.compile("&(#\\w{6})");
-    public static String colorize(String str) {
-        // todo
-        Matcher matcher = HEX_PATTERN.matcher(ChatColor.translateAlternateColorCodes('&', str));
-        StringBuffer buffer = new StringBuffer();
 
+    /**
+     * 支持&x 颜色，支持16禁止颜色
+     * 颜色使用示例：
+     * String colorize = MessageUtil.colorize("测试颜色：#fbd267圣#8fe964诞#23ff61节&a固定颜色&a&l加粗，#ff0000十六进制");
+     * @param message
+     * @return
+     */
+    public static String colorize(String message) {
+        Matcher matcher = HEX_PATTERN.matcher(message);
+        StringBuffer buffer = new StringBuffer();
         while (matcher.find())
-            matcher.appendReplacement(buffer, ChatColor.valueOf(matcher.group(1)).toString());
-        return matcher.appendTail(buffer).toString();
+            matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group(1)).toString());
+        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 
     //public static void main(String[] args) {

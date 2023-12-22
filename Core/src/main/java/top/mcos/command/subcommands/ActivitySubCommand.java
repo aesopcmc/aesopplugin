@@ -20,8 +20,10 @@ import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.enums.GiftTypeEnum;
+import top.mcos.util.MessageUtil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -123,7 +125,9 @@ public final class ActivitySubCommand extends Command implements Helpable {
                     int i1 = giftClaimRecordDao.deleteIds(recordIds);
                     int i2 = giftItemDao.deleteIds(itemIds);
                     if(i1>0 || i2>0) {
-                        AesopPlugin.logger.log(player, "&a已删除玩家" + playerName + "数据");
+                        AesopPlugin.logger.log(player, "&a已删除玩家" + playerName + "数据.");
+                    } else {
+                        AesopPlugin.logger.log(player, "&a玩家" + playerName + "数据不存在,无需清理");
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

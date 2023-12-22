@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -60,6 +61,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+
+        // 禁止物品的使用
+        //event.setUseItemInHand(Event.Result.DENY);
+        //event.setUseInteractedBlock(Event.Result.DENY);
 
         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
             // 以玩家唯一id做同步处理

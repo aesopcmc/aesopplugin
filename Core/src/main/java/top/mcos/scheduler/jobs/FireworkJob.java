@@ -90,8 +90,9 @@ public class FireworkJob extends AbstractJob implements Job {
             effect2.text = config.getSubtext();
             effect2.color = Color.RED;
             // 时间间隔，数值越小，显示越快
-            effect2.period = 10;
-            //effect2.setFont(new Font("DejaVu Sans", Font.PLAIN, (int) subtextSize));
+            effect2.period = 5;// 闪烁周期
+            //effect2.iterations = -1; // -1永久显示 0根据持续时间duration显示
+            //effect2.duration = 2000;// 持续时间
             effect2.setFont(Font.createFont(Font.PLAIN, fi2).deriveFont(Font.PLAIN, config.getSubtextSize()));
             effect2.start();
         }catch (Throwable e) {

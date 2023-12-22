@@ -1,6 +1,5 @@
 package top.mcos.activity;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -203,16 +202,16 @@ public class Gift {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if(itemMeta!=null) {
             // 设置显示的名称
-            itemMeta.setDisplayName(MessageUtil.symbol("&b★ &#FFD700&l金色传说 &b★ &8| &#DF1019宝箱钥匙"));
+            itemMeta.setDisplayName(MessageUtil.colorize("&b★ &#FFD700&l金色传说 &b★ &8| &#DF1019宝箱钥匙"));
             // 设置自定义持久数据
             itemMeta.getPersistentDataContainer().set(nkey, PersistentDataType.BOOLEAN, Boolean.TRUE);
             itemMeta.getPersistentDataContainer().set(crateskey, PersistentDataType.STRING, "my_gold");
             // 设置lore
             List<String> lines = new ArrayList<>();
-            lines.add(MessageUtil.symbol("&8[●] &7可用于&#FFD700&l黄金宝箱&7抽奖"));
-            lines.add(MessageUtil.symbol("&8[●] &7&o一次性使用"));
+            lines.add(MessageUtil.colorize("&8[●] &7可用于&#FFD700&l黄金宝箱&7抽奖"));
+            lines.add(MessageUtil.colorize("&8[●] &7&o一次性使用"));
             lines.add(" ");
-            lines.add(MessageUtil.symbol("&b❄== &5圣诞节礼物&a &b==❄"));
+            lines.add(MessageUtil.colorize("&b❄== &5圣诞节礼物&a &b==❄"));
             itemMeta.setLore(lines);
 
             itemStack.setItemMeta(itemMeta);
@@ -251,16 +250,16 @@ public class Gift {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if(itemMeta!=null) {
             // 设置显示的名称
-            itemMeta.setDisplayName(MessageUtil.symbol("&b★ #0000CD&l珠影古匙 &b★ &8| #DF1019宝箱钥匙"));
+            itemMeta.setDisplayName(MessageUtil.colorize("&b★ &#0000CD&l珠影古匙 &b★ &8| &#DF1019宝箱钥匙"));
             // 设置自定义持久数据
             itemMeta.getPersistentDataContainer().set(nkey, PersistentDataType.BOOLEAN, Boolean.TRUE);
             itemMeta.getPersistentDataContainer().set(crateskey, PersistentDataType.STRING, "my_dep_blue");
             // 设置lore
             List<String> lines = new ArrayList<>();
-            lines.add(MessageUtil.symbol("&8[●] &7可用于#0000CD&l黑珍珠盒&7抽奖"));
-            lines.add(MessageUtil.symbol("&8[●] &7&o一次性使用"));
+            lines.add(MessageUtil.colorize("&8[●] &7可用于&#0000CD&l黑珍珠盒&7抽奖"));
+            lines.add(MessageUtil.colorize("&8[●] &7&o一次性使用"));
             lines.add(" ");
-            lines.add(MessageUtil.symbol("&b❄== &5圣诞节礼物&a &b==❄"));
+            lines.add(MessageUtil.colorize("&b❄== &5圣诞节礼物&a &b==❄"));
             itemMeta.setLore(lines);
 
             itemStack.setItemMeta(itemMeta);
@@ -298,16 +297,16 @@ public class Gift {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if(itemMeta!=null) {
             // 设置显示的名称
-            itemMeta.setDisplayName(MessageUtil.symbol("&b★ &4鬼火古匙 &b★ &8| #DF1019宝箱钥匙"));
+            itemMeta.setDisplayName(MessageUtil.colorize("&b★ &4&l鬼火古匙 &b★ &8| &#DF1019宝箱钥匙"));
             // 设置自定义持久数据
             itemMeta.getPersistentDataContainer().set(nkey, PersistentDataType.BOOLEAN, Boolean.TRUE);
             itemMeta.getPersistentDataContainer().set(crateskey, PersistentDataType.STRING, "my_dep_red");
             // 设置lore
             List<String> lines = new ArrayList<>();
-            lines.add(MessageUtil.symbol("&8[●] &7可用于&4&l幽魂骨盒&7抽奖"));
-            lines.add(MessageUtil.symbol("&8[●] &7&o一次性使用"));
+            lines.add(MessageUtil.colorize("&8[●] &7可用于&4&l幽魂骨盒&7抽奖"));
+            lines.add(MessageUtil.colorize("&8[●] &7&o一次性使用"));
             lines.add(" ");
-            lines.add(MessageUtil.symbol("&b❄== &5圣诞节礼物&a &b==❄"));
+            lines.add(MessageUtil.colorize("&b❄== &5圣诞节礼物&a &b==❄"));
             itemMeta.setLore(lines);
 
             itemStack.setItemMeta(itemMeta);
