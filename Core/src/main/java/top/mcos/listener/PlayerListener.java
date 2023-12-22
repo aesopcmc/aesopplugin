@@ -1,13 +1,9 @@
 package top.mcos.listener;
 
-import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import top.mcos.AesopPlugin;
 import top.mcos.activity.Gift;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.activitiy.NSKeys;
+import top.mcos.activity.NSKeys;
 import top.mcos.config.configs.BaseConfig;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;

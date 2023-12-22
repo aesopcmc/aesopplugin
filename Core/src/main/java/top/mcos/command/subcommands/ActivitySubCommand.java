@@ -14,16 +14,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
-import top.mcos.config.activitiy.NSKeys;
+import top.mcos.activity.NSKeys;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.enums.GiftTypeEnum;
-import top.mcos.util.MessageUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -9,10 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import top.mcos.config.activitiy.NSKeys;
+import top.mcos.activity.NSKeys;
 import top.mcos.util.RandomUtil;
-
-import java.util.Random;
 
 public class EntityDamageListener implements Listener {
 

@@ -20,28 +20,19 @@ public class FireworkConfig {
     private String key;
     @PathValue("tasks.firework.{key}.enable")
     private boolean enable=false;
-    @PathValue("tasks.firework.{key}.cron")
-    private String cron;
-    @PathValue("tasks.firework.{key}.start")
-    private Date start;
-    @PathValue("tasks.firework.{key}.end")
-    private Date end;
+    @PathValue("tasks.firework.{key}.text")
+    private String text;
+    @PathValue("tasks.firework.{key}.text-size")
+    private float textSize;
     /**
      * 枚举值：{@link org.bukkit.Particle}
      */
     @PathValue("tasks.firework.{key}.particle")
     private String particle;
-    @PathValue("tasks.firework.{key}.text")
-    private String text;
-    @PathValue("tasks.firework.{key}.text-size")
-    private float textSize;
+    @PathValue("tasks.firework.{key}.period")
+    private int period;
+    @PathValue("tasks.firework.{key}.duration")
+    private int duration;
     @PathValue("tasks.firework.{key}.text-location")
     private String textLocation;
-    @PathValue("tasks.firework.{key}.subtext")
-    private String subtext;
-    @PathValue("tasks.firework.{key}.subtext-size")
-    private float subtextSize;
-    @PathValue("tasks.firework.{key}.subtext-location")
-    private String subtextLocation;
-
 }

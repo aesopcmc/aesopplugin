@@ -13,7 +13,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import top.mcos.AesopPlugin;
-import top.mcos.config.activitiy.NSKeys;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.enums.GiftTypeEnum;
 import top.mcos.util.MessageUtil;

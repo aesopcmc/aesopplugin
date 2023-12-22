@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import top.mcos.AesopPlugin;
 import top.mcos.hook.HookProviderLoader;
 
-public class MultiverseProvider extends Provider<MultiverseCore> implements HookProviderLoader {
+public final class MultiverseProvider extends Provider<MultiverseCore> implements HookProviderLoader {
     private MultiverseCore multiverseCore;
 
     @Override

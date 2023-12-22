@@ -146,29 +146,39 @@ tasks:
   # 粒子特效
   firework:
     f1:
-      enable: false
-      cron: '0/10 * * * * ?'
-      start: ''
-      end: ''
-      # 效果较好的粒子 SOUL_FIRE_FLAME FLAME
-      particle: 'FLAME' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
-      text: '圣诞节快乐！'
-      text-size: 25
-      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
-      subtext: 'Merry Christmas'
-      subtext-size: 18
-      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
-    f2:
-      enable: false
-      cron: '0/10 * * * * ?'
-      start: ''
-      end: ''
-      particle: 'SNOWBALL' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
-      text: '圣诞节快乐！'
-      text-size: 25
-      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
-      subtext: 'Merry Christmas'
-      subtext-size: 18
-      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+      enable: false # true启用 false禁用
+      text: '圣诞节快乐！' # 文本内容
+      text-size: '25' # 文字大小
+      # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
+      # 效果较好的粒子 SOUL_FIRE_FLAME FLAME SNOWBALL ELECTRIC_SPARK GLOW SNOWFLAKE
+      particle: 'SOUL_FIRE_FLAME'
+      period: 5 # 闪烁周期 设置为小于1，重启后可能不生效
+      duration: 0 # 持续时间,单位毫秒。若设为0将永久显示
+      text-location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+#    f1:
+#      enable: false
+#      cron: '0/10 * * * * ?'
+#      start: ''
+#      end: ''
+#      # 效果较好的粒子 SOUL_FIRE_FLAME FLAME
+#      particle: 'FLAME' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
+#      text: '圣诞节快乐！'
+#      text-size: 25
+#      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+#      subtext: 'Merry Christmas'
+#      subtext-size: 18
+#      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+#    f2:
+#      enable: false
+#      cron: '0/10 * * * * ?'
+#      start: ''
+#      end: ''
+#      particle: 'SNOWBALL' # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
+#      text: '圣诞节快乐！'
+#      text-size: 25
+#      text-location: 'world,17,78,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+#      subtext: 'Merry Christmas'
+#      subtext-size: 18
+#      subtext-location: 'world,19,74,30,0,0' #坐标。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
 
 

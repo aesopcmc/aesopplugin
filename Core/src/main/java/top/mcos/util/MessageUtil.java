@@ -84,6 +84,17 @@ public class MessageUtil {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 
+    /**
+     * 检查是否有中文汉字
+     * @param message 字符串
+     * @return true:有 false:否
+     */
+    public static boolean hasChineseChar(String message) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(message);
+        return m.find();
+    }
+
     //public static void main(String[] args) {
     //    //MsgPayload msgPayload = new MsgPayload(null, "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。");
     //    String message = "&a钟鼓馔玉不足贵，&b&l但愿长醉不愿醒。陈王昔时宴平乐，&c斗酒十千恣欢谑。";

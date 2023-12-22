@@ -1,4 +1,4 @@
-package top.mcos.config.activitiy;
+package top.mcos.activity;
 
 import org.bukkit.NamespacedKey;
 import top.mcos.AesopPlugin;

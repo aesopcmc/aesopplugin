@@ -4,9 +4,8 @@ import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
-import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
-import top.mcos.config.activitiy.NSKeys;
+import top.mcos.activity.NSKeys;
 import top.mcos.database.config.SqliteDatabase;
 import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
@@ -14,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.config.ConfigLoader;
+import top.mcos.hook.firework.FireWorkManage;
 import top.mcos.listener.EntityDamageListener;
 import top.mcos.listener.PlayerListener;
 import top.mcos.message.MessageHandler;
@@ -30,10 +30,11 @@ public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
     private static boolean pluginActive;
 
-    /**
-     * 粒子特效管理器
-     */
-    private static EffectManager effectManager;
+    ///**
+    // * 粒子特效管理器
+    // */
+    private FireWorkManage fireWorkManage;
+
     public static @Nullable HashSet<Runnable> onInstance;
     public static @Nullable NmsProvider nmsProvider;
 
@@ -61,9 +62,6 @@ public final class AesopPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         pluginActive = true;
-        // 加载粒子特效支持库
-        effectManager = new EffectManager(AesopPlugin.getInstance());
-
         // 简易命令注册示例
         //PluginCommand msg = this.getCommand("msg");
         //msg.setExecutor(new CommandMsg());
@@ -111,6 +109,9 @@ public final class AesopPlugin extends JavaPlugin {
         // 注册任务
         SchedulerHandler.registerJobs();
 
+        // 注册粒子特效
+        fireWorkManage = new FireWorkManage(getInstance(), ConfigLoader.baseConfig.getFireworkConfigs());
+
         logger.log("&a成功加载插件");
     }
 
@@ -120,11 +121,16 @@ public final class AesopPlugin extends JavaPlugin {
         SchedulerHandler.shutdown();
         MessageHandler.clearQueue();
         MessageHandler.setSendBreak(true);
+        getFireWorkManage().clear();
         logger.log("&c插件已卸载");
     }
 
     public SqliteDatabase getDatabase() {
         return database;
+    }
+
+    public FireWorkManage getFireWorkManage() {
+        return fireWorkManage;
     }
 
     /**
@@ -152,10 +158,6 @@ public final class AesopPlugin extends JavaPlugin {
 
     public static boolean isPluginActive() {
         return pluginActive;
-    }
-
-    public static EffectManager getEffectManager() {
-        return effectManager;
     }
 
     /**

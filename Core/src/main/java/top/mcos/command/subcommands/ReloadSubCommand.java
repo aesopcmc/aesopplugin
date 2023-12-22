@@ -56,12 +56,12 @@ public final class ReloadSubCommand extends Command implements Helpable {
             ConfigLoader.load();
             // 重新注册消息通知任务
             SchedulerHandler.registerJobs();
+            // 重新注册粒子特效
+            AesopPlugin.getInstance().getFireWorkManage().reload(ConfigLoader.baseConfig.getFireworkConfigs());
 
-            AesopPlugin.logger.log("&a插件刷新成功");
             AesopPlugin.logger.log(sender, "&a插件刷新成功");
         } catch (Throwable e) {
             e.printStackTrace();
-            AesopPlugin.logger.log("&c插件重载失败");
             AesopPlugin.logger.log(sender, "&c插件重载失败");
         }
     }
