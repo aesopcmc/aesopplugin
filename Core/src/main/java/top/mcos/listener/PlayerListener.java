@@ -1,7 +1,9 @@
 package top.mcos.listener;
 
+import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -109,6 +111,7 @@ public class PlayerListener implements Listener {
         try {
             GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
             GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
+            BaseConfig baseConfig = ConfigLoader.baseConfig;
 
             int snowballCount = ConfigLoader.baseConfig.getActSnowballCount();
             // 校验前置条件：收集气N个圣诞雪球
@@ -176,6 +179,14 @@ public class PlayerListener implements Listener {
                 return null;
             });
 
+            try {
+                player.playSound(player, Sound.valueOf(baseConfig.getClaimedSound()), 50, 1);
+            } catch (Throwable e) {
+                AesopPlugin.logger.log( "&c声音 "+baseConfig.getClaimedSound() + "播放失败", ConsoleLogger.Level.ERROR);
+            }
+
+            // 发送领取信息
+            StringBuilder specialGiftStr = new StringBuilder();
             AesopPlugin.logger.log(player, "&a恭喜您^_^，成功领取一份圣诞节礼物，请检查你的背包！");
             AesopPlugin.logger.log(player, "&d❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄ ₍⁽ˊᵕˋ⁾₎ ❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄");
             for (GiftItem giftItem : giftItems) {
@@ -183,8 +194,17 @@ public class PlayerListener implements Listener {
                 AesopPlugin.logger.log(player, "&d❄==> " + (isPercent ? "&6" : "&e")
                         + giftItem.getGiftName() + " x " + giftItem.getAmount() + " "
                         + (isPercent?" -（获得概率"+giftItem.getPercent() + "%）": ""));
+                if(isPercent) {
+                    specialGiftStr.append(giftItem.getGiftName()).append("、");
+                }
             }
             AesopPlugin.logger.log(player, "&d❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄ ₍⁽ˊᵕˋ⁾₎ ❄☆·͙̥‧‧̩̥·‧•̥̩̥͙‧·‧̩̥☆❄");
+
+            // 广播特殊礼物
+            if(specialGiftStr.length()>0) {
+                String str = specialGiftStr.substring(0, specialGiftStr.length() - 1);
+                Bukkit.broadcastMessage(MessageUtil.colorize("&d玩家 " +player.getName()+" 在圣诞节活动中收到了一份特殊礼物："+str));
+            }
 
             if(ConfigLoader.baseConfig.isDebug()) {
                 String hostString = player.getAddress().getHostName();
@@ -219,6 +239,11 @@ public class PlayerListener implements Listener {
                 itemStack.setItemMeta(itemMeta);
             }
             player.getInventory().addItem(itemStack);
+            try {
+                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
+            } catch (Throwable e) {
+                AesopPlugin.logger.log( "&c声音 BLOCK_NOTE_BLOCK_BELL 播放失败", ConsoleLogger.Level.ERROR);
+            }
             //记录收集记录
             giftClaimRecordDao.saveSnowball(playerId, player.getName(), player.getAddress().getHostName(), clickedLocation);
 

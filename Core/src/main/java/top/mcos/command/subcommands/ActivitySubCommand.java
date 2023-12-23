@@ -89,17 +89,18 @@ public final class ActivitySubCommand extends Command implements Helpable {
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
-        if(sender instanceof Player) {
-            Player player = (Player) sender;
-            if("give".equals(args[1])) {
-                if("giftBtn".equals(args[2])) {
+        if("give".equals(args[1])) {
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
+                String btnType = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+                if ("giftBtn".equals(btnType)) {
                     ItemStack itemStack = new ItemStack(Material.CRIMSON_BUTTON, 1);
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.getPersistentDataContainer().set(NSKeys.ACTIVITY_GIFT_BUTTON, PersistentDataType.BOOLEAN, true);
                     itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&9【圣诞节&d活&c动&9】 &7| &e-》&a抽取礼物&e《-"));
                     itemStack.setItemMeta(itemMeta);
                     player.getInventory().addItem(itemStack);
-                } else if("snowballBtn".equals(args[2])) {
+                } else if ("snowballBtn".equals(btnType)) {
                     ItemStack itemStack = new ItemStack(Material.STONE_BUTTON, 1);
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.getPersistentDataContainer().set(NSKeys.ACTIVITY_SNOWBALL_BUTTON, PersistentDataType.BOOLEAN, true);
@@ -107,73 +108,78 @@ public final class ActivitySubCommand extends Command implements Helpable {
                     itemStack.setItemMeta(itemMeta);
                     player.getInventory().addItem(itemStack);
                 }
-            } else if("clear".equals(args[1])) {
-                try {
-                    // 清理玩家数据
-                    String playerName = args[2];
-                    GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
-                    GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
-
-                    List<GiftClaimRecord> recordList = giftClaimRecordDao.queryBuilder().selectColumns("id").where().eq("playerName", playerName).query();
-                    List<Long> recordIds = recordList.stream().map(GiftClaimRecord::getId).toList();
-
-                    List<GiftItem> items = giftItemDao.queryBuilder().selectColumns("id").where().in("recordId", recordIds).query();
-                    List<Long> itemIds = items.stream().map(GiftItem::getId).toList();
-
-                    int i1 = giftClaimRecordDao.deleteIds(recordIds);
-                    int i2 = giftItemDao.deleteIds(itemIds);
-                    if(i1>0 || i2>0) {
-                        AesopPlugin.logger.log(player, "&a已删除玩家" + playerName + "数据.");
-                    } else {
-                        AesopPlugin.logger.log(player, "&a玩家" + playerName + "数据不存在,无需清理");
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if("list".equals(args[1])) {
-                try {
-                    String playerName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
-                    GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
-
-                    List<GiftClaimRecord> list = giftClaimRecordDao.list(GiftTypeEnum.CHRISTMAS_GIFT, playerName, "createTime", false);
-                    AesopPlugin.logger.log(player, "&b =>玩家 "+playerName+" 圣诞礼物领取记录：");
-                    AesopPlugin.logger.log(player, "&2 玩家  |  领取时间  |  玩家ip");
-                    for (GiftClaimRecord record : list) {
-                        AesopPlugin.logger.log(player, "&2 "+record.getPlayerName()+"  |  "+record.getCreateTime()+"  |  "+record.getIpaddress());
-                    }
-                    AesopPlugin.logger.log(player, "&b ------------------------------");
-                    // TODO 分页交互事件
-
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } else if("listitem".equals(args[1])){
-                try {
-                    String playerName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
-                    if(playerName==null) {
-                        AesopPlugin.logger.log(player, "&c只能查询指定玩家");
-                        return;
-                    }
-                    GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
-                    GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
-
-                    List<GiftClaimRecord> list = giftClaimRecordDao.list(GiftTypeEnum.CHRISTMAS_GIFT, playerName, null, true);
-                    AesopPlugin.logger.log(player, "&b =>玩家 "+playerName+" 的圣诞礼物领取详情：");
-                    for (GiftClaimRecord record : list) {
-                        AesopPlugin.logger.log(player, "&2 礼物名称  |  领取数量  |  获得概率% ");
-                        List<GiftItem> items = giftItemDao.list(GiftTypeEnum.CHRISTMAS_GIFT, record.getId(), "id", true);
-                        for (GiftItem item : items) {
-                            AesopPlugin.logger.log(player, "&2 "+item.getGiftName() + "  |  "+item.getAmount() +"  |  "+item.getPercent());
-                        }
-                        AesopPlugin.logger.log(player, "&b ------------------------------");
-                    }
-                    AesopPlugin.logger.log(player, "&b ------------------------------");
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                AesopPlugin.logger.log(player, "&c参数有误");
             }
+        } else if("clear".equals(args[1])) {
+            try {
+                // 清理玩家数据
+                String playerName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+                if(playerName==null) {
+                    AesopPlugin.logger.log(sender, "&c请指定一个玩家名称");
+                    return;
+                }
+
+                GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
+                GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
+
+                List<GiftClaimRecord> recordList = giftClaimRecordDao.queryBuilder().selectColumns("id").where().eq("playerName", playerName).query();
+                List<Long> recordIds = recordList.stream().map(GiftClaimRecord::getId).toList();
+
+                List<GiftItem> items = giftItemDao.queryBuilder().selectColumns("id").where().in("recordId", recordIds).query();
+                List<Long> itemIds = items.stream().map(GiftItem::getId).toList();
+
+                int i1 = giftClaimRecordDao.deleteIds(recordIds);
+                int i2 = giftItemDao.deleteIds(itemIds);
+                if(i1>0 || i2>0) {
+                    AesopPlugin.logger.log(sender, "&a已删除玩家" + playerName + "数据.");
+                } else {
+                    AesopPlugin.logger.log(sender, "&a玩家" + playerName + "数据不存在,无需清理");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if("list".equals(args[1])) {
+            try {
+                String playerName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+                GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
+
+                List<GiftClaimRecord> list = giftClaimRecordDao.list(GiftTypeEnum.CHRISTMAS_GIFT, playerName, "createTime", false);
+                AesopPlugin.logger.log(sender, "&b =>玩家 "+playerName+" 圣诞礼物领取记录：");
+                AesopPlugin.logger.log(sender, "&2 玩家  |  领取时间  |  玩家ip");
+                for (GiftClaimRecord record : list) {
+                    AesopPlugin.logger.log(sender, "&2 "+record.getPlayerName()+"  |  "+record.getCreateTime()+"  |  "+record.getIpaddress());
+                }
+                AesopPlugin.logger.log(sender, "&b ------------------------------");
+                // TODO 分页交互事件
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else if("listitem".equals(args[1])){
+            try {
+                String playerName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+                if(playerName==null) {
+                    AesopPlugin.logger.log(sender, "&c只能查询指定玩家");
+                    return;
+                }
+                GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
+                GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
+
+                List<GiftClaimRecord> list = giftClaimRecordDao.list(GiftTypeEnum.CHRISTMAS_GIFT, playerName, null, true);
+                AesopPlugin.logger.log(sender, "&b =>玩家 "+playerName+" 的圣诞礼物领取详情：");
+                for (GiftClaimRecord record : list) {
+                    AesopPlugin.logger.log(sender, "&2 礼物名称  |  领取数量  |  获得概率% ");
+                    List<GiftItem> items = giftItemDao.list(GiftTypeEnum.CHRISTMAS_GIFT, record.getId(), "id", true);
+                    for (GiftItem item : items) {
+                        AesopPlugin.logger.log(sender, "&2 "+item.getGiftName() + "  |  "+item.getAmount() +"  |  "+item.getPercent());
+                    }
+                    AesopPlugin.logger.log(sender, "&b ------------------------------");
+                }
+                AesopPlugin.logger.log(sender, "&b ------------------------------");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            AesopPlugin.logger.log(sender, "&c参数有误");
         }
     }
 }

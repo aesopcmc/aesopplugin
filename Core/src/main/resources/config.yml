@@ -64,6 +64,8 @@ config:
       fadeout: 10
   # 活动配置
   activity:
+    # 领取礼物后的声音：ENTITY_FIREWORK_ROCKET_TWINKLE ENTITY_FIREWORK_ROCKET_LAUNCH BLOCK_NOTE_BLOCK_BELL BLOCK_NOTE_BLOCK_CHIME ENTITY_EXPERIENCE_ORB_PICKUP
+    claimed-sound: 'ENTITY_FIREWORK_ROCKET_TWINKLE'
     # 记录活动按钮位置，
     # 通过指令 /aep act give获得的按钮，然后放置之后记录的位置
     # 注意：暂时需要手动移除

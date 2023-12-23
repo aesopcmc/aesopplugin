@@ -43,6 +43,8 @@ public class BaseConfig {
     private int noticeTitleKeep;
     @PathValue("config.notice.title.fadeout")
     private int noticeTitleFadeout;
+    @PathValue("config.activity.claimed-sound")
+    private String claimedSound;
     @PathValue("config.activity.handle-block-locations")
     private List<String> actHandleBlockLocations = new ArrayList<>();
     @PathValue("config.activity.snowball-count")
