@@ -63,10 +63,10 @@ public class PlayerListener implements Listener {
         // 禁止物品的使用
         //event.setUseItemInHand(Event.Result.DENY);
         //event.setUseInteractedBlock(Event.Result.DENY);
-
         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
             // 以玩家唯一id做同步处理
-            synchronized (player.getUniqueId().toString()) {
+            String playerId = player.getUniqueId().toString();
+            synchronized (AesopPlugin.sync.intern(playerId)) {
                 // 监听玩家右键方块
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Block clicked = event.getClickedBlock();
@@ -218,42 +218,46 @@ public class PlayerListener implements Listener {
 
     private void handleSnowballBtnEvent(Player player, String clickedLocation) {
         try {
-            GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
-            String playerId = player.getUniqueId().toString();
-            int snowballCount = ConfigLoader.baseConfig.getActSnowballCount();
+            // 开启事务
+            AesopPlugin.callInTransaction(()->{
+                String playerId = player.getUniqueId().toString();
+                GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
+                int snowballCount = ConfigLoader.baseConfig.getActSnowballCount();
 
-            long count = giftClaimRecordDao.countBySnowball(playerId, clickedLocation);
-            if (count > 0) {
-                AesopPlugin.logger.log(player, "&c该位置您已收集过，到其它地方找找看吧！");
-                return;
-            }
+                long count = giftClaimRecordDao.countBySnowball(playerId, clickedLocation);
+                if (count > 0) {
+                    AesopPlugin.logger.log(player, "&c该位置您已收集过，到其它地方找找看吧！");
+                    return null;
+                }
 
-            // 创建一个雪球，该雪球只是一个象征性意义，丢弃不影响收集进度
-            ItemStack itemStack = new ItemStack(Material.SNOWBALL, 1);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if(itemMeta!=null) {
-                itemMeta.setDisplayName(MessageUtil.symbol("&b❄圣诞雪球"));
-                List<String> lore = new ArrayList<>();
-                lore.add(MessageUtil.symbol("&7一个象征性意义的雪球，丢弃不影响收集进度"));
-                itemMeta.setLore(lore);
-                itemStack.setItemMeta(itemMeta);
-            }
-            player.getInventory().addItem(itemStack);
-            try {
-                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
-            } catch (Throwable e) {
-                AesopPlugin.logger.log( "&c声音 BLOCK_NOTE_BLOCK_BELL 播放失败", ConsoleLogger.Level.ERROR);
-            }
-            //记录收集记录
-            giftClaimRecordDao.saveSnowball(playerId, player.getName(), player.getAddress().getHostName(), clickedLocation);
+                // 创建一个雪球，该雪球只是一个象征性意义，丢弃不影响收集进度
+                ItemStack itemStack = new ItemStack(Material.SNOWBALL, 1);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                if (itemMeta != null) {
+                    itemMeta.setDisplayName(MessageUtil.symbol("&b❄圣诞雪球"));
+                    List<String> lore = new ArrayList<>();
+                    lore.add(MessageUtil.symbol("&7一个象征性意义的雪球，丢弃不影响收集进度"));
+                    itemMeta.setLore(lore);
+                    itemStack.setItemMeta(itemMeta);
+                }
+                player.getInventory().addItem(itemStack);
+                try {
+                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
+                } catch (Throwable e) {
+                    AesopPlugin.logger.log("&c声音 BLOCK_NOTE_BLOCK_BELL 播放失败", ConsoleLogger.Level.ERROR);
+                }
+                //记录收集记录
+                giftClaimRecordDao.saveSnowball(playerId, player.getName(), player.getAddress().getHostName(), clickedLocation);
 
-            // 统计收集数据
-            long collectedCount = giftClaimRecordDao.countBySnowball(player.getUniqueId().toString());
-            if(collectedCount>=snowballCount) {
-                AesopPlugin.logger.log(player, "&a获得一个&b❄圣诞雪球&a，您已集齐"+snowballCount+"个，&a快去领取圣诞礼物吧~");
-            } else {
-                AesopPlugin.logger.log(player, "&a获得一个&b❄圣诞雪球&a，当前进度 " + snowballCount + "(&e" + (collectedCount) + "&a).");
-            }
+                // 统计收集数据
+                long collectedCount = giftClaimRecordDao.countBySnowball(player.getUniqueId().toString());
+                if (collectedCount >= snowballCount) {
+                    AesopPlugin.logger.log(player, "&a获得一个&b❄圣诞雪球&a，您已集齐" + snowballCount + "个，&a快去领取圣诞礼物吧~");
+                } else {
+                    AesopPlugin.logger.log(player, "&a获得一个&b❄圣诞雪球&a，当前进度 " + snowballCount + "(&e" + (collectedCount) + "&a).");
+                }
+                return null;
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,7 @@
 package top.mcos.listener;
 
+import top.mcos.AesopPlugin;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,7 +11,7 @@ public class PlayerLock  {
     public static Lock getPlayerLock(String playerId) {
         ReentrantLock lock = playLocks.get(playerId);
         if(lock==null) {
-            synchronized (playerId) {
+            synchronized (AesopPlugin.sync.intern(playerId)) {
                 lock = playLocks.get(playerId);
                 if (lock == null) {
                     lock = new ReentrantLock();

@@ -54,7 +54,7 @@ public class GiftClaimRecordDaoImpl extends BaseDaoImpl<GiftClaimRecord, Long> i
     @Override
     public GiftClaimRecord saveSnowball(String playerId, String playerName, String playerIpaddr, String location) throws SQLException {
         GiftClaimRecord record = new GiftClaimRecord();
-        record.setGiftName("圣诞礼物");
+        record.setGiftName("圣诞雪球");
         record.setLocation(location);
         record.setPlayerId(playerId);
         record.setPlayerName(playerName);

@@ -2,6 +2,8 @@ package top.mcos;
 
 import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.Bukkit;
@@ -39,6 +41,14 @@ public final class AesopPlugin extends JavaPlugin {
     public static @Nullable NmsProvider nmsProvider;
 
     public static final @NotNull Logger logger = new Logger("&6[&b伊索插件&6]&f ");
+
+    /**
+     * 同步标记，使用示例：
+     * synchronized (AesopPlugin.sync.intern(“唯一字符串”)) {
+     *     do something...
+     * }
+     */
+    public static final Interner<String> sync = Interners.newWeakInterner();
 
     /**
      * 数据库实例
