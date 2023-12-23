@@ -5,17 +5,11 @@
     <parent>
         <artifactId>aesopplugin</artifactId>
         <groupId>top.mcos</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${global.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Build</artifactId>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -24,7 +18,7 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>top.mcos</groupId>
+            <groupId>top.mcos.databas</groupId>
             <artifactId>Database</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -37,10 +31,17 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name}-${myproject.version}</finalName>
+        <finalName>${project.name}-${global.version}</finalName>
         <resources>
+            <!--仅针对当前模块生效，如果他模块也需要，则具体模块再配置一次-->
+            <!--filtering： MAVEN提供了一种过滤机制，这种机制能够在资源文件被复制到目标目录的同时，当filtering = true时替换资源文件中的占位符；当filtering = false时不进行占位符的替换。-->
+            <!--下面将"src/main/java"目录下的所有的.yml文件进行打包，并替换所有的.yml文件中的占位符。 例如让plugin.yml里的${global.version}配置自动获取值-->
+            <!--注意：一旦配置了resource，就会替代默认机制，每个资源文件都要指定，否则打包后无法包含进jar包中-->
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                </includes>
                 <filtering>true</filtering>
             </resource>
         </resources>

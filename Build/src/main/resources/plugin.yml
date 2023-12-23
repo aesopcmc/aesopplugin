@@ -5,8 +5,7 @@ softdepend: ['Multiverse-Core','Chunky']
 description: 一个测试插件
 main: top.mcos.AesopPlugin
 name: AesopPlugin
-#${project.version}
-version: '1.2'
+version: '${global.version}'
 website: https://mcos.top/
 prefix: '伊索插件'
 

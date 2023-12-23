@@ -7,7 +7,7 @@
     <groupId>top.mcos</groupId>
     <artifactId>aesopplugin</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>${global.version}</version>
     <modules>
         <module>Core</module>
         <module>R1_19_R3</module>
@@ -20,7 +20,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.name>AesopPlugin</project.name>
-        <myproject.version>1.2</myproject.version>
+        <global.version>1.2.1</global.version>
     </properties>
 
     <repositories>
