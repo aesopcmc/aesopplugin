@@ -6,7 +6,7 @@ import top.mcos.AesopPlugin;
 /**
  * NamespacedKey
  */
-public class NSKeys {
+public final class NSKeys {
     /**
      * 礼品按钮
      */

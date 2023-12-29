@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.config.ConfigLoader;
 import top.mcos.hook.firework.FireWorkManage;
-import top.mcos.listener.EntityDamageListener;
 import top.mcos.listener.PlayerListener;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsBuilder;
@@ -30,7 +29,6 @@ import java.util.concurrent.Callable;
 
 public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
-    private static boolean pluginActive;
 
     ///**
     // * 粒子特效管理器
@@ -49,6 +47,7 @@ public final class AesopPlugin extends JavaPlugin {
      * }
      */
     public static final Interner<String> sync = Interners.newWeakInterner();
+    private boolean pluginActive;
 
     /**
      * 数据库实例
@@ -107,7 +106,6 @@ public final class AesopPlugin extends JavaPlugin {
 
         //注册监听
         getServer().getPluginManager().registerEvents(new PlayerListener(), AesopPlugin.getInstance());
-        getServer().getPluginManager().registerEvents(new EntityDamageListener(), AesopPlugin.getInstance());
         //加载命令
         CommandLoader.getCommands();
         // 启动监听消息队列，有消息，则发送
@@ -120,7 +118,7 @@ public final class AesopPlugin extends JavaPlugin {
         SchedulerHandler.registerJobs();
 
         // 注册粒子特效
-        fireWorkManage = new FireWorkManage(getInstance(), ConfigLoader.baseConfig.getFireworkConfigs());
+        fireWorkManage = new FireWorkManage(ConfigLoader.baseConfig.getFireworkConfigs(), ConfigLoader.baseConfig.getPlayerFireworkConfigs());
 
         logger.log("&a成功加载插件");
     }
@@ -141,6 +139,10 @@ public final class AesopPlugin extends JavaPlugin {
 
     public FireWorkManage getFireWorkManage() {
         return fireWorkManage;
+    }
+
+    public boolean isPluginActive() {
+        return pluginActive;
     }
 
     /**
@@ -166,9 +168,7 @@ public final class AesopPlugin extends JavaPlugin {
         return instance;
     }
 
-    public static boolean isPluginActive() {
-        return pluginActive;
-    }
+
 
     /**
      * 使用数据库事务处理业务逻辑

@@ -6,6 +6,7 @@ import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +51,7 @@ public final class ActivitySubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String getPermission() {
-        return "aesopplugin.activity";
+        return "aesopplugin.admin.activity";
     }
 
     @Override
@@ -71,6 +72,8 @@ public final class ActivitySubCommand extends Command implements Helpable {
             possibleCompletions.add("clear ");// 清理玩家数据 clear <playerName>
             possibleCompletions.add("list "); // 查找礼物领取列表 list <playerName>
             possibleCompletions.add("listitem "); // 查找礼物领取详情 listitem <playerName>
+            possibleCompletions.add("spawn "); // 生成怪物
+            possibleCompletions.add("preview"); // 预览粒子特效
 
             if("clear".equals(args)) {
                 possibleCompletions.add("test");
@@ -178,6 +181,50 @@ public final class ActivitySubCommand extends Command implements Helpable {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else if("preview".equals(args[1])){
+            Player player = (Player) sender;
+            String effectName = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+            if(effectName==null) return;
+
+            Particle particle;
+            String particleName = args.length>=4 && StringUtils.isNotBlank(args[3]) ? args[3] : null;
+            if(particleName==null) {
+                particle = Particle.FLAME;
+            } else {
+                particle = Particle.valueOf(particleName);
+            }
+
+
+            AesopPlugin.getInstance().getFireWorkManage().preview(player, effectName, particle);
+
+            //AesopPlugin.getInstance().getFireWorkManage().spawnEffect(player);
+        } else if("spawn".equals(args[1])){
+            Player player = (Player) sender;
+            String text = args.length>=3 && StringUtils.isNotBlank(args[2]) ? args[2] : null;
+            String effectName = args.length>=4 && StringUtils.isNotBlank(args[3]) ? args[3] : null;
+            if(effectName==null) return;
+            //Bukkit.getWorld("world").getChunkAt().getEntities();
+            //Spider spider = Bukkit.getWorld("world").spawn(player.getLocation(), Spider.class);
+            //spider.setAI(true);
+            //spider.setCustomName(MessageUtil.symbol("&c死亡蜘蛛"));
+            //spider.setHealth(98000);
+            //spider.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER));
+
+            /*
+            索尔有两只神奇山羊，分别是坦格里斯尼尔（Tanngrisnir）和坦格乔斯特（Tanngnjostr），它们负责帮助索尔的战车穿越天空。
+            当他们带领索尔飞过村庄时是遭受到不明boss攻击，导致山羊群变异而陨落至此。击杀掉所有变异的山羊和boss，拯救村庄
+             */
+
+            //Goat goat = Bukkit.getWorld("world").spawn(player.getLocation(), Goat.class);
+            //goat.setAI(true);
+            //goat.setCustomName(MessageUtil.colorize("&c变异山羊"));
+            //goat.setHealth(10);
+            //goat.setSeed(10);
+            //goat.setLastDamage(30);
+            //goat.setScreaming(true); // 频繁叫唤
+            //goat.setLeftHorn(true);// 左角
+            //goat.setRightHorn(false); // 右角
+            //AesopPlugin.getInstance().getFireWorkManage().spawnDragonEffect(text, Particle.valueOf(effectName), player, 300);
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");
         }

@@ -36,7 +36,7 @@ public final class TaskSubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String getPermission() {
-        return "aesopplugin.task";
+        return "aesopplugin.admin.task";
     }
 
     @Override

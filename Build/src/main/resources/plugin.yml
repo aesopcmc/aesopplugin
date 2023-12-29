@@ -20,12 +20,18 @@ permissions:
     description: 玩家通用指令.
     default: true
     children:
-      aesopplugin.help: true
+      aesopplugin.player.help: true
   aesopplugin.admin:
     description: OP指令.
     default: op
     children:
-      aesopplugin.reload: true
-      aesopplugin.msg: true
-      aesopplugin.task: true
-      aesopplugin.activity: true
+      aesopplugin.admin.reload: true
+      aesopplugin.admin.msg: true
+      aesopplugin.admin.task: true
+      aesopplugin.admin.activity: true
+  aesopplugin.pfirework:
+    description: 玩家粒子特效
+    default: false
+    children:
+      aesopplugin.pfirework.*: true
+

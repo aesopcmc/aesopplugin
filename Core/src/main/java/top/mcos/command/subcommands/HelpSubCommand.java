@@ -20,7 +20,7 @@ public final class HelpSubCommand extends Command implements Helpable {
 
     @Override
     public @NotNull String getPermission() {
-        return "aesopplugin.help";
+        return "aesopplugin.player.help";
     }
 
     @Override

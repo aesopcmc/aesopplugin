@@ -30,7 +30,7 @@ public final class MessageHandler {
     public static void initQueue() {
         // 启动消息监听线程
         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), bukkitTask -> {
-            while (AesopPlugin.isPluginActive()) {
+            while (AesopPlugin.getInstance().isPluginActive()) {
                 // 获取一组消息。一组消息由一个消息单元和多个在线用户组成
                 List<MessagePayload> poll = msgPayloadQueue.poll();
                 if(poll!=null) {

@@ -40,7 +40,7 @@ public final class MsgSubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String getPermission() {
-        return "aesopplugin.msg";
+        return "aesopplugin.admin.msg";
     }
 
     @Override

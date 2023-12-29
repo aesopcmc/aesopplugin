@@ -33,7 +33,7 @@ public final class ReloadSubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String getPermission() {
-        return "aesopplugin.reload";
+        return "aesopplugin.admin.reload";
     }
 
     @Override
@@ -57,7 +57,8 @@ public final class ReloadSubCommand extends Command implements Helpable {
             // 重新注册消息通知任务
             SchedulerHandler.registerJobs();
             // 重新注册粒子特效
-            AesopPlugin.getInstance().getFireWorkManage().reload(ConfigLoader.baseConfig.getFireworkConfigs());
+            AesopPlugin.getInstance().getFireWorkManage().reload(ConfigLoader.baseConfig.getFireworkConfigs(),
+                    ConfigLoader.baseConfig.getPlayerFireworkConfigs());
 
             AesopPlugin.logger.log(sender, "&a插件刷新成功");
         } catch (Throwable e) {

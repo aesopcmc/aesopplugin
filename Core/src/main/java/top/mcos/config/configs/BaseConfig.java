@@ -59,4 +59,6 @@ public class BaseConfig {
     private List<CommandConfig> commandConfigs = new ArrayList<>();
 
     private List<FireworkConfig> fireworkConfigs = new ArrayList<>();
+
+    private List<PlayerFireworkConfig> playerFireworkConfigs = new ArrayList<>();
 }

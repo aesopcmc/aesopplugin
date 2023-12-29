@@ -21,7 +21,7 @@ import top.mcos.util.RandomUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gift {
+public final class Gift {
     public static GiftItem giveItemTwig(List<ItemStack> itemStacks, List<GiftItem> giftItems, int amount) {
         String giftName = "圣诞树枝";
         NamespacedKey nkey = NSKeys.ACTIVITY_TWIG_ITEM;
