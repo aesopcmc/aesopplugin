@@ -9,8 +9,12 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
-import top.mcos.config.configs.FireworkConfig;
-import top.mcos.config.configs.PlayerFireworkConfig;
+import top.mcos.config.ConfigLoader;
+import top.mcos.config.configs.subconfig.FireworkConfig;
+import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
+import top.mcos.config.configs.subconfig.TextFireworkConfig;
+import top.mcos.database.dao.PlayerFireworkDao;
+import top.mcos.database.domain.PlayerFirework;
 import top.mcos.util.MessageUtil;
 
 import java.awt.*;
@@ -21,52 +25,71 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class FireWorkManage {
+    private static FireWorkManage instance;
     private final EffectManager effectManager;
-    private List<FireworkConfig> fireworkConfigs;
 
-    private List<PlayerFireworkConfig> playerFireworkConfigs;
+    private final Map<String, TextEffect> textEffectMap = new HashMap<>();
+    /**
+     * 所有玩家当前激活的粒子特效，从数据库取出数据缓存，
+     */
+    private final Map<String, List<PlayerFirework>> playerFireworkCache = new HashMap<>();
 
-    public Map<String, TextEffect> textEffectMap = new HashMap<>();
+    public static void load() {
+        if (instance ==null) {
+            try {
+                instance = new FireWorkManage();
+            } catch (Exception e) {
+                AesopPlugin.logger.log("&c粒子特效加载失败，已跳过", ConsoleLogger.Level.ERROR);
+            }
+        }
+    }
+    public static FireWorkManage getInstance() {
+        if (instance ==null) {
+            load();
+        }
+        return instance;
+    }
 
-    public FireWorkManage(List<FireworkConfig> fireworkConfigs, List<PlayerFireworkConfig> playerFireworkConfigs) {
+    private FireWorkManage() {
         this.effectManager = new EffectManager(AesopPlugin.getInstance());
-        this.fireworkConfigs = fireworkConfigs;
-        this.playerFireworkConfigs = playerFireworkConfigs;
-        reload(fireworkConfigs, playerFireworkConfigs);
+        reload();
         // 监听用户粒子特效
         startPlayerListener();
     }
 
     private void startPlayerListener() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(AesopPlugin.getInstance(), ()->{
-            if(playerFireworkConfigs!=null) {
-                Map<String, PlayerFireworkConfig> keyConfigs = playerFireworkConfigs.stream().collect(Collectors.toMap(PlayerFireworkConfig::getKey, c -> c));
-                Set<String> keys = keyConfigs.keySet();
-                if(keys.size()>0) {
-                    Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-                    for (Player player : onlinePlayers) {
-                        for (String key : keys) {
+            Map<String, TextFireworkConfig> fireworkKeys = ConfigLoader.fwConfig.getTextFireworks().stream().collect(Collectors.toMap(TextFireworkConfig::getKey, c -> c));
+            Map<String, PlayerFireworkGroupConfig> groupKeys = ConfigLoader.fwConfig.getPlayerFireworkGroups().stream().collect(Collectors.toMap(PlayerFireworkGroupConfig::getKey, c -> c));
 
-                            //TODO OP自动获取了所有权限？？
-                            if (player.hasPermission("aesopplugin.pfirework." + key)) {
-                                this.spawnPlayerTextEffect(keyConfigs.get(key), player);
+            Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+            for (Player player : onlinePlayers) {
+                List<PlayerFirework> playerFireworkList = playerFireworkCache.get(player.getUniqueId().toString());
+                if(playerFireworkList!=null) {
+                    for (PlayerFirework playerFirework : playerFireworkList) {
+                        Integer enable = playerFirework.getEnable();
+                        String groupKey = playerFirework.getPlayerFireworkGroupKey();
+                        if (enable == 1) {
+                            PlayerFireworkGroupConfig groupConfig = groupKeys.get(groupKey);
+                            if (groupConfig!=null && groupConfig.isEnable()) {
+                                List<String> pfwKeys = groupConfig.getFireworkKeys();
+                                for (String pfwKey : pfwKeys) {
+                                    this.spawnPlayerTextEffect(fireworkKeys.get(pfwKey), player, groupConfig.getOffsetY());
+                                }
                             }
                         }
                     }
                 }
             }
-        }, 100, 100);
+        }, 100, 200);
     }
 
-    public synchronized void reload(List<FireworkConfig> fireworkConfigs, List<PlayerFireworkConfig> playerFireworkConfigs) {
-        this.fireworkConfigs = fireworkConfigs;
-        this.playerFireworkConfigs = playerFireworkConfigs;
+    public synchronized void reload() {
         unLoadEffect(null);
-        for (FireworkConfig config : this.fireworkConfigs) {
+        for (FireworkConfig config : ConfigLoader.baseConfig.getFireworkConfigs()) {
             try {
                 loadEffect(config);
                 //TimeUnit.MILLISECONDS.sleep(100);
@@ -130,41 +153,62 @@ public final class FireWorkManage {
         }
     }
 
-    private void spawnPlayerTextEffect(PlayerFireworkConfig config, Player player) {
-        if(!config.isEnable()) return;
-        String[] offsetStrArr = config.getOffset().split(",");
-        double ofx = Double.parseDouble(offsetStrArr[0]);
-        double ofy = Double.parseDouble(offsetStrArr[1]);
-        double ofz = Double.parseDouble(offsetStrArr[2]);
-
-        TextEffect effect = new TextEffect(effectManager);
+    /**
+     * 生成玩家文字粒子特效
+     *
+     * @param config       配置
+     * @param player       玩家
+     * @param groupOffsetY 组Y轴偏移量
+     */
+    private void spawnPlayerTextEffect(TextFireworkConfig config, Player player, double groupOffsetY) {
+        if(config==null || !config.isEnable()) return;
         // 设置位置
-        Location location = player.getLocation().add(ofx, ofy, ofz);
+        Location location = player.getLocation().add(0, config.getOffsetY() + groupOffsetY, 0);
         if(config.isInverted()) {
             float yaw = location.getYaw();
             yaw = yaw > 0 ? yaw - 180 : yaw + 180;
             location.setYaw(yaw);
         }
-        effect.setDynamicOrigin(new DynamicLocation(location));
+        DynamicLocation dynamicLocation = new DynamicLocation(location);
+        String particles = config.getParticle();
+        String[] split = particles.split(",");
+        for (String part : split) {
+            spawnTextEffect(config.getText(), config.getTextSize(), part, config.getPeriod(), dynamicLocation, config.getDuration());
+        }
+    }
+
+    /**
+     * 生成文字粒子特效
+     * @param text 文本
+     * @param textSize 文字大小
+     * @param particle 粒子特效
+     * @param period 显示速率
+     * @param location 生成位置
+     * @param duration 持续时间，单位tick
+     */
+    private void spawnTextEffect(String text, float textSize, String particle, int period, DynamicLocation location, long duration) {
+        TextEffect effect = new TextEffect(effectManager);
+        // 设置位置
+        effect.setDynamicOrigin(location);
         //private final BiFunction<Player, Integer, Location> xForwardFromPlayer = (player, x) -> player.getLocation().add(0,2,0).add(player.getLocation().getDirection().multiply(x));
         //effect.setDynamicOrigin(new DynamicLocation(xForwardFromPlayer.apply(player, 9)));
         // 设置文本
-        effect.text = config.getText();
+        effect.text = text;
         // 设置粒子特效（暂时只能选择不需要特效数据的）
-        effect.particle = Particle.valueOf(config.getParticle());
+        effect.particle = Particle.valueOf(particle);
         //effect.pitch = 180f;
         // 时间间隔，数值越小，显示越快
-        effect.period = config.getPeriod();
+        effect.period = period;
         effect.duration = null; //config.getDuration()<=0 ? null : config.getDuration();// 持续时间，持续时间结束后特效消失（当持续时间非空时，优先级会比iterations高）
         effect.iterations = -1;//config.getDuration()<=0 ? -1 : 0; // -1永久显示 0默认
         InputStream fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/zfxkft_aigei_com.ttf");
         try {
-            effect.setFont(Font.createFont(Font.PLAIN, fi).deriveFont(Font.PLAIN, config.getTextSize()));
+            effect.setFont(Font.createFont(Font.PLAIN, fi).deriveFont(Font.PLAIN, textSize));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         effect.start();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(AesopPlugin.getInstance(), effect::cancel, config.getDuration());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(AesopPlugin.getInstance(), effect::cancel, duration);
     }
 
     public void preview(Player player, String effectName, Particle particle) {
@@ -192,5 +236,31 @@ public final class FireWorkManage {
 
     public EffectManager getEffectManager() {
         return effectManager;
+    }
+
+    /**
+     * 从数据库加载玩家粒子特效到缓存
+     * @param playerId
+     */
+    public void putPlayerFireworkToCache(String playerId) {
+        PlayerFireworkDao playerFireworkDao = AesopPlugin.getInstance().getDatabase().getPlayerFireworkDao();
+        List<PlayerFirework> playerFireworks = playerFireworkDao.queryGroupKeys(playerId, null);// 加载玩家所有的粒子特效groupkey
+        if(playerFireworks==null || playerFireworks.size()==0) {
+            playerFireworkCache.remove(playerId);
+        } else {
+            playerFireworkCache.put(playerId, playerFireworks);
+        }
+    }
+
+    /**
+     * 移除缓存中玩家的粒子特效
+     * @param playerId
+     */
+    public void removePlayerFireworkFromCache(String playerId) {
+        playerFireworkCache.remove(playerId);
+    }
+
+    public Map<String, List<PlayerFirework>> getPlayerFireworkCache() {
+        return playerFireworkCache;
     }
 }

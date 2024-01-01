@@ -1,0 +1,30 @@
+# 【粒子单元】
+# 公共粒子特效，可以将这些基础单元组合成【粒子组】，这样就可以
+firework:
+  text-firework:
+    t1:
+      enable: true # true启用 false禁用
+      text: '龙' # 文本内容
+      text-size: 24 # 文字大小
+      particle: 'END_ROD' # 粒子特效，支持多个，使用逗号分割
+      period: 10 # 闪烁周期 设置为小于1，重启后可能不生效
+      duration: 150 # 持续时间,单位tick。
+      inverted: true # 旋转180度
+      offsetY: 1 # y轴偏移量
+
+# 【粒子组】
+# 当分配给玩家一个粒子组时，会将玩家与粒子组的key绑定至数据库
+player-firework-group:
+  pg1:
+    enable: true
+    name: '龙年大吉'
+    firework-keys: ['t1']
+    offsetY: 4 # y轴偏移量
+
+location-firework-group:
+  lg1:
+    enable: true
+    firework-keys: []
+    location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+
+

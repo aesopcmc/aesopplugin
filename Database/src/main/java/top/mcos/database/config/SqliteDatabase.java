@@ -6,10 +6,13 @@ import com.j256.ormlite.table.TableUtils;
 import lombok.Getter;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
+import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.database.dao.impl.GiftClaimRecordDaoImpl;
 import top.mcos.database.dao.impl.GiftItemDaoImpl;
+import top.mcos.database.dao.impl.PlayerFireworkDaoImpl;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
+import top.mcos.database.domain.PlayerFirework;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -22,6 +25,7 @@ public class SqliteDatabase {
     private ConnectionSource connectionSource;
     private GiftClaimRecordDao giftClaimRecordDao;
     private GiftItemDao giftItemDao;
+    private PlayerFireworkDao playerFireworkDao;
 
     public SqliteDatabase(String dataFolder) {
         // this uses h2 by default but change to match your database
@@ -48,10 +52,12 @@ public class SqliteDatabase {
             // 实例化Dao
             giftClaimRecordDao = new GiftClaimRecordDaoImpl(connectionSource, GiftClaimRecord.class);
             giftItemDao = new GiftItemDaoImpl(connectionSource, GiftItem.class);
+            playerFireworkDao = new PlayerFireworkDaoImpl(connectionSource, PlayerFirework.class);
 
             // 如果表不存在，创建默认的表
             TableUtils.createTableIfNotExists(connectionSource, GiftClaimRecord.class);
             TableUtils.createTableIfNotExists(connectionSource, GiftItem.class);
+            TableUtils.createTableIfNotExists(connectionSource, PlayerFirework.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }

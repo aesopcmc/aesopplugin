@@ -50,13 +50,13 @@ public final class MessageHandler {
      * @param message 消息内容，支持颜色代码
      */
     public static void pushActionbarMessage(String message) {
-        if(ConfigLoader.baseConfig.isNoticeActionbarEnabled() && StringUtils.isNotBlank(message)) {
+        if(ConfigLoader.baseConfig.getSettingConfig().isNoticeActionbarEnabled() && StringUtils.isNotBlank(message)) {
             // 获取玩家
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             if(onlinePlayers.size()<1) return;
 
             //组装消息
-            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
+            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getSettingConfig().getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();
@@ -73,7 +73,7 @@ public final class MessageHandler {
      * @param subMessage 消息内容，支持颜色代码
      */
     public static void pushTitleMessage(String message, String subMessage) {
-        if(ConfigLoader.baseConfig.isNoticeTitleEnabled() && StringUtils.isNotBlank(message)) {
+        if(ConfigLoader.baseConfig.getSettingConfig().isNoticeTitleEnabled() && StringUtils.isNotBlank(message)) {
             // 获取玩家
             Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
             if(onlinePlayers.size()<1) return;
@@ -94,9 +94,9 @@ public final class MessageHandler {
      * @param message 消息内容，支持颜色代码
      */
     public static void sendToPlayer(Player player, String message) {
-        if(ConfigLoader.baseConfig.isNoticeActionbarEnabled()) {
+        if(ConfigLoader.baseConfig.getSettingConfig().isNoticeActionbarEnabled()) {
             //组装消息
-            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getDisplayWidth());
+            String[] messagePiles = MessageUtil.convertMsg(message, ConfigLoader.baseConfig.getSettingConfig().getDisplayWidth());
 
             //发送消息
             List<MessagePayload> list = new ArrayList<>();

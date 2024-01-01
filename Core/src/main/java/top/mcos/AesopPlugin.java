@@ -30,11 +30,6 @@ import java.util.concurrent.Callable;
 public final class AesopPlugin extends JavaPlugin {
     private static AesopPlugin instance;
 
-    ///**
-    // * 粒子特效管理器
-    // */
-    private FireWorkManage fireWorkManage;
-
     public static @Nullable HashSet<Runnable> onInstance;
     public static @Nullable NmsProvider nmsProvider;
 
@@ -94,8 +89,7 @@ public final class AesopPlugin extends JavaPlugin {
             }
         }
 
-        // 若配置文件不存在，自动根据resources/config.yml创建配置文件放置数据目录（/plugin/myplugin/config.yml）
-        this.saveDefaultConfig();
+
         // 加载配置数据
         ConfigLoader.load();
 
@@ -118,7 +112,7 @@ public final class AesopPlugin extends JavaPlugin {
         SchedulerHandler.registerJobs();
 
         // 注册粒子特效
-        fireWorkManage = new FireWorkManage(ConfigLoader.baseConfig.getFireworkConfigs(), ConfigLoader.baseConfig.getPlayerFireworkConfigs());
+        FireWorkManage.load();
 
         logger.log("&a成功加载插件");
     }
@@ -129,16 +123,12 @@ public final class AesopPlugin extends JavaPlugin {
         SchedulerHandler.shutdown();
         MessageHandler.clearQueue();
         MessageHandler.setSendBreak(true);
-        getFireWorkManage().clear();
+        FireWorkManage.getInstance().clear();
         logger.log("&c插件已卸载");
     }
 
     public SqliteDatabase getDatabase() {
         return database;
-    }
-
-    public FireWorkManage getFireWorkManage() {
-        return fireWorkManage;
     }
 
     public boolean isPluginActive() {

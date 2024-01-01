@@ -14,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,6 +31,7 @@ import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
+import top.mcos.hook.firework.FireWorkManage;
 import top.mcos.util.MessageUtil;
 import top.mcos.util.RandomUtil;
 
@@ -39,15 +41,32 @@ import java.util.List;
 
 public class PlayerListener implements Listener {
 
-    //@EventHandler(priority = EventPriority.HIGH)
-    //public void onPlayerJoin(PlayerJoinEvent event) {
-    //    String uniqueId = event.getPlayer().getUniqueId().toString();
-    //    playLocks.put(uniqueId, new ReentrantLock());
-    //}
+    /**
+     * 玩家登录游戏事件
+     */
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()-> {
+            //AesopPlugin.logger.log("玩家加入...");
+            String uniqueId = event.getPlayer().getUniqueId().toString();
+            FireWorkManage.getInstance().putPlayerFireworkToCache(uniqueId);
+        });
+    }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    /**
+     * 玩家退出事件
+     */
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        PlayerLock.removeLock(event.getPlayer().getUniqueId().toString());
+        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()-> {
+            //AesopPlugin.logger.log("玩家退出...");
+            // 移除消息锁
+            String uniqueId = event.getPlayer().getUniqueId().toString();
+            PlayerLock.removeLock(uniqueId);
+
+            // 移除粒子特效
+            FireWorkManage.getInstance().removePlayerFireworkFromCache(uniqueId);
+        });
     }
 
     // 玩家点击右键事件
@@ -120,8 +139,8 @@ public class PlayerListener implements Listener {
                         if (clicked.getType().name().endsWith("_BUTTON")) {
                             String clickedLocation = clicked.getLocation().toString();
                             BaseConfig baseConfig = ConfigLoader.baseConfig;
-                            List<String> locations = baseConfig.getActHandleBlockLocations();
-                            List<String> sbLocations = baseConfig.getActHandleSnowballButtonLocations();
+                            List<String> locations = baseConfig.getSettingConfig().getActHandleBlockLocations();
+                            List<String> sbLocations = baseConfig.getSettingConfig().getActHandleSnowballButtonLocations();
 
                             // 判断是不是礼物按钮坐标
                             if (locations.size() > 0 && locations.contains(clickedLocation)) {
@@ -149,7 +168,7 @@ public class PlayerListener implements Listener {
             GiftItemDao giftItemDao = AesopPlugin.getInstance().getDatabase().getGiftItemDao();
             BaseConfig baseConfig = ConfigLoader.baseConfig;
 
-            int snowballCount = ConfigLoader.baseConfig.getActSnowballCount();
+            int snowballCount = ConfigLoader.baseConfig.getSettingConfig().getActSnowballCount();
             // 校验前置条件：收集气N个圣诞雪球
             long collectedCount = giftClaimRecordDao.countBySnowball(player.getUniqueId().toString());
             if(collectedCount < snowballCount && !player.isOp()) {
@@ -216,9 +235,9 @@ public class PlayerListener implements Listener {
             });
 
             try {
-                player.playSound(player, Sound.valueOf(baseConfig.getClaimedSound()), 50, 1);
+                player.playSound(player, Sound.valueOf(baseConfig.getSettingConfig().getClaimedSound()), 50, 1);
             } catch (Throwable e) {
-                AesopPlugin.logger.log( "&c声音 "+baseConfig.getClaimedSound() + "播放失败", ConsoleLogger.Level.ERROR);
+                AesopPlugin.logger.log( "&c声音 "+baseConfig.getSettingConfig().getClaimedSound() + "播放失败", ConsoleLogger.Level.ERROR);
             }
 
             // 发送领取信息
@@ -242,7 +261,7 @@ public class PlayerListener implements Listener {
                 Bukkit.broadcastMessage(MessageUtil.colorize("&d玩家 " +player.getName()+" 在圣诞节活动中收到了一份特殊礼物："+str));
             }
 
-            if(ConfigLoader.baseConfig.isDebug()) {
+            if(ConfigLoader.baseConfig.getSettingConfig().isDebug()) {
                 String hostString = player.getAddress().getHostName();
                 AesopPlugin.logger.log(hostString + "玩家"+player.getName()+"领取物品成功。");
             }
@@ -258,7 +277,7 @@ public class PlayerListener implements Listener {
             AesopPlugin.callInTransaction(()->{
                 String playerId = player.getUniqueId().toString();
                 GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
-                int snowballCount = ConfigLoader.baseConfig.getActSnowballCount();
+                int snowballCount = ConfigLoader.baseConfig.getSettingConfig().getActSnowballCount();
 
                 long count = giftClaimRecordDao.countBySnowball(playerId, clickedLocation);
                 if (count > 0) {
@@ -322,14 +341,14 @@ public class PlayerListener implements Listener {
                 if (giftBtn != null && giftBtn) {
                     // 识别为活动按钮
                     // 将按钮坐标保存至配置文件
-                    List<String> locations = baseConfig.getActHandleBlockLocations();
+                    List<String> locations = baseConfig.getSettingConfig().getActHandleBlockLocations();
                     locations.add(block.getLocation().toString());
                     ConfigLoader.saveConfig(baseConfig);
                     //AesopPlugin.logger.log("手持物品名称：" + itemMeta.getDisplayName());
                     //AesopPlugin.logger.log("放置位置：" + block.getLocation().toString());
                 }
                 if(snowballBtn!=null && snowballBtn) {
-                    List<String> locations = baseConfig.getActHandleSnowballButtonLocations();
+                    List<String> locations = baseConfig.getSettingConfig().getActHandleSnowballButtonLocations();
                     locations.add(block.getLocation().toString());
                     ConfigLoader.saveConfig(baseConfig);
                 }

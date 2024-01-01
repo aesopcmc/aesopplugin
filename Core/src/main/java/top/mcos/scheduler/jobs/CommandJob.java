@@ -9,20 +9,13 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import top.mcos.AesopPlugin;
-import top.mcos.config.configs.CommandConfig;
-import top.mcos.config.configs.NoticeConfig;
-import top.mcos.config.configs.RegenWorldConfig;
-import top.mcos.message.MessageHandler;
-import top.mcos.message.PositionTypeEnum;
+import top.mcos.config.configs.subconfig.CommandConfig;
 import top.mcos.scheduler.AbstractJob;
 import top.mcos.scheduler.SchedulerHandler;
 import top.mcos.util.BeanMapUtil;
 
-import java.sql.Struct;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 执行控制台指令任务

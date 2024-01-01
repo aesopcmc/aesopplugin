@@ -25,7 +25,7 @@ public final class MsgSubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String[] getAliases() {
-        return new String[]{"sendmessage"};
+        return new String[]{"msg"};
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import top.mcos.AesopPlugin;
-import top.mcos.config.configs.NoticeConfig;
+import top.mcos.config.configs.subconfig.NoticeConfig;
 import top.mcos.message.MessageHandler;
 import top.mcos.message.PositionTypeEnum;
 import top.mcos.scheduler.AbstractJob;

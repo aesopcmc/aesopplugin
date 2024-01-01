@@ -78,7 +78,6 @@ public final class TaskSubCommand extends Command implements Helpable {
                 AesopPlugin.logger.log(player, "&c参数有误");
                 this.onHelp();
             }
-
         }
     }
 }

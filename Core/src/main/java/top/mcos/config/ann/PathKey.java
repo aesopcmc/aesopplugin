@@ -1,4 +1,4 @@
-package top.mcos.config;
+package top.mcos.config.ann;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,6 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @Documented
-public @interface PathValue {
-    String value() default "";
+public @interface PathKey {
 }

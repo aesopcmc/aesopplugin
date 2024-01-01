@@ -39,13 +39,13 @@ config:
   regen-world:
     # chunky-check-loading: true # 检查是否有未完成的区块加载任务，继续执行加载
     chunky-loading-notice:
-      enable: true
+      enable: true # 地图预加载进行中提醒开关
       message: '&e【{world-name}】&c正在进行地图预加载，请勿进入服务器，以免影响加载进度！当前进度&e{per}%，&c剩余时间&e{remain-times}'
       delay: 60 # 消息推送间隔，单位秒，建议不要低于30
   # 消息通知配置
   notice:
     actionbar:
-      # 是否启用滚动消息，true是 false否
+      # 滚动消息全局开关，true开 false关
       enable: true
       # 消息滚动速度间隔，单位毫秒
       delay-times: 260
@@ -54,7 +54,7 @@ config:
       # 消息显示宽度，单位字符
       display-width: 20
     title:
-      # 是否启用标题消息，true是 false否
+      # 标题消息全局开关，true开 false关
       enable: true
       # 显入时长
       fadein: 20
@@ -158,14 +158,5 @@ tasks:
       duration: 0 # 持续时间,单位毫秒。若设为0将永久显示
       text-location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
 
-player-firework:
-  f1:
-    enable: true
-    text: '龙'
-    text-size: 24
-    particle: 'END_ROD'
-    period: 5 # 闪烁周期 设置为小于1，重启后可能不生效
-    duration: 300 # 持续时间,单位tick。
-    inverted: true # 旋转180度
-    offset: '0,4,0' # 基于玩家位置的偏移量 x,y,z
+
 

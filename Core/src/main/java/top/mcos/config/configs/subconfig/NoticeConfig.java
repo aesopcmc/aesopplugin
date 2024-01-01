@@ -1,11 +1,11 @@
-package top.mcos.config.configs;
+package top.mcos.config.configs.subconfig;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import top.mcos.config.PathEntity;
-import top.mcos.config.PathKey;
-import top.mcos.config.PathValue;
+import top.mcos.config.ann.ConfigFileName;
+import top.mcos.config.ann.PathKey;
+import top.mcos.config.ann.PathValue;
 import top.mcos.message.PositionTypeEnum;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Getter
 @ToString
-@PathEntity("tasks.notice")
+@ConfigFileName("config.yml")
 public class NoticeConfig {
     @PathKey
     private String key;

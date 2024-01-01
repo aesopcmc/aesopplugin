@@ -21,6 +21,7 @@ import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.enums.GiftTypeEnum;
+import top.mcos.hook.firework.FireWorkManage;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -74,10 +75,6 @@ public final class ActivitySubCommand extends Command implements Helpable {
             possibleCompletions.add("listitem "); // 查找礼物领取详情 listitem <playerName>
             possibleCompletions.add("spawn "); // 生成怪物
             possibleCompletions.add("preview"); // 预览粒子特效
-
-            if("clear".equals(args)) {
-                possibleCompletions.add("test");
-            }
             //if (args.length == 2) {
             //    for (String soundType : SoundType.getPresentSoundNames()) {
             //        if (soundType.startsWith(args[1].toUpperCase(Locale.ROOT))) {
@@ -195,7 +192,7 @@ public final class ActivitySubCommand extends Command implements Helpable {
             }
 
 
-            AesopPlugin.getInstance().getFireWorkManage().preview(player, effectName, particle);
+            FireWorkManage.getInstance().preview(player, effectName, particle);
 
             //AesopPlugin.getInstance().getFireWorkManage().spawnEffect(player);
         } else if("spawn".equals(args[1])){
