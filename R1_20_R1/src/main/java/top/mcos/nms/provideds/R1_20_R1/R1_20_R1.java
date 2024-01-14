@@ -1,4 +1,4 @@
-package top.mcos.nms.provided;
+package top.mcos.nms.provideds.R1_20_R1;
 
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.protocol.Packet;
@@ -8,19 +8,19 @@ import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsProvider;
 
 import java.lang.reflect.Field;
 
-public class R1_19_R3 implements NmsProvider {
+public class R1_20_R1 implements NmsProvider {
 	
 	private final Field networkManagerH;
 	
-	public R1_19_R3() {
+	public R1_20_R1() {
 		try {
 			networkManagerH = PlayerConnection.class.getDeclaredField("h");
 			networkManagerH.setAccessible(true);
@@ -78,7 +78,7 @@ public class R1_19_R3 implements NmsProvider {
 	
 	private NetworkManager getNetworkManager(Player player) {
 		try {
-			return (NetworkManager) networkManagerH.get(((CraftPlayer) player).getHandle().b);
+			return (NetworkManager) networkManagerH.get(((CraftPlayer) player).getHandle().c);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}

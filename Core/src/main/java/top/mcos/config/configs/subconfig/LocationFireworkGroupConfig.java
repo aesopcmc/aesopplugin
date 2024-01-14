@@ -18,8 +18,10 @@ public class LocationFireworkGroupConfig {
     private String key;
     @PathValue("location-firework-group.{key}.enable")
     private boolean enable=false;
-    @PathValue("location-firework-group.{key}.firework-keys")
-    private List<String> fireworkKeys;
+    @PathValue("location-firework-group.{key}.name")
+    private String name;
     @PathValue("location-firework-group.{key}.location")
     private String location;
+    @PathValue("location-firework-group.{key}.firework-keys")
+    private List<String> fireworkKeys;
 }

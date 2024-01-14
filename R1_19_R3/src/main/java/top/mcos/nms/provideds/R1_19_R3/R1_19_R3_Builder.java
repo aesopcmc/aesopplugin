@@ -1,4 +1,4 @@
-package top.mcos.nms.provided;
+package top.mcos.nms.provideds.R1_19_R3;
 
 import top.mcos.nms.spi.NmsBuilder;
 import top.mcos.nms.spi.NmsProvider;

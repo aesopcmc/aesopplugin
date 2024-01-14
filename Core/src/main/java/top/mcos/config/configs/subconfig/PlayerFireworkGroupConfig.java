@@ -20,8 +20,8 @@ public class PlayerFireworkGroupConfig {
     private boolean enable=false;
     @PathValue("player-firework-group.{key}.name")
     private String name;
-    @PathValue("player-firework-group.{key}.firework-keys")
-    private List<String> fireworkKeys;
     @PathValue("player-firework-group.{key}.offsetY")
     private double offsetY;
+    @PathValue("player-firework-group.{key}.firework-keys")
+    private List<String> fireworkKeys;
 }

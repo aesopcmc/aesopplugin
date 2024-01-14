@@ -32,6 +32,7 @@ import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.itmebind.ItemEvent;
 import top.mcos.util.MessageUtil;
 import top.mcos.util.RandomUtil;
 
@@ -122,7 +123,8 @@ public class PlayerListener implements Listener {
             // 以玩家唯一id做同步处理
             String playerId = player.getUniqueId().toString();
             synchronized (AesopPlugin.sync.intern(playerId)) {
-                // 监听玩家右键方块
+                ItemEvent.triggerEvent(player, event.getItem());
+                // 监听玩家右键方
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Block clicked = event.getClickedBlock();
 

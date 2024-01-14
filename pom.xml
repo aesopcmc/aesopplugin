@@ -11,6 +11,8 @@
     <modules>
         <module>Core</module>
         <module>R1_19_R3</module>
+        <module>R1_20_R1</module>
+        <module>R1_20_R2</module>
         <module>Build</module>
         <module>Database</module>
     </modules>

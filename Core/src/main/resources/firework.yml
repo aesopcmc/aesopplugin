@@ -1,5 +1,25 @@
-# 【粒子单元】
-# 公共粒子特效，可以将这些基础单元组合成【粒子组】，这样就可以
+# 【玩家粒子组】
+# 当分配给玩家一个粒子组时，会将玩家与粒子组的key绑定至数据库
+# key名字定义好之后，不建议再更改，否则对于已经分配过组的用户，会产生脏数据
+# todo: 这块配置，应该配置为GUI操作更合理 或者 通过指令动态生成该配置
+player-firework-group:
+  pg1:
+    enable: false
+    name: '龙年大吉'
+    offsetY: 4 # y轴偏移量
+    firework-keys:
+      - 't1'
+
+# 【固定位置粒子组】
+location-firework-group:
+  lg1:
+    enable: false
+    name: ''
+    location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
+    firework-keys: []
+
+# 【基础粒子单元】
+# 公共粒子特效，可以将这些基础单元组合成【粒子组】，这样就可以自由组合粒子以及复用粒子
 firework:
   text-firework:
     t1:
@@ -11,20 +31,3 @@ firework:
       duration: 150 # 持续时间,单位tick。
       inverted: true # 旋转180度
       offsetY: 1 # y轴偏移量
-
-# 【粒子组】
-# 当分配给玩家一个粒子组时，会将玩家与粒子组的key绑定至数据库
-player-firework-group:
-  pg1:
-    enable: true
-    name: '龙年大吉'
-    firework-keys: ['t1']
-    offsetY: 4 # y轴偏移量
-
-location-firework-group:
-  lg1:
-    enable: true
-    firework-keys: []
-    location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
-
-

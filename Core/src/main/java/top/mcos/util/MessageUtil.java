@@ -61,10 +61,12 @@ public class MessageUtil {
     }
 
     /**
+     * TODO 方法过期，使用 colorize 代替
      * 支持&x颜色
      * @param message
      * @return
      */
+    @Deprecated
     public static String symbol(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }

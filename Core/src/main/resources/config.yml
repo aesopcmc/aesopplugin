@@ -52,7 +52,7 @@ config:
       # 消息太多导致线程排队等待时，等待超过时长，自动放弃发送消息，单位毫秒
       trylock-times: 60000
       # 消息显示宽度，单位字符
-      display-width: 20
+      display-width: 50
     title:
       # 标题消息全局开关，true开 false关
       enable: true
@@ -120,7 +120,7 @@ tasks:
       sub-message: ''
     msg1:
       enable: false
-      cron: '0/30 * * * * ?' # 每30秒执行一次
+      cron: '0/5 * * * * ?' # 每5秒执行一次
       start: ''
       end: ''
       position: 'title'
@@ -129,11 +129,11 @@ tasks:
       sub-message: '&a子标题我是说似乎'
     msg2:
       enable: false
-      cron: '0/20 * * * * ?'
+      cron: '0/5 * * * * ?'
       start: ''
       end: ''
       position: 'actionbar'
-      message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。悠哉悠哉，辗转反侧。参差荇菜，左右采之。窈窕淑女，琴瑟友之。参差荇菜，左右芼之。窈窕淑女，钟鼓乐之。。'
+      message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。'
       sub-message: ''
   # 执行控制台指令任务
   command:
@@ -158,5 +158,17 @@ tasks:
       duration: 0 # 持续时间,单位毫秒。若设为0将永久显示
       text-location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
 
-
-
+# 物品绑定事件
+item-bind-event:
+  commands:
+    menu: # 定义菜单物品，名称固定不可修改
+      enable: true
+      material: 'clock'
+      display-name: '&#2796e7&l[系统菜单]'
+      lore:
+        - ''
+        - '&7右键打开系统菜单'
+      # 执行命令格式： 前缀+空格+命令
+      # 前缀：[player] 、[console]
+      commands:
+        - '[player] cd'

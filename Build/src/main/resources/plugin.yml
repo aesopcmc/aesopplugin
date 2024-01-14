@@ -22,6 +22,7 @@ permissions:
     children:
       aesopplugin.player.help: true
       aesopplugin.player.fire: true
+      aesopplugin.player.itembind: true
   aesopplugin.admin:
     description: OP指令.
     default: op

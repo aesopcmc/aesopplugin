@@ -7,6 +7,7 @@ import top.mcos.config.ann.PathEntity;
 import top.mcos.config.ann.PathList;
 import top.mcos.config.configs.subconfig.CommandConfig;
 import top.mcos.config.configs.subconfig.FireworkConfig;
+import top.mcos.config.configs.subconfig.ItemBindCommandsConfig;
 import top.mcos.config.configs.subconfig.NoticeConfig;
 import top.mcos.config.configs.subconfig.RegenWorldConfig;
 import top.mcos.config.configs.subconfig.SettingConfig;
@@ -37,6 +38,9 @@ public final class BaseConfig {
 
     @PathList("tasks.firework")
     private List<FireworkConfig> fireworkConfigs;
+
+    @PathList("item-bind-event.commands")
+    private List<ItemBindCommandsConfig> itemBindCommandConfigs;
 
 
 }

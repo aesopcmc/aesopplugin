@@ -6,6 +6,7 @@ import top.mcos.AesopPlugin;
 import top.mcos.command.subcommands.ActivitySubCommand;
 import top.mcos.command.subcommands.FireworkSubCommand;
 import top.mcos.command.subcommands.FireSubCommand;
+import top.mcos.command.subcommands.ItemBindSubCommand;
 import top.mcos.command.subcommands.MsgSubCommand;
 import top.mcos.command.subcommands.ReloadSubCommand;
 import top.mcos.command.subcommands.TaskSubCommand;
@@ -32,6 +33,7 @@ public final class CommandLoader {
             commands.add(new ActivitySubCommand());
             commands.add(new FireworkSubCommand());
             commands.add(new FireSubCommand());
+            commands.add(new ItemBindSubCommand());
 
             // 注册主命令 + 子命令
             CommandManager.registerCommand(Bukkit.getPluginCommand("aesopplugin"), commands,

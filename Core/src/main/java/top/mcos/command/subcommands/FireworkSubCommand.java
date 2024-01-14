@@ -5,17 +5,20 @@ import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
+import top.mcos.config.configs.subconfig.LocationFireworkGroupConfig;
 import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.hook.firework.FireWorkManage;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,24 +62,38 @@ public final class FireworkSubCommand extends Command implements Helpable {
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
             if(args.length==2) {
-                possibleCompletions.add("give"); //     设置粒子组 give <playerName> <玩家粒子组key>
-                possibleCompletions.add("remove"); //   移除玩家粒子组 remove <playerName> <玩家粒子组key>
-                possibleCompletions.add("removeall"); //   移除玩家粒子组 remove <playerName>
+                possibleCompletions.add("give");        // 给予玩家粒子组 give <playerName> <玩家粒子组key>
+                possibleCompletions.add("remove");      // 移除玩家粒子组 remove <playerName> <玩家粒子组key>
+                possibleCompletions.add("removeall");   // 移除玩家所有粒子组 removeall <playerName>
+                possibleCompletions.add("setup");       // 设置粒子组 setup <player|location> <自定义组key> <自定义组名>
             }
             if(args.length==3) {
-                Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-                for (Player onlinePlayer : onlinePlayers) {
-                    possibleCompletions.add(onlinePlayer.getName());
+                if("give,remove,removeall".contains(args[1])) {
+                    Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+                    for (Player onlinePlayer : onlinePlayers) {
+                        possibleCompletions.add(onlinePlayer.getName());
+                    }
+                }
+                if("setup".contains(args[1])) {
+                    possibleCompletions.add("player");
+                    possibleCompletions.add("location");
                 }
             }
-            if(args.length==4 && "give,remove".contains(args[1])) {
-                List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fwConfig.getPlayerFireworkGroups();
-                for (PlayerFireworkGroupConfig playerFireworkGroup : playerFireworkGroups) {
-                    possibleCompletions.add(playerFireworkGroup.getKey());
+            if(args.length==4) {
+                if("give,remove".contains(args[1])) {
+                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    for (PlayerFireworkGroupConfig playerFireworkGroup : playerFireworkGroups) {
+                        possibleCompletions.add(playerFireworkGroup.getKey());
+                    }
+                }
+                if("setup".contains(args[1])) {
+                    possibleCompletions.add("<自定义组key>");
                 }
             }
-            if(args.length==4 && "removeall".contains(args[1])) {
-
+            if(args.length==5) {
+                if("setup".contains(args[1])) {
+                    possibleCompletions.add("<自定义组名>");
+                }
             }
         };
     }
@@ -179,6 +196,65 @@ public final class FireworkSubCommand extends Command implements Helpable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        } else if("setup".contains(args[1])) {
+            if(sender instanceof Player player) {
+                // 简单生成粒子组配置，具体特效要编辑
+                //firework setup <player|location> <自定义组key> <自定义组名>
+                if (args.length < 5) {
+                    AesopPlugin.logger.log(player, "&c参数不全");
+                    return;
+                }
+
+                String type = args[2];
+                String groupKey = args[3];
+                String groupName = args[4];
+
+                if ("location".equals(type)) {
+                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fwConfig.getLocationFireworkGroups();
+                    for (LocationFireworkGroupConfig groupConfig : locationFireworkGroups) {
+                        if(groupConfig.getKey().equals(groupKey)) {
+                            AesopPlugin.logger.log(player, "&c组key '"+groupKey+"' 已存在，请另起一个名称");
+                            return;
+                        }
+                    }
+
+                    LocationFireworkGroupConfig groupConfig = new LocationFireworkGroupConfig();
+                    groupConfig.setKey(groupKey);
+                    groupConfig.setEnable(true);
+                    groupConfig.setName(groupName);
+                    groupConfig.setFireworkKeys(new ArrayList<>());
+                    Location location = player.getLocation();
+                    groupConfig.setLocation(location.getWorld().getName()+ ","+location.getX()+","+location.getY()+","+location.getZ() + "," + location.getYaw() +","+location.getPitch());
+
+                    ConfigLoader.saveConfig(groupConfig);
+                    locationFireworkGroups.add(groupConfig);
+
+                    AesopPlugin.logger.log(player, "&a设置成功.");
+                } else if("player".equals(type)) {
+                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    for (PlayerFireworkGroupConfig groupConfig : playerFireworkGroups) {
+                        if(groupConfig.getKey().equals(groupKey)) {
+                            AesopPlugin.logger.log(player, "&c组key '"+groupKey+"' 已存在，请重新换一个");
+                            return;
+                        }
+                    }
+
+                    PlayerFireworkGroupConfig groupConfig = new PlayerFireworkGroupConfig();
+                    groupConfig.setKey(groupKey);
+                    groupConfig.setEnable(true);
+                    groupConfig.setName(groupName);
+                    groupConfig.setFireworkKeys(new ArrayList<>());
+                    groupConfig.setOffsetY(0);
+
+                    ConfigLoader.saveConfig(groupConfig);
+                    playerFireworkGroups.add(groupConfig);
+
+                    AesopPlugin.logger.log(player, "&a设置成功.");
+                }
+            } else {
+                AesopPlugin.logger.log("&c需要以游戏身份执行该指令");
+            }
+
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");
         }

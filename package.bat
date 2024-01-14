@@ -19,7 +19,7 @@ set port=2299
 @REM 设置服务器登录用户名
 set user=root
 @REM 设置需要上传的位置路径
-set remotePath=/home/minecraft/aesop/plugins/
+set remotePath=/home/minecraft/island/plugins
 @REM 执行scp命令上传文件
 scp -P %port% %localFile% %user%@%host%:%remotePath%
 echo "》》上传完毕"
