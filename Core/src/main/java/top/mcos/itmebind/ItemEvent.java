@@ -25,6 +25,7 @@ public class ItemEvent {
 
     public static void triggerEvent(Player player, ItemStack itemStack){
         if (itemStack == null) return;
+        if (itemStack.getItemMeta()==null) return;
 
         try {
             Bukkit.getScheduler().runTask(AesopPlugin.getInstance(), ()-> {
