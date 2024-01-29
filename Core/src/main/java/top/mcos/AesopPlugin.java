@@ -8,6 +8,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.Bukkit;
 import top.mcos.activity.NSKeys;
+import top.mcos.activity.newyear.config.YanHuaEvent;
 import top.mcos.database.config.SqliteDatabase;
 import top.mcos.hook.HookHandler;
 import top.mcos.command.CommandLoader;
@@ -89,9 +90,8 @@ public final class AesopPlugin extends JavaPlugin {
             }
         }
 
-
         // 加载配置数据
-        ConfigLoader.load();
+        ConfigLoader.load(null);
 
         NSKeys.init(this);
 
@@ -114,6 +114,9 @@ public final class AesopPlugin extends JavaPlugin {
         // 注册粒子特效
         FireWorkManage.load();
 
+        // 启动烟花监听
+        YanHuaEvent.onFireListen();
+
         logger.log("&a成功加载插件");
     }
 
@@ -122,6 +125,7 @@ public final class AesopPlugin extends JavaPlugin {
         pluginActive = false;
         SchedulerHandler.shutdown();
         MessageHandler.clearQueue();
+        YanHuaEvent.clearQueue();
         MessageHandler.setSendBreak(true);
         FireWorkManage.getInstance().clear();
         logger.log("&c插件已卸载");

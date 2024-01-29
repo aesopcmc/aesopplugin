@@ -2,10 +2,12 @@ package top.mcos.command.subcommands;
 
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
+import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
+import top.mcos.activity.newyear.config.YanHuaEvent;
 import top.mcos.config.ConfigLoader;
 import top.mcos.hook.firework.FireWorkManage;
 import top.mcos.message.MessageHandler;
@@ -43,23 +45,39 @@ public final class ReloadSubCommand extends Command implements Helpable {
     }
 
     @Override
+    protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
+        return (possibleCompletions, label, sender, args) -> {
+            if(args.length==2) {
+                possibleCompletions.add("yanhua");
+            }
+        };
+    }
+
+    @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         try {
-            MessageHandler.setSendBreak(true);
-            // 清理定时任务
-            SchedulerHandler.clear();
-            // 清理消息队列
-            MessageHandler.clearQueue();
-            // 稍作延迟，等待所有消息线程推出
-            TimeUnit.SECONDS.sleep(1);
-            MessageHandler.setSendBreak(false);
-            // 重新读取配置
-            ConfigLoader.load();
-            // 重新注册消息通知任务
-            SchedulerHandler.registerJobs();
-            // 重新注册粒子特效
-            FireWorkManage.getInstance().reload();
-
+            if(args.length==1) {
+                MessageHandler.setSendBreak(true);
+                // 清理定时任务
+                SchedulerHandler.clear();
+                // 清理消息队列
+                MessageHandler.clearQueue();
+                // 清理烟花消息队列
+                YanHuaEvent.clearQueue();
+                // 稍作延迟，等待所有消息线程推出
+                TimeUnit.SECONDS.sleep(1);
+                MessageHandler.setSendBreak(false);
+                // 重新读取配置
+                ConfigLoader.load(null);
+                // 重新注册消息通知任务
+                SchedulerHandler.registerJobs();
+                // 重新注册粒子特效
+                FireWorkManage.getInstance().reload();
+            } else if (args.length==2) {
+                ConfigLoader.load(args[1]);
+            } else {
+                return;
+            }
             AesopPlugin.logger.log(sender, "&a插件刷新成功");
         } catch (Throwable e) {
             e.printStackTrace();

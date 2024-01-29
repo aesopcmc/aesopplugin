@@ -6,6 +6,7 @@ import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 
 public abstract class AbstractJob {
+    protected static String jobSuffer;
     protected void log(JobExecutionContext context, String message) {
         log(context, message, ConsoleLogger.Level.INFO);
     }

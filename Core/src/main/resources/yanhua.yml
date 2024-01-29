@@ -1,0 +1,45 @@
+run-task-plan:
+  cm1:
+    enable: false
+    cron: '0 0 1 * * ?'
+    start: ''
+    end: ''
+    plans: ['t1:0:1000:5'] # 任务:延迟:重复延迟:重复次数
+tasks:
+  t1:
+    group-key: 'g1'
+    group-loc-delay: 0 # 位置执行间隔 单位毫秒
+    group-loc-seq: 1 # 位置执行顺序： 1顺序执行 2乱序执行
+    cells: ['c1,c2', 'c2'] # 每个位置发射的烟花
+    cells-mode: 1 # 每个位置的烟花组合类型： 1全部组合 2随机组合 3随机一个
+    loc-power: 1 # 发射高度
+cells:
+  c1:
+    # 【烟花类型】
+    # BALL-小球 0
+    # BALL_LARGE-大球 1
+    # STAR-星型 2
+    # CREEPER-苦力怕头 3
+    # BURST-爆裂 4
+    type: 'BALL'
+    # 【烟花颜色】支持两种类型的颜色
+    # 16进制值：#xxxxxx
+    # 颜色值： WHITE-白色、 SILVER-银色、GRAY-灰色、BLACK-黑色、RED-红色、MAROON-栗色、YELLOW-黄色、OLIVE-橄榄色、LIME-石灰色、
+    # GREEN-绿色、AQUA-海蓝色、TEAL-青色、BLUE-蓝色、NAVY-藏青、FUCHSIA-紫红色、PURPLE-紫色、ORANGE-橙色
+    colors: ['#ff0000', 'TEAL']
+    trail: true # 踪迹
+    # 【淡化颜色】若留空[]，则不会有淡化效果，同colors配置方式
+    fade-colors: [] # 颜色
+    flicker: false
+  c2:
+    type: 'BALL_LARGE'
+    colors: ['RED']
+    trail: true # 踪迹
+    # 【淡化颜色】若留空[]，则不会有淡化效果，同colors配置方式
+    fade-colors: [] # 颜色
+    flicker: true
+groups:
+  g1:
+    #位置。 格式：worldName,x,y,z,yaw,pitch
+    locations: []
+

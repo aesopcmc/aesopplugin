@@ -4,6 +4,7 @@ import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
+import top.mcos.activity.newyear.config.sub.RunTaskPlanConfig;
 import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.subconfig.CommandConfig;
 import top.mcos.config.configs.subconfig.NoticeConfig;
@@ -12,6 +13,7 @@ import top.mcos.scheduler.jobs.CommandJob;
 import top.mcos.scheduler.jobs.DemoJob;
 import top.mcos.scheduler.jobs.NoticeJob;
 import top.mcos.scheduler.jobs.RegenWorldJob;
+import top.mcos.scheduler.jobs.YanhuaRunTaskJob;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -75,6 +77,11 @@ public final class SchedulerHandler {
         for (CommandConfig config : ConfigLoader.baseConfig.getCommandConfigs()) {
             if(config.isEnable()) CommandJob.registerJob(config);
         }
+
+        // 注册烟花执行任务
+        for (RunTaskPlanConfig config : ConfigLoader.yanHuaConfig.getPlans()) {
+            if(config.isEnable()) YanhuaRunTaskJob.registerJob(config);
+        }
     }
 
     public static void registerJob(Class<? extends Job> clazz, String jobName, String groupName, Date startAt, Date endAt, String cron, Map<String, Object> jobParams) {
@@ -89,10 +96,20 @@ public final class SchedulerHandler {
                 .startAt(startAt==null ? new Date() : startAt) //表示触发器首次被触发的时间;
                 .withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed()).build();
             scheduler.scheduleJob(jobDetail, trigger);
+
             AesopPlugin.logger.log("定时任务【"+jobName+"】已激活");
         } catch (SchedulerException e) {
             e.printStackTrace();
             AesopPlugin.logger.log("任务加载失败！", ConsoleLogger.Level.ERROR);
+        }
+    }
+
+    public static void executeNow(String jobName, String groupName) {
+        try {
+            scheduler.triggerJob(JobKey.jobKey(jobName, groupName));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            AesopPlugin.logger.log("手动执行任务失败！", ConsoleLogger.Level.ERROR);
         }
     }
 

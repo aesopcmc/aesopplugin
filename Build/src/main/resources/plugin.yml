@@ -32,6 +32,7 @@ permissions:
       aesopplugin.admin.task: true
       aesopplugin.admin.activity: true
       aesopplugin.admin.firework: true
+      aesopplugin.admin.yanhua: true
   aesopplugin.pfirework:
     description: 玩家粒子特效
     default: false

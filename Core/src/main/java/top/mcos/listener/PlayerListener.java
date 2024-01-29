@@ -2,7 +2,9 @@ package top.mcos.listener;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -11,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -24,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import top.mcos.AesopPlugin;
 import top.mcos.activity.Gift;
+import top.mcos.activity.newyear.config.YanHuaEvent;
 import top.mcos.config.ConfigLoader;
 import top.mcos.activity.NSKeys;
 import top.mcos.config.configs.BaseConfig;
@@ -39,6 +43,7 @@ import top.mcos.util.RandomUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PlayerListener implements Listener {
 
@@ -161,6 +166,94 @@ public class PlayerListener implements Listener {
             }
         });
     }
+
+    /**
+     * 监听玩家放置方块
+     */
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
+            Block block = e.getBlock();
+            //Player player = e.getPlayer();
+
+            // todo 将block的位置保存到数据库
+
+            ItemStack itemInHand = e.getItemInHand();
+            ItemMeta itemMeta = itemInHand.getItemMeta();
+            if(itemMeta!=null) {
+                BaseConfig baseConfig = ConfigLoader.baseConfig;
+
+                PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+                Set<NamespacedKey> keys = container.getKeys();
+                for (NamespacedKey key : keys) {
+                    if(NSKeys.ACTIVITY_GIFT_BUTTON.getKey().equalsIgnoreCase(key.getKey())) {
+                        // 识别为活动按钮
+                        Boolean giftBtn = container.get(NSKeys.ACTIVITY_GIFT_BUTTON, PersistentDataType.BOOLEAN);
+                        if (giftBtn != null && giftBtn) {
+                            // 将按钮坐标保存至配置文件
+                            List<String> locations = baseConfig.getSettingConfig().getActHandleBlockLocations();
+                            locations.add(block.getLocation().toString());
+                            ConfigLoader.saveConfig(baseConfig);
+                            //AesopPlugin.logger.log("手持物品名称：" + itemMeta.getDisplayName());
+                            //AesopPlugin.logger.log("放置位置：" + block.getLocation().toString());
+                        }
+                    } else if(NSKeys.ACTIVITY_SNOWBALL_BUTTON.getKey().equalsIgnoreCase(key.getKey())) {
+                        Boolean snowballBtn = container.get(NSKeys.ACTIVITY_SNOWBALL_BUTTON, PersistentDataType.BOOLEAN);
+                        if(snowballBtn!=null && snowballBtn) {
+                            // 识别为活动雪球按钮
+                            List<String> locations = baseConfig.getSettingConfig().getActHandleSnowballButtonLocations();
+                            locations.add(block.getLocation().toString());
+                            ConfigLoader.saveConfig(baseConfig);
+                        }
+                    } else if (YanHuaEvent.persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                        YanHuaEvent.onBlockPlace(block, itemInHand);
+                    }
+                }
+            }
+        });
+
+        //Sign sign = (Sign) block.getState();
+        //NamespacedKey namespacedKey = new NamespacedKey(AesopPlugin.getInstance(), "display");
+        //String s = sign.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
+        //AesopPlugin.logger.log("结果数据：" + s);
+        //
+        // TODO https://www.spigotmc.org/threads/a-guide-to-1-14-persistentdataholder-api.371200/
+
+        //Sign sign = (Sign) block.getState();
+        //sign.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, "some data");
+        //sign.update();
+
+        //PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+        //if(container.has(key , PersistentDataType.DOUBLE)) {
+        //    double foundValue = container.get(key, PersistentDataType.DOUBLE);
+        //}
+
+    }
+
+    /**
+     * 方块打碎事件
+     */
+    @EventHandler
+    public void onBlockBreakEvent(BlockBreakEvent e) {
+        //System.out.println("监听打碎");
+        //Player p = e.getPlayer();
+        Block block = e.getBlock();
+
+        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
+            // 移除烟花发射点
+            YanHuaEvent.damageBlockEvent(block);
+        });
+
+        // TODO 移除礼物按钮
+    }
+
+    ///**
+    // * 方块破坏损坏事件
+    // */
+    //@EventHandler
+    //public void onBlockDamage(BlockDamageEvent e) {
+    //    //Block block = e.getBlock();
+    //}
 
     private void handleGiftBtnEvent(Player player) {
         // TODO 添加事务管理
@@ -320,76 +413,5 @@ public class PlayerListener implements Listener {
         }
     }
 
-
-    /**
-     * 监听玩家放置方块
-     */
-    @EventHandler
-    private void onBlockPlace(BlockPlaceEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
-            Block block = e.getBlock();
-            Player player = e.getPlayer();
-
-            // todo 将block的位置保存到数据库
-
-            ItemStack itemInHand = e.getItemInHand();
-            ItemMeta itemMeta = itemInHand.getItemMeta();
-            if(itemMeta!=null) {
-                BaseConfig baseConfig = ConfigLoader.baseConfig;
-
-                PersistentDataContainer con = itemMeta.getPersistentDataContainer();
-                Boolean giftBtn = con.get(NSKeys.ACTIVITY_GIFT_BUTTON, PersistentDataType.BOOLEAN);
-                Boolean snowballBtn = con.get(NSKeys.ACTIVITY_SNOWBALL_BUTTON, PersistentDataType.BOOLEAN);
-                if (giftBtn != null && giftBtn) {
-                    // 识别为活动按钮
-                    // 将按钮坐标保存至配置文件
-                    List<String> locations = baseConfig.getSettingConfig().getActHandleBlockLocations();
-                    locations.add(block.getLocation().toString());
-                    ConfigLoader.saveConfig(baseConfig);
-                    //AesopPlugin.logger.log("手持物品名称：" + itemMeta.getDisplayName());
-                    //AesopPlugin.logger.log("放置位置：" + block.getLocation().toString());
-                }
-                if(snowballBtn!=null && snowballBtn) {
-                    List<String> locations = baseConfig.getSettingConfig().getActHandleSnowballButtonLocations();
-                    locations.add(block.getLocation().toString());
-                    ConfigLoader.saveConfig(baseConfig);
-                }
-            }
-        });
-
-        //Sign sign = (Sign) block.getState();
-        //NamespacedKey namespacedKey = new NamespacedKey(AesopPlugin.getInstance(), "display");
-        //String s = sign.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
-        //AesopPlugin.logger.log("结果数据：" + s);
-        //
-        // TODO https://www.spigotmc.org/threads/a-guide-to-1-14-persistentdataholder-api.371200/
-
-        //Sign sign = (Sign) block.getState();
-        //sign.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, "some data");
-        //sign.update();
-
-        //PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        //if(container.has(key , PersistentDataType.DOUBLE)) {
-        //    double foundValue = container.get(key, PersistentDataType.DOUBLE);
-        //}
-
-    }
-
-    ///**
-    // * 方块破坏事件
-    // * @param e
-    // */
-    //@EventHandler
-    //private void onBlockDamage(BlockDamageEvent e) {
-    //    Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
-    //        // TODO 移除礼物按钮
-    //
-    //        System.out.println("破坏。。。");
-    //        Block block = e.getBlock();
-    //        Location location = block.getLocation();
-    //        System.out.println("破坏方块："+ location.toString());
-    //
-    //    });
-    //}
 
 }

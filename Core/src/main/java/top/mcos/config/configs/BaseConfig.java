@@ -23,7 +23,7 @@ import java.util.List;
 @Setter
 @Getter
 @ConfigFileName("config.yml")
-public final class BaseConfig {
+public final class BaseConfig{
     @PathEntity("config")
     private SettingConfig settingConfig;
 
@@ -41,6 +41,4 @@ public final class BaseConfig {
 
     @PathList("item-bind-event.commands")
     private List<ItemBindCommandsConfig> itemBindCommandConfigs;
-
-
 }

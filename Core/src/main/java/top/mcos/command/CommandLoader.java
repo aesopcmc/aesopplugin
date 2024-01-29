@@ -13,6 +13,7 @@ import top.mcos.command.subcommands.TaskSubCommand;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import top.mcos.command.subcommands.HelpSubCommand;
+import top.mcos.command.subcommands.YanHuaSubCommand;
 
 import java.util.LinkedHashSet;
 
@@ -34,6 +35,7 @@ public final class CommandLoader {
             commands.add(new FireworkSubCommand());
             commands.add(new FireSubCommand());
             commands.add(new ItemBindSubCommand());
+            commands.add(new YanHuaSubCommand());
 
             // 注册主命令 + 子命令
             CommandManager.registerCommand(Bukkit.getPluginCommand("aesopplugin"), commands,
