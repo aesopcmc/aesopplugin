@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.activity.newyear.config.YanHuaEntity;
 import top.mcos.activity.newyear.config.YanHuaEvent;
+import top.mcos.activity.newyear.config.sub.RunTaskPlanConfig;
 import top.mcos.activity.newyear.config.sub.YGroupConfig;
 import top.mcos.activity.newyear.config.sub.YTaskConfig;
 import top.mcos.config.ConfigLoader;
@@ -71,10 +72,11 @@ public final class YanHuaSubCommand extends Command implements Helpable {
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
             if(args.length==2) {
-                possibleCompletions.add("give");        // 给予烟花发射位置物品 give <分组KEY(不存在会创建)>
-                possibleCompletions.add("clear");       // 清理所有进行中的烟花任务
-                possibleCompletions.add("fire");        // 发射烟花 fire <任务Key，多个使用逗号分割>
-                possibleCompletions.add("preview");     // 发射预览烟花特效 preview <类型> [发射时长]
+                possibleCompletions.add("give");        // 给予烟花发射位置物品: yanhua give <分组KEY(不存在会创建)>
+                possibleCompletions.add("clear");       // 清理所有进行中的烟花任务: yanhua clear
+                possibleCompletions.add("fire");        // 发射烟花： yanhua fire <任务Key，多个使用逗号分割>
+                possibleCompletions.add("fireplan");    // 发射烟花计划： yanhua fireplan <计划Key>
+                possibleCompletions.add("preview");     // 发射预览烟花特效: yanhua preview <类型> [发射时长]
             }
             if(args.length==3) {
                 if("give".contains(args[1])) {
@@ -82,6 +84,9 @@ public final class YanHuaSubCommand extends Command implements Helpable {
                 }
                 if("fire".contains(args[1])) {
                     possibleCompletions.add("<任务KEY，多个使用逗号分割>");
+                }
+                if("fireplan".contains(args[1])) {
+                    possibleCompletions.addAll(ConfigLoader.yanHuaConfig.getPlans().stream().map(RunTaskPlanConfig::getKey).toList());
                 }
                 if("preview".contains(args[1])) {
                     possibleCompletions.add("<类型1-99>");
@@ -122,7 +127,21 @@ public final class YanHuaSubCommand extends Command implements Helpable {
             }
         } else if("clear".equals(args[1])) {
             YanHuaEvent.clearQueue();
-            AesopPlugin.logger.log(sender, "&a已清理");
+            AesopPlugin.logger.log(sender, "&a已停止发射。");
+        } else if("fireplan".equals(args[1])) {
+            if(YanHuaEvent.hasSize()) {
+                AesopPlugin.logger.log(sender, "&c当前烟花正在发射中...请勿重复操作!");
+                return;
+            }
+            String planKey = args[2];
+            List<RunTaskPlanConfig> plans = ConfigLoader.yanHuaConfig.getPlans();
+            for (RunTaskPlanConfig plan : plans) {
+                if(plan.getKey().equals(planKey)) {
+                    YanHuaEvent.fireTaskPlan(plan);
+                    AesopPlugin.logger.log(sender, "&a&l烟火盛宴正在启动---====>>>>>>");
+                    return;
+                }
+            }
         } else if("fire".equals(args[1])) {
             String taskKey = args[2];
             String[] taskKeys = taskKey.split(",");

@@ -161,14 +161,18 @@ tasks:
 # 物品绑定事件
 item-bind-event:
   commands:
-    menu: # 定义菜单物品，名称固定不可修改
-      enable: true
-      material: 'clock'
+    key1: # 自定义唯一key 。 特殊key: menu：菜单命令，普通玩家可通过命令（ /aep givemenu）执行
+      enable: true # 是否启用
+      material: 'clock' # 物品材质
       display-name: '&#2796e7&l[系统菜单]'
       lore:
         - ''
         - '&7右键打开系统菜单'
       # 执行命令格式： 前缀+空格+命令
       # 前缀：[player] 、[console]
+      # 占位符：{player} 玩家名称
       commands:
         - '[player] cd'
+      execute-delay: 0 # 执行延迟（针对所有玩家）
+      execute-type: 0 # 交互类型： 0物品 1方块按钮（放置方块后交互）
+      locations: [] # 方块位置

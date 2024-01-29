@@ -3,6 +3,7 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -18,7 +19,9 @@ import top.mcos.config.configs.subconfig.ItemBindCommandsConfig;
 import top.mcos.itmebind.ItemEvent;
 import top.mcos.util.MessageUtil;
 
+import java.beans.EventHandler;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,64 +65,50 @@ public final class ItemBindSubCommand extends Command implements Helpable {
     @Override
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
-            //if(args.length==2) {
-            //    possibleCompletions.add("give");        // 给予玩家粒子组 give <playerName> <玩家粒子组key>
-            //    possibleCompletions.add("remove");      // 移除玩家粒子组 remove <playerName> <玩家粒子组key>
-            //    possibleCompletions.add("removeall");   // 移除玩家所有粒子组 removeall <playerName>
-            //    possibleCompletions.add("setup");       // 设置粒子组 setup <player|location> <自定义组key> <自定义组名>
-            //}
-            //if(args.length==3) {
-            //    if("give,remove,removeall".contains(args[1])) {
-            //        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-            //        for (Player onlinePlayer : onlinePlayers) {
-            //            possibleCompletions.add(onlinePlayer.getName());
-            //        }
-            //    }
-            //    if("setup".contains(args[1])) {
-            //        possibleCompletions.add("player");
-            //        possibleCompletions.add("location");
-            //    }
-            //}
-            //
+            if(args.length==2) {
+                if("itembind".contains(args[0]) && sender.isOp()) { // TODO 暂且固定op才能有该权限
+                    possibleCompletions.add("give");        // itembind give <命令key>
+                }
+            }
+            if(args.length==3) {
+                if("itembind".contains(args[0]) && "give".contains(args[1]) && sender.isOp()) { // TODO 暂且固定op才能有该权限
+                    List<ItemBindCommandsConfig> itemBindCommandConfigs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
+                    List<String> keys = itemBindCommandConfigs.stream().filter(ItemBindCommandsConfig::isEnable).map(ItemBindCommandsConfig::getKey).toList();
+                    possibleCompletions.addAll(keys);
+                }
+            }
         };
     }
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if("givemenu".equals(args[0])) {
-            if(sender instanceof Player player) {
+            if (sender instanceof Player player) {
                 List<ItemBindCommandsConfig> itemBindCommandConfigs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
                 Map<String, ItemBindCommandsConfig> configMap = itemBindCommandConfigs.stream().collect(Collectors.toMap(ItemBindCommandsConfig::getKey, c -> c));
 
-                String ibKey = "menu";
+                String ibKey = "menu"; //特殊key: menu：菜单命令，普通玩家可通过命令（ /aep givemenu）执行
                 ItemBindCommandsConfig config = configMap.get(ibKey);
-                if(config==null) {
+                if (config == null) {
                     AesopPlugin.logger.log(sender, "&c物品不存在");
                     return;
                 }
-
-                NamespacedKey namespacedKey = new NamespacedKey(AesopPlugin.getInstance(), ItemEvent.persistentKeyPrefix);
-                ItemStack itemStack = new ItemStack(Material.valueOf(config.getMaterial().toUpperCase()), 1);
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                if(itemMeta!=null) {
-                    // 设置显示的名称
-                    itemMeta.setDisplayName(MessageUtil.colorize(config.getDisplayName()));
-                    // 设置自定义持久数据
-                    itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, ibKey);
-                    // 设置lore
-                    List<String> lines = new ArrayList<>();
-                    List<String> lore = config.getLore();
-                    for (String s : lore) {
-                        lines.add(MessageUtil.colorize(s));
-                    }
-                    itemMeta.setLore(lines);
-                    // 设置附魔
-                    itemStack.setItemMeta(itemMeta);
-
-                    player.getInventory().addItem(itemStack);
-                }
+                // 给与物品
+                ItemEvent.giveItem(config, player);
             } else {
                 AesopPlugin.logger.log("&c需要以游戏身份执行该指令");
+            }
+        }else if("itembind".equals(args[0])) {
+            if("give".equals(args[1]) && sender instanceof Player player) {
+                String key = args[2];
+                List<ItemBindCommandsConfig> configs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
+                for (ItemBindCommandsConfig config : configs) {
+                    if(config.getKey().equals(key)) {
+                        // 给与物品
+                        ItemEvent.giveItem(config, player);
+                        return;
+                    }
+                }
             }
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");

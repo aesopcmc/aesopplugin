@@ -34,7 +34,7 @@ public final class AesopPlugin extends JavaPlugin {
     public static @Nullable HashSet<Runnable> onInstance;
     public static @Nullable NmsProvider nmsProvider;
 
-    public static final @NotNull Logger logger = new Logger("&6[&b伊索插件&6]&f ");
+    public static final @NotNull Logger logger = new Logger("&b&l伊AE&3&l索SOP&6 >>&f ");
 
     /**
      * 同步标记，使用示例：

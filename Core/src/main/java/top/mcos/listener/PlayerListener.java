@@ -2,7 +2,6 @@ package top.mcos.listener;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -128,8 +127,10 @@ public class PlayerListener implements Listener {
             // 以玩家唯一id做同步处理
             String playerId = player.getUniqueId().toString();
             synchronized (AesopPlugin.sync.intern(playerId)) {
-                ItemEvent.triggerEvent(player, event.getItem());
-                // 监听玩家右键方
+                // TODO 监听给玩家事件
+                ItemEvent.triggerEvent(player, event);
+
+                // 监听玩家右键方块 TODO 待重构 至 -> ItemEvent.triggerEvent(player, event);
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Block clicked = event.getClickedBlock();
 
@@ -205,7 +206,11 @@ public class PlayerListener implements Listener {
                             locations.add(block.getLocation().toString());
                             ConfigLoader.saveConfig(baseConfig);
                         }
+                    } else if (ItemEvent.persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                        // 识别为物品绑定事件
+                        ItemEvent.onBlockPlace(block, itemInHand);
                     } else if (YanHuaEvent.persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                        // 识别为烟花桩
                         YanHuaEvent.onBlockPlace(block, itemInHand);
                     }
                 }
@@ -241,10 +246,13 @@ public class PlayerListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), ()->{
             // 移除烟花发射点
-            YanHuaEvent.damageBlockEvent(block);
+            YanHuaEvent.onBlockBreakEvent(block);
+            // 移除物品按钮绑定事件
+            ItemEvent.onBlockBreakEvent(block);
+            // TODO 移除礼物按钮
+
         });
 
-        // TODO 移除礼物按钮
     }
 
     ///**

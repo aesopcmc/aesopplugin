@@ -78,40 +78,37 @@ public final class TaskSubCommand extends Command implements Helpable {
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
-        if(sender instanceof Player) {
-            FileConfiguration config = AesopPlugin.getInstance().getConfig();
-            Player player = (Player) sender;
-            if("run".equals(args[1])) {
-                if(args.length<4) {
-                    AesopPlugin.logger.log(player, "&c参数不足");
-                    return;
-                }
-                String taskName = args[2];
-                String taskKey = args[3];
-                if("yanhua".equals(taskName)) {
-                    List<RunTaskPlanConfig> plans = ConfigLoader.yanHuaConfig.getPlans();
-                    for (RunTaskPlanConfig plan : plans) {
-                        if (taskKey.equals(plan.getKey())) {
-                            YanhuaRunTaskJob.executeNow(plan);
-                            break;
-                        }
+        if("run".equals(args[1])) {
+            if(args.length<4) {
+                AesopPlugin.logger.log(sender, "&c参数不足");
+                return;
+            }
+            String taskName = args[2];
+            String taskKey = args[3];
+            if("yanhua".equals(taskName)) {
+                List<RunTaskPlanConfig> plans = ConfigLoader.yanHuaConfig.getPlans();
+                for (RunTaskPlanConfig plan : plans) {
+                    if (taskKey.equals(plan.getKey())) {
+                        YanhuaRunTaskJob.executeNow(plan);
+                        break;
                     }
                 }
-                //Boolean setFlag = Boolean.valueOf(args[2]);
-                //config.set("tasks.refresh-map.enable", setFlag);
-                //AesopPlugin.getInstance().saveConfig();
-                //AesopPlugin.logger.log(player, "设为："+ setFlag);
-
-                player.sendMessage("已执行"+taskName+"...");
-            } else if ("show".equals(args[1])) {
-                // 测试显示配置
-                boolean flag = config.getBoolean("tasks.refresh-map.enable");
-                AesopPlugin.logger.log(player, "输出："+ flag);
-
-            } else {
-                AesopPlugin.logger.log(player, "&c参数有误");
-                this.onHelp();
             }
+            //Boolean setFlag = Boolean.valueOf(args[2]);
+            //config.set("tasks.refresh-map.enable", setFlag);
+            //AesopPlugin.getInstance().saveConfig();
+            //AesopPlugin.logger.log(player, "设为："+ setFlag);
+
+            sender.sendMessage("已执行"+taskName+"...");
+        } else if ("show".equals(args[1])) {
+            // 测试显示配置
+            FileConfiguration config = AesopPlugin.getInstance().getConfig();
+            boolean flag = config.getBoolean("tasks.refresh-map.enable");
+            AesopPlugin.logger.log(sender, "输出："+ flag);
+
+        } else {
+            AesopPlugin.logger.log(sender, "&c参数有误");
+            this.onHelp();
         }
     }
 }
