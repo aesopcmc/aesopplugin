@@ -1,4 +1,4 @@
-package top.mcos.itmebind;
+package top.mcos.business.itmebind;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import top.mcos.AesopPlugin;
+import top.mcos.command.CommandUtil;
 import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.subconfig.ItemBindCommandsConfig;
 import top.mcos.util.MessageUtil;
@@ -28,8 +29,7 @@ import java.util.regex.Pattern;
 
 public final class ItemEvent {
     public static final String persistentKeyPrefix = "item-bind-event";
-    public static final String COMMAND_PLAYER_SENDER_TYPE = "[player]";
-    public static final String COMMAND_CONSOLE_SENDER_TYPE = "[console]";
+
 
     public static void triggerEvent(Player player, PlayerInteractEvent event){
         try {
@@ -43,7 +43,7 @@ public final class ItemEvent {
                         if (config.getLocations().contains(formatLocation(clicked.getLocation()))) {
                             // 处理命令事件
                             //System.out.println("处理方块命令事件。。。");
-                            executeCommand(config.getCommands(), player);
+                            CommandUtil.executeCommand(config.getCommands(), player);
                             // 多个位置只执行一次
                             return;
                         }
@@ -66,7 +66,7 @@ public final class ItemEvent {
                     ItemBindCommandsConfig config = getConfigByKey(ibKey);
                     if(config!=null && config.getExecuteType()==0) {
                         //System.out.println("处理物品命令事件。。。");
-                        executeCommand(config.getCommands(), player);
+                        CommandUtil.executeCommand(config.getCommands(), player);
                     }
 
                     // 处理其它事件 (例如数据库交互、缓存等待)
@@ -79,34 +79,7 @@ public final class ItemEvent {
         //player.sendMessage("手持物品："+item.getItemMeta().getDisplayName());
     }
 
-    public static void executeCommand(List<String> commands, Player player) {
-        if (commands != null) {
-            // 执行命令需要在同步线程中执行 ，否者会报错:TODO java.lang.IllegalStateException: Asynchronous Command Dispatched Async:
-            Bukkit.getScheduler().runTask(AesopPlugin.getInstance(), () -> {
-                for (String command : commands) {
-                    String regex = "(^\\[.+\\]) (.+)";
-                    Matcher matcher = Pattern.compile(regex).matcher(command);
-                    if (matcher.find()) {
-                        String prefix = matcher.group(1);
-                        String cmd = matcher.group(2);
-                        if (COMMAND_PLAYER_SENDER_TYPE.equalsIgnoreCase(prefix)) {
-                            // 以玩家身份执行命令
-                            cmd = cmd.replaceAll("\\{player\\}", player.getName());
-                            Bukkit.getServer().dispatchCommand(player, cmd);
-                        } else if (COMMAND_CONSOLE_SENDER_TYPE.equalsIgnoreCase(prefix)) {
-                            // 以控制台身份执行命令
-                            cmd = cmd.replaceAll("\\{player\\}", player.getName());
-                            ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
-                            Bukkit.getServer().dispatchCommand(consoleSender, cmd);
-                        }
-                    } else {
-                        // 没有匹配到前缀的情况下，默认以玩家身份执行命令
-                        Bukkit.getServer().dispatchCommand(player, command);
-                    }
-                }
-            });
-        }
-    }
+
 
     public static @CheckForNull ItemBindCommandsConfig getConfigByKey(String ibKey) {
         List<ItemBindCommandsConfig> configs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
@@ -122,17 +95,20 @@ public final class ItemEvent {
 
     /**
      * 监听放置方块事件
+     *
      * @param placeBlock 放置的方块
      * @param itemInHand 手持放置的物品
+     * @param namespace
      */
-    public static void onBlockPlace(Block placeBlock, ItemStack itemInHand) {
+    public static void onBlockPlace(Block placeBlock, ItemStack itemInHand, NamespacedKey namespace) {
         try {
             System.out.println("放置事件。。。");
 
             ItemMeta itemMeta = itemInHand.getItemMeta();
             if (itemMeta != null) {
                 PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-                String itemKey = container.get(new NamespacedKey(AesopPlugin.getInstance(), persistentKeyPrefix), PersistentDataType.STRING);
+                String itemKey = container.get(namespace, PersistentDataType.STRING);
+                //String itemKey = container.get(new NamespacedKey(AesopPlugin.getInstance(), persistentKeyPrefix), PersistentDataType.STRING);
                 if (StringUtils.isNotBlank(itemKey)) {
                     // 添加坐标，并更新配置
                     String loc = formatLocation(placeBlock.getLocation());

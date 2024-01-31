@@ -5,10 +5,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 import top.mcos.database.dao.impl.GiftItemDaoImpl;
-import top.mcos.database.enums.GiftTypeEnum;
 
 /**
- * 礼物
+ * 礼物领取明细
  */
 @Setter
 @Getter
@@ -25,15 +24,15 @@ public class GiftItem {
     @DatabaseField
     private String giftName;
     /**
-     * 礼物名称key
+     * 礼物key或条件物品key
      */
     @DatabaseField(canBeNull = false)
     private String itemKey;
     /**
-     * 礼物类型，枚举值：{@link GiftTypeEnum}
+     * 物品类型 1礼物 2条件物品
      */
     @DatabaseField(canBeNull = false, defaultValue = "1")
-    private Integer giftType;
+    private Integer itemType;
     /**
      * 领取数量
      */

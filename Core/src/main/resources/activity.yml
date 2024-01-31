@@ -1,0 +1,75 @@
+# 活动列表
+events:
+  newyear: # 自定义活动key (一个玩家只能领取一次活动物品)
+    enable: false # 是否启用
+    event-name: '&d新年活动' # 活动名称
+    # 礼物列表 ，格式：'礼物名称:数量:概率'
+    # 礼物名称：gifts中的礼物名称
+    # 数量：支持范围，例如1-10，表示随机获得1个至10个，最大64个（虚拟礼物数量将没有意义，设置为0或其它数字即可）
+    # 概率%：获得概率，0表示不会获取到，100表示一定会获取到
+    # 示例：['nametag:10-64:100']
+    gift-keys: ['nametag:10-64:100']
+    gift-type: 2 # 礼物类型，用于数据库保存礼物领取记录的区分，可选值参考枚举类GiftTypeEnum ： 1圣诞礼物 2春节礼物
+    # 领取前置条件，格式：条件物品key(不能重复)，全部满足集合内的物品才可领取，若留空集，则不需要条件
+    condition: ['firework']
+    # 领取礼物后的声音：ENTITY_FIREWORK_ROCKET_TWINKLE ENTITY_FIREWORK_ROCKET_LAUNCH BLOCK_NOTE_BLOCK_BELL BLOCK_NOTE_BLOCK_CHIME ENTITY_EXPERIENCE_ORB_PICKUP
+    claimed-sound: 'ENTITY_FIREWORK_ROCKET_TWINKLE'
+    # 领取礼物后的提示
+    claimed-msg: '&a恭喜您^_^，成功领取一份【{eventName}】&a礼物，请检查你的背包！'
+    # 开始领取时间，例如：'2024-01-02 20:01:20'，留空''表示不限制开始时间
+    begin-time: ''
+    # 结束领取时间，例如：'2024-03-02 20:01:20'，留空''表示不限制结束时间
+    end-time: ''
+
+# 礼物
+gifts:
+  # 称号礼物（自定义唯一礼物key）
+  nametag:
+    # 礼物类型：1实体 2虚拟
+    type: 2
+    # 显示名称
+    display-name: '&a最强称号'
+    # 数据库存储名称
+    db-name: '最强称号'
+    # 获得礼物后立即执行指令 (仅用于虚拟礼物)
+    # 格式： 前缀+空格+命令
+    # 前缀：[player] 、[console]
+    # 占位符：{player} 玩家名称
+    commands: []
+    # 物品材质 （仅用于实体礼物）
+    material: 'name_tag'
+    # 物品描述 （仅用于实体礼物）
+    lore: []
+    # 药水效果，仅针对药水、盔甲等材质的物品生效 （仅用于实体礼物）
+    # 格式；'药水名称:持续时间:概率'
+    # 药水名称：minecraft药水名称，或参考PotionEffectType常量
+    # 持续时间：单位tick,可填写范围例如100-250，表示随机选择范围内的时间
+    # 概率%：得到该药水的概率，0表示不会获取到，100表示一定会获取到
+    # 示例：['SPEED:100-500:100']
+    potions: []
+    # 附魔，仅针对可以附魔的物品（仅用于实体礼物）
+    # 格式：'附魔名称:附魔等级:等级限制:概率'
+    # 附魔名称：minecraft附魔名称，或参考Enchantment类的常量值->EnchantmentWrapper（xxx）
+    # 附魔等级：可填写等级范围例如2-10，即随机选取范围内的一个等级
+    # 等级限制：是否忽略等级限制 true无限制 false受原版限制
+    # 概率%：附上该附魔的概率，0表示不会获附魔到，100表示一定会附魔到
+    # 例如：['KNOCKBACK:10:true:100']
+    enchants: []
+    ext-namespace: '' # 自定义命名空间（用于其它插件的物品）（仅用于实体礼物）
+    ext-namespace-key: '' # 自定义空间key（用于其它插件的物品）（仅用于实体礼物）
+    broadcast: false # 领取礼物后是否进行广播给所有玩家（表明这是一个特殊大奖的礼物意义）
+
+# 条件物品（收集物品）
+condition:
+  items:
+    firework: # 自定义唯一key
+      amount: 10 # 给予数量，最大64
+      display-name: '&a新年烟花x10' # 显示名称
+      db-name: '新年烟花x10' # 数据库存储名称
+      material: 'firework_rocket' # 物品材质
+      lore:
+        - '&7一个象征性意义的物品，丢弃不影响收集进度'
+      potions: [] # 药水效果，配置说明同上
+      enchants: [] # 附魔，配置说明同上
+      ext-namespace: '' # 自定义命名空间（用于其它插件的物品）
+      ext-namespace-key: '' # 自定义空间key（用于其它插件的物品）

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -37,7 +38,8 @@ public class TestUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(numToHex16(15435844));
+        System.out.println(new Date().getTime());
+        //System.out.println(numToHex16(15435844));
         //System.out.println(new Random().nextInt(4));
 
         //int i = Integer.parseInt("ff00ff", 16);

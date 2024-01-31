@@ -25,17 +25,18 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import top.mcos.AesopPlugin;
-import top.mcos.activity.Gift;
-import top.mcos.activity.newyear.config.YanHuaEvent;
+import top.mcos.business.activity.christmas.Gift;
+import top.mcos.business.yanhua.YanHuaEvent;
 import top.mcos.config.ConfigLoader;
-import top.mcos.activity.NSKeys;
+import top.mcos.business.activity.christmas.NSKeys;
 import top.mcos.config.configs.BaseConfig;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
+import top.mcos.database.enums.GiftTypeEnum;
 import top.mcos.hook.firework.FireWorkManage;
-import top.mcos.itmebind.ItemEvent;
+import top.mcos.business.itmebind.ItemEvent;
 import top.mcos.util.MessageUtil;
 import top.mcos.util.RandomUtil;
 
@@ -185,9 +186,9 @@ public class PlayerListener implements Listener {
                 BaseConfig baseConfig = ConfigLoader.baseConfig;
 
                 PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-                Set<NamespacedKey> keys = container.getKeys();
-                for (NamespacedKey key : keys) {
-                    if(NSKeys.ACTIVITY_GIFT_BUTTON.getKey().equalsIgnoreCase(key.getKey())) {
+                Set<NamespacedKey> namespacedKeys = container.getKeys();
+                for (NamespacedKey namespace : namespacedKeys) {
+                    if(NSKeys.ACTIVITY_GIFT_BUTTON.getKey().equalsIgnoreCase(namespace.getKey())) {
                         // 识别为活动按钮
                         Boolean giftBtn = container.get(NSKeys.ACTIVITY_GIFT_BUTTON, PersistentDataType.BOOLEAN);
                         if (giftBtn != null && giftBtn) {
@@ -198,7 +199,7 @@ public class PlayerListener implements Listener {
                             //AesopPlugin.logger.log("手持物品名称：" + itemMeta.getDisplayName());
                             //AesopPlugin.logger.log("放置位置：" + block.getLocation().toString());
                         }
-                    } else if(NSKeys.ACTIVITY_SNOWBALL_BUTTON.getKey().equalsIgnoreCase(key.getKey())) {
+                    } else if(NSKeys.ACTIVITY_SNOWBALL_BUTTON.getKey().equalsIgnoreCase(namespace.getKey())) {
                         Boolean snowballBtn = container.get(NSKeys.ACTIVITY_SNOWBALL_BUTTON, PersistentDataType.BOOLEAN);
                         if(snowballBtn!=null && snowballBtn) {
                             // 识别为活动雪球按钮
@@ -206,12 +207,12 @@ public class PlayerListener implements Listener {
                             locations.add(block.getLocation().toString());
                             ConfigLoader.saveConfig(baseConfig);
                         }
-                    } else if (ItemEvent.persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                    } else if (ItemEvent.persistentKeyPrefix.equalsIgnoreCase(namespace.getKey())) {
                         // 识别为物品绑定事件
-                        ItemEvent.onBlockPlace(block, itemInHand);
-                    } else if (YanHuaEvent.persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                        ItemEvent.onBlockPlace(block, itemInHand, namespace);
+                    } else if (YanHuaEvent.persistentKeyPrefix.equalsIgnoreCase(namespace.getKey())) {
                         // 识别为烟花桩
-                        YanHuaEvent.onBlockPlace(block, itemInHand);
+                        YanHuaEvent.onBlockPlace(block, itemInHand, namespace);
                     }
                 }
             }
@@ -264,7 +265,6 @@ public class PlayerListener implements Listener {
     //}
 
     private void handleGiftBtnEvent(Player player) {
-        // TODO 添加事务管理
         // 读取数据库判断是否已经领取过
         try {
             GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
@@ -322,9 +322,9 @@ public class PlayerListener implements Listener {
 
             // 包含进事务块
             AesopPlugin.callInTransaction(()->{
-                // 保存领取记录
-                GiftClaimRecord giftlog = giftClaimRecordDao.saveGift(player.getUniqueId().toString(),
-                        player.getName(), player.getAddress().getHostName());
+                // 保存领取记录 TODO
+                GiftClaimRecord giftlog = giftClaimRecordDao.saveRecord(player.getUniqueId().toString(),
+                        player.getName(), player.getAddress().getHostName(), null, "圣诞礼物", GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
                 giftItems.forEach(item -> {
                     item.setRecordId(giftlog.getId());
                 });

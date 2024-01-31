@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
-import top.mcos.activity.newyear.config.YanHuaEvent;
+import top.mcos.business.yanhua.YanHuaEvent;
 import top.mcos.config.ConfigLoader;
 import top.mcos.hook.firework.FireWorkManage;
 import top.mcos.message.MessageHandler;

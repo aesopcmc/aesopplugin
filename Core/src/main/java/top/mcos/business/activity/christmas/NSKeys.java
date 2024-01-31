@@ -1,4 +1,4 @@
-package top.mcos.activity;
+package top.mcos.business.activity.christmas;
 
 import org.bukkit.NamespacedKey;
 import top.mcos.AesopPlugin;

@@ -4,7 +4,7 @@ import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
-import top.mcos.activity.newyear.config.sub.RunTaskPlanConfig;
+import top.mcos.business.yanhua.config.sub.RunTaskPlanConfig;
 import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.subconfig.CommandConfig;
 import top.mcos.config.configs.subconfig.NoticeConfig;

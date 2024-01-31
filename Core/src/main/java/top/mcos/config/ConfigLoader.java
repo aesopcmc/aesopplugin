@@ -6,7 +6,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import top.mcos.AesopPlugin;
-import top.mcos.activity.newyear.config.YanHuaConfig;
+import top.mcos.business.activity.config.ActivityConfig;
+import top.mcos.business.yanhua.config.YanHuaConfig;
 import top.mcos.config.ann.ConfigFileName;
 import top.mcos.config.ann.PathEntity;
 import top.mcos.config.ann.PathKey;
@@ -16,7 +17,6 @@ import top.mcos.config.configs.BaseConfig;
 import top.mcos.config.configs.FwConfig;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -38,6 +38,10 @@ public final class ConfigLoader {
      * yanhua.yml 配置
      */
     public static YanHuaConfig yanHuaConfig;
+    /**
+     * 活动配置
+     */
+    public static ActivityConfig activityConfig;
 
     // 自定义配置文件
     private final static Map<String, CustomerConfigFile> ccMap = new HashMap<>();
@@ -47,6 +51,7 @@ public final class ConfigLoader {
             baseConfig = initConfig(BaseConfig.class);
             fwConfig = initConfig(FwConfig.class);
             yanHuaConfig = initConfig(YanHuaConfig.class);
+            activityConfig = initConfig(ActivityConfig.class);
         } else if(configFile.contains("yanhua")) {
             yanHuaConfig = initConfig(YanHuaConfig.class);
         }

@@ -1,4 +1,4 @@
-package top.mcos.activity;
+package top.mcos.business.activity.christmas;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,7 +53,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -84,7 +84,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -115,7 +115,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -152,7 +152,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -173,7 +173,7 @@ public final class Gift {
         item.setItemKey(NSKeys.ACTIVITY_SDLZ_TAG.getKey());
         item.setAmount(amount);
         item.setGiftName(giftName);
-        item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+        item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
         giftItems.add(item);
         return item;
     }
@@ -221,7 +221,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -269,7 +269,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -316,7 +316,7 @@ public final class Gift {
             item.setItemKey(nkey.getKey());
             item.setAmount(amount);
             item.setGiftName(giftName);
-            item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+            item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
             giftItems.add(item);
             return item;
         }
@@ -338,7 +338,7 @@ public final class Gift {
         item.setItemKey(NSKeys.ACTIVITY_MONEY_AND_POINT.getKey());
         item.setAmount(amount);
         item.setGiftName(giftName);
-        item.setGiftType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
+        item.setItemType(GiftTypeEnum.CHRISTMAS_GIFT.getIndex());
         giftItems.add(item);
         return item;
     }

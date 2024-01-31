@@ -1,4 +1,4 @@
-package top.mcos.activity.newyear.config;
+package top.mcos.business.yanhua;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +17,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import top.mcos.AesopPlugin;
-import top.mcos.activity.newyear.config.sub.RunTaskPlanConfig;
-import top.mcos.activity.newyear.config.sub.YCellConfig;
-import top.mcos.activity.newyear.config.sub.YGroupConfig;
-import top.mcos.activity.newyear.config.sub.YTaskConfig;
+import top.mcos.business.yanhua.config.sub.RunTaskPlanConfig;
+import top.mcos.business.yanhua.config.sub.YCellConfig;
+import top.mcos.business.yanhua.config.sub.YGroupConfig;
+import top.mcos.business.yanhua.config.sub.YTaskConfig;
 import top.mcos.config.ConfigLoader;
 import top.mcos.util.CollectionUtils;
 import top.mcos.util.ColorUtil;
@@ -34,7 +34,9 @@ import java.util.Map;
 import java.util.concurrent.DelayQueue;
 import java.util.stream.Collectors;
 
-
+/**
+ * 烟花核心逻辑处理
+ */
 public class YanHuaEvent {
     public static final String persistentKeyPrefix = "yanhua-nkey";
     private static final DelayQueue<YanHuaEntity> yanhuaQueue = new DelayQueue<>();
@@ -69,13 +71,14 @@ public class YanHuaEvent {
      *
      * @param placeBlock 被放置的方块
      * @param itemInHand 被放置的物品（物品放置后 变成方块placeBlock）
+     * @param namespace
      */
-    public static void onBlockPlace(Block placeBlock, ItemStack itemInHand) {
+    public static void onBlockPlace(Block placeBlock, ItemStack itemInHand, NamespacedKey namespace) {
         try {
             ItemMeta itemMeta = itemInHand.getItemMeta();
             if (itemMeta != null) {
                 PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-                String groupKey = container.get(new NamespacedKey(AesopPlugin.getInstance(), persistentKeyPrefix), PersistentDataType.STRING);
+                String groupKey = container.get(namespace, PersistentDataType.STRING);
                 if (StringUtils.isNotBlank(groupKey)) {
 
                     String loc = formatLocation(placeBlock.getLocation());

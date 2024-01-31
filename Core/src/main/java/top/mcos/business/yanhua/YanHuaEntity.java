@@ -1,4 +1,4 @@
-package top.mcos.activity.newyear.config;
+package top.mcos.business.yanhua;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,16 +1,15 @@
-package top.mcos.activity.newyear.config;
+package top.mcos.business.yanhua.config;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import top.mcos.activity.newyear.config.sub.RunTaskPlanConfig;
-import top.mcos.activity.newyear.config.sub.YCellConfig;
-import top.mcos.activity.newyear.config.sub.YGroupConfig;
-import top.mcos.activity.newyear.config.sub.YTaskConfig;
+import top.mcos.business.yanhua.config.sub.RunTaskPlanConfig;
+import top.mcos.business.yanhua.config.sub.YCellConfig;
+import top.mcos.business.yanhua.config.sub.YGroupConfig;
+import top.mcos.business.yanhua.config.sub.YTaskConfig;
 import top.mcos.config.ann.ConfigFileName;
 import top.mcos.config.ann.PathList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
