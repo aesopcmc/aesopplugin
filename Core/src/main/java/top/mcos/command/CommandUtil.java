@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
+import top.mcos.util.MessageUtil;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 public class CommandUtil {
     public static final String COMMAND_PLAYER_SENDER_TYPE = "[player]";
     public static final String COMMAND_CONSOLE_SENDER_TYPE = "[console]";
+    public static final String COMMAND_MESSAGE_SENDER_TYPE = "[message]";
 
     /**
      * 执行自封装命令
@@ -37,6 +39,10 @@ public class CommandUtil {
                             cmd = cmd.replaceAll("\\{player\\}", player.getName());
                             ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
                             Bukkit.getServer().dispatchCommand(consoleSender, cmd);
+                        } else if (COMMAND_MESSAGE_SENDER_TYPE.equalsIgnoreCase(prefix)) {
+                            // 给玩家发送消息
+                            cmd = cmd.replaceAll("\\{player\\}", player.getName());
+                            player.sendMessage(MessageUtil.colorize(AesopPlugin.logger.getPrefix() + cmd));
                         }
                     } else {
                         // 没有匹配到前缀的情况下，默认以玩家身份执行命令

@@ -56,7 +56,7 @@ public class ItemStackUtil {
                     String[] levelArr = StringUtils.split(split[1], "-"); // 附魔等级
                     boolean ignoreLevelRestriction = Boolean.parseBoolean(split[2]); // 等级限制
                     int prob = Integer.parseInt(split[3]);// 概率
-                    if(!RandomUtil.choiceByRate(prob)) continue;
+                    if(!RandomUtil.probRandom(prob)) continue;
 
                     int level;
                     if(levelArr.length>1) {
@@ -77,7 +77,7 @@ public class ItemStackUtil {
                         String potionName = split[0]; // 药水名称
                         String[] durationArr = StringUtils.split(split[1], "-"); // 持续时间
                         int prob = Integer.parseInt(split[2]);// 概率
-                        if(!RandomUtil.choiceByRate(prob)) continue;
+                        if(!RandomUtil.probRandom(prob)) continue;
 
                         PotionEffectType potionType = PotionEffectType.getByName(potionName);
                         if(potionType==null) continue;

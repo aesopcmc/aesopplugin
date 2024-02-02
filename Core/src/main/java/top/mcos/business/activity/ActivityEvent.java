@@ -12,6 +12,7 @@ import top.mcos.business.activity.condition.AndCondition;
 import top.mcos.business.activity.config.sub.AConItemConfig;
 import top.mcos.business.activity.config.sub.AEventConfig;
 import top.mcos.business.activity.config.sub.AGiftConfig;
+import top.mcos.business.activity.gift.GiftKey;
 import top.mcos.business.activity.gift.VirtualGift;
 import top.mcos.business.activity.gift.GiftAbs;
 import top.mcos.business.activity.gift.ItemGift;
@@ -71,6 +72,15 @@ public class ActivityEvent {
             AesopPlugin.logger.log(player, "&c未知的物品key！" + itemKey);
             return;
         }
+
+        List<String> conKeys = eventConfig.getCondition();
+        if(conKeys!=null && conKeys.size()>0) {
+            if(!conKeys.contains(itemKey)) {
+                AesopPlugin.logger.log(player, "&c不是本次活动的物品！" + itemKey);
+                return;
+            }
+        }
+
 
         String playerId = player.getUniqueId().toString();
         GiftClaimRecordDao giftClaimRecordDao = AesopPlugin.getInstance().getDatabase().getGiftClaimRecordDao();
@@ -211,19 +221,24 @@ public class ActivityEvent {
 
         StringBuilder specialGiftStr = new StringBuilder();
         List<GiftAbs> giftAbsList = new ArrayList<>();
+
+        // 根据礼物配置规则，构建礼物配置对象
+        Map<String, GiftKey> currGiftMaps = new HashMap<>();
         for (String giftKeyCon : giftKeys) {
             String[] conArr = StringUtils.split(giftKeyCon, ":");
-
-            // 礼物key
-            String giftKey = conArr[0];
-            AGiftConfig giftConfig = giftMaps.get(giftKey);
-            if(giftConfig==null) continue;
+            String pgroup = null;
+            if(conArr.length>3) {
+                pgroup = conArr[3];
+                //List<String> groups = rateGroups.computeIfAbsent(g, k -> new ArrayList<>());
+                //groups.add(giftKey);
+            }
+            AGiftConfig giftConfig = giftMaps.get(conArr[0]);
+            if (giftConfig==null) continue;
 
             // 命中概率
             int rate = Integer.parseInt(conArr[2]);
-            if(!RandomUtil.choiceByRate(rate)) continue;
 
-            // 数量 10-100
+            // 数量 例如：10-100 、 10
             String amountRange = conArr[1];
             int amount;
             if(amountRange.contains("-")) {
@@ -233,22 +248,45 @@ public class ActivityEvent {
                 amount = Integer.parseInt(amountRange);
             }
 
+            GiftKey giftKey = new GiftKey(giftConfig, amount, rate, pgroup);
+            currGiftMaps.put(giftConfig.getKey(), giftKey);
+        }
+
+        // 计算出每一组选中的是哪个礼物
+        // 概率组 group - giftkeys
+        Map<String, List<GiftKey>> groupGift = currGiftMaps.values().stream().collect(Collectors.groupingBy(GiftKey::getPgroup));
+        for(Map.Entry<String, List<GiftKey>> entry : groupGift.entrySet()) {
+            if (StringUtils.isNotBlank(entry.getKey())) {
+                Map<String, Integer> randomMap = new HashMap<>();
+                List<GiftKey> value = entry.getValue();
+                for (GiftKey gk : value) {
+                    randomMap.put(gk.getGiftKey().getKey(), gk.getProb());
+                }
+                String giftKey = RandomUtil.weightRandom(randomMap);
+                currGiftMaps.get(giftKey).setProbSuccess(true);
+            }
+        }
+
+        for (GiftKey giftKey : currGiftMaps.values()) {
+            // 概率未选中
+            if(!giftKey.isProbSuccess()) continue;
+
             // 创建礼物
-            GiftAbs gift = createGift(giftConfig, amount);
+            GiftAbs gift = createGift(giftKey.getGiftKey(), giftKey.getAmount());
             if(gift!=null) {
                 // 添加礼物明细持久化
                 GiftItem item = new GiftItem();
-                item.setItemKey(giftKey);
-                item.setAmount(amount);
-                item.setGiftName(giftConfig.getDbName());
+                item.setItemKey(giftKey.getGiftKey().getKey());
+                item.setAmount(giftKey.getAmount());
+                item.setGiftName(giftKey.getGiftKey().getDbName());
                 item.setItemType(1);// 礼物类型
-                item.setPercent(rate);
+                item.setPercent(giftKey.getProb());
                 item.setRecordId(record.getId());
                 giftItemDbList.add(item);
                 giftAbsList.add(gift);
                 // 记录特殊礼物
-                if(giftConfig.isBroadcast()) {
-                    specialGiftStr.append(giftConfig.getDbName()).append("、");
+                if(giftKey.getGiftKey().isBroadcast()) {
+                    specialGiftStr.append(giftKey.getGiftKey().getDbName()).append("、");
                 }
             } else {
                 AesopPlugin.logger.log( "&c礼物【"+giftKey+"】构建失败", ConsoleLogger.Level.ERROR);
@@ -289,13 +327,15 @@ public class ActivityEvent {
         int i=1;
         for (GiftItem giftItem : giftItemDbList) {
             AesopPlugin.logger.log(player, "&e" + i + ". " + giftItem.getGiftName() + " x " + giftItem.getAmount() + " （获得概率"+giftItem.getPercent() + "%）");
+            i++;
         }
         AesopPlugin.logger.log(player, "&d---------------------------------");
+        player.sendTitle("&a&l恭喜您", "&e成功领取一份礼物", 10, 20, 10);
 
         // 广播特殊礼物
         if(specialGiftStr.length()>0) {
             String str = specialGiftStr.substring(0, specialGiftStr.length() - 1);
-            Bukkit.broadcastMessage(MessageUtil.colorize("&d&l活动广播消息 >> &d玩家 " +player.getName()+" 在"+eventConfig.getEventName()+"收到了一份特殊礼物：&6"+str));
+            Bukkit.broadcastMessage(MessageUtil.colorize("&d&l活动消息 &6>> &d玩家 " +player.getName()+" 在【"+eventConfig.getEventName()+"】中领取了礼物：&6"+str));
         }
 
         AesopPlugin.logger.log("玩家"+player.getName()+"成功领取"+eventConfig.getEventName()+"礼物。");

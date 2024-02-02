@@ -1,12 +1,10 @@
 package top.mcos.business.itmebind;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -24,8 +22,6 @@ import javax.annotation.CheckForNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class ItemEvent {
     public static final String persistentKeyPrefix = "item-bind-event";
@@ -40,6 +36,7 @@ public final class ItemEvent {
                     List<ItemBindCommandsConfig> configs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
                     configs = configs.stream().filter(c -> c.isEnable() && c.getExecuteType() == 1 && c.getLocations()!=null && c.getLocations().size()>0).toList();
                     for (ItemBindCommandsConfig config : configs) {
+                        System.out.println(config.getLocations());
                         if (config.getLocations().contains(formatLocation(clicked.getLocation()))) {
                             // 处理命令事件
                             //System.out.println("处理方块命令事件。。。");
@@ -102,7 +99,7 @@ public final class ItemEvent {
      */
     public static void onBlockPlace(Block placeBlock, ItemStack itemInHand, NamespacedKey namespace) {
         try {
-            System.out.println("放置事件。。。");
+            //System.out.println("放置事件。。。");
 
             ItemMeta itemMeta = itemInHand.getItemMeta();
             if (itemMeta != null) {
