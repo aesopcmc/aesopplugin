@@ -3,6 +3,7 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
+import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Particle;
 import org.bukkit.command.CommandSender;
@@ -18,7 +19,7 @@ import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 import top.mcos.util.PlayerUtil;
 
 import java.sql.SQLException;
@@ -71,8 +72,8 @@ public final class ActivitySubCommand extends Command implements Helpable {
             if(args.length==2) {
                 //possibleCompletions.add("give giftBtn"); // 获得礼物按钮 TODO 废弃
                 //possibleCompletions.add("give snowballBtn"); // 获得雪球按钮 TODO 废弃
-                possibleCompletions.add("claim");// 领取礼物 act claim <活动key>
-                possibleCompletions.add("collect");// 收集物品 act collect <活动key> <条件物品key>
+                possibleCompletions.add("claim");// 领取礼物 act claim <活动key> <playerName>
+                possibleCompletions.add("collect");// 收集物品 act collect <活动key> <条件物品key> <playerName>
                 possibleCompletions.add("clear");// 清理玩家活动相关的所有数据 act clear <playerName>
                 possibleCompletions.add("list"); // 查找玩家礼物领取列表 act list <活动key> <playerName>
                 possibleCompletions.add("spawn"); // 生成怪物 TODO 测试
@@ -93,6 +94,14 @@ public final class ActivitySubCommand extends Command implements Helpable {
                 if("list,listitem".contains(args[1])) {
                     possibleCompletions.addAll(PlayerUtil.getAllOnlinePlayerName());
                 }
+                if("claim".contains(args[1])) {
+                    possibleCompletions.addAll(PlayerUtil.getAllOnlinePlayerName());
+                }
+            }
+            if(args.length==5) {
+                if("collect".contains(args[1])) {
+                    possibleCompletions.addAll(PlayerUtil.getAllOnlinePlayerName());
+                }
             }
         };
     }
@@ -100,31 +109,35 @@ public final class ActivitySubCommand extends Command implements Helpable {
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if("claim".equals(args[1])) {
-            if(sender instanceof Player player) {
-                String eventKey = args[2];
-                try {
-                    ActivityEvent.claimGift(eventKey, player);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    AesopPlugin.logger.log(sender, "&c领取礼物命令执行出错，完犊子了、、");
-                    AesopPlugin.logger.log("&c领取礼物命令执行出错");
-                }
-            } else {
-                AesopPlugin.logger.log(sender, "&c请玩家身份执行该指令");
+            String eventKey = args[2];
+            String playerName = args[3];
+            Player onlinePlayer = PlayerUtil.getOnlinePlayer(playerName);
+            if(onlinePlayer==null) {
+                AesopPlugin.logger.log("&c玩家不存在", ConsoleLogger.Level.ERROR);
+                return;
+            }
+            try {
+                ActivityEvent.claimGift(eventKey, onlinePlayer);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                AesopPlugin.logger.log(sender, "&c领取礼物命令执行出错，完犊子了、、");
+                AesopPlugin.logger.log("&c领取礼物命令执行出错");
             }
         } else if("collect".equals(args[1])) {
-            if(sender instanceof Player player) {
-                String eventKey = args[2];
-                String itemKey = args[3];
-                try {
-                    ActivityEvent.collectItem(eventKey, itemKey, player);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    AesopPlugin.logger.log(sender, "&c领取礼物命令执行出错，完犊子了、、");
-                    AesopPlugin.logger.log("&c领取礼物命令执行出错");
-                }
-            } else {
-                AesopPlugin.logger.log(sender, "&c请玩家身份执行该指令");
+            String eventKey = args[2];
+            String itemKey = args[3];
+            String playerName = args[4];
+            Player onlinePlayer = PlayerUtil.getOnlinePlayer(playerName);
+            if(onlinePlayer==null) {
+                AesopPlugin.logger.log("&c玩家不存在", ConsoleLogger.Level.ERROR);
+                return;
+            }
+            try {
+                ActivityEvent.collectItem(eventKey, itemKey, onlinePlayer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                AesopPlugin.logger.log(sender, "&c领取礼物命令执行出错，完犊子了、、");
+                AesopPlugin.logger.log("&c领取礼物命令执行出错");
             }
         }
         //else if("give".equals(args[1])) {

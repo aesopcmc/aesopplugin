@@ -1,4 +1,4 @@
-package top.mcos.hook.firework;
+package top.mcos.business.firework;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import de.slikey.effectlib.EffectManager;
@@ -136,13 +136,15 @@ public final class FireWorkManage {
             List<LocationFireworkGroupConfig> groupConfigs = ConfigLoader.fwConfig.getLocationFireworkGroups();
 
             for (LocationFireworkGroupConfig groupConfig : groupConfigs) {
-                List<String> keys = groupConfig.getFireworkKeys();
-                for (String key : keys) {
-                    this.spawnLocationTextEffect(fireworkKeys.get(key), groupConfig.getLocation());
+                if(groupConfig.isEnable()) {
+                    List<String> keys = groupConfig.getFireworkKeys();
+                    for (String key : keys) {
+                        this.spawnLocationTextEffect(fireworkKeys.get(key), groupConfig.getLocation());
+                    }
                 }
             }
             // TODO period决定粒子生成频率，单位tick
-        }, 100, 100);
+        }, 100, 500);
         AesopPlugin.logger.log("已启动固定位置粒子特效监控");
     }
 
@@ -227,6 +229,7 @@ public final class FireWorkManage {
      */
     private void spawnLocationTextEffect(TextFireworkConfig config, String groupLocation) {
         if(config==null || !config.isEnable()) return;
+        double offsetY = config.getOffsetY();
         // 设置位置
         String[] textArray = groupLocation.split(",");
         String worldName = textArray[0];
@@ -235,7 +238,8 @@ public final class FireWorkManage {
         double z = Double.parseDouble(textArray[3]);
         float xr = Float.parseFloat(textArray[4]);
         float yr = Float.parseFloat(textArray[5]);
-        Location location = new Location(Bukkit.getWorld(worldName), x, y, z, xr, yr);
+
+        Location location = new Location(Bukkit.getWorld(worldName), x, y+offsetY, z, xr, yr);
         // 是否旋转180°
         if(config.isInverted()) {
             float yaw = location.getYaw();
@@ -280,9 +284,16 @@ public final class FireWorkManage {
         //InputStream fi = new ByteArrayInputStream(fontBytes);
         InputStream fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/zfxkft_aigei_com.ttf");
         try {
+            if(fi==null) return;
             effect.setFont(Font.createFont(Font.PLAIN, fi).deriveFont(Font.PLAIN, textSize));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        } finally {
+            try {
+                fi.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         //long end = System.currentTimeMillis();

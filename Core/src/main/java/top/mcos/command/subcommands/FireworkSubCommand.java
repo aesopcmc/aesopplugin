@@ -15,12 +15,14 @@ import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.subconfig.LocationFireworkGroupConfig;
 import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class FireworkSubCommand extends Command implements Helpable {
     @Override
@@ -62,10 +64,11 @@ public final class FireworkSubCommand extends Command implements Helpable {
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
             if(args.length==2) {
-                possibleCompletions.add("give");        // 给予玩家粒子组 give <playerName> <玩家粒子组key>
-                possibleCompletions.add("remove");      // 移除玩家粒子组 remove <playerName> <玩家粒子组key>
-                possibleCompletions.add("removeall");   // 移除玩家所有粒子组 removeall <playerName>
-                possibleCompletions.add("setup");       // 设置粒子组 setup <player|location> <自定义组key> <自定义组名>
+                possibleCompletions.add("location");    // 显示|隐藏位置粒子 firework location <show|hide> <位置粒子组key>
+                possibleCompletions.add("give");        // 给予玩家粒子组 firework give <playerName> <玩家粒子组key>
+                possibleCompletions.add("remove");      // 移除玩家粒子组 firework  remove <playerName> <玩家粒子组key>
+                possibleCompletions.add("removeall");   // 移除玩家所有粒子组 firework  removeall <playerName>
+                possibleCompletions.add("setup");       // 设置粒子组 firework setup <player|location> <自定义组key> <自定义组名>
             }
             if(args.length==3) {
                 if("give,remove,removeall".contains(args[1])) {
@@ -78,6 +81,10 @@ public final class FireworkSubCommand extends Command implements Helpable {
                     possibleCompletions.add("player");
                     possibleCompletions.add("location");
                 }
+                if("location".contains(args[1])) {
+                    possibleCompletions.add("show");
+                    possibleCompletions.add("hide");
+                }
             }
             if(args.length==4) {
                 if("give,remove".contains(args[1])) {
@@ -88,6 +95,11 @@ public final class FireworkSubCommand extends Command implements Helpable {
                 }
                 if("setup".contains(args[1])) {
                     possibleCompletions.add("<自定义组key>");
+                }
+                if("location".contains(args[1])) {
+                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fwConfig.getLocationFireworkGroups();
+                    List<String> keys = locationFireworkGroups.stream().map(LocationFireworkGroupConfig::getKey).toList();
+                    possibleCompletions.addAll(keys);
                 }
             }
             if(args.length==5) {
@@ -100,7 +112,27 @@ public final class FireworkSubCommand extends Command implements Helpable {
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
-        if("give".equals(args[1])) {
+        if("location".equals(args[1])) {
+            String flag = args[2];
+            String groupKey = args[3];
+
+            List<LocationFireworkGroupConfig> fgList = ConfigLoader.fwConfig.getLocationFireworkGroups();
+            Map<String, LocationFireworkGroupConfig> fgMaps = fgList.stream().collect(Collectors.toMap(LocationFireworkGroupConfig::getKey, c -> c));
+            LocationFireworkGroupConfig groupConfig = fgMaps.get(groupKey);
+            if(groupConfig==null) {
+                AesopPlugin.logger.log(sender, "&c'"+groupKey+"' 粒子组不存在！");
+                return;
+            }
+            if("show".equals(flag)) {
+                groupConfig.setEnable(true);
+                ConfigLoader.saveConfig(groupConfig);
+                AesopPlugin.logger.log(sender, "&a已显示");
+            } else if("hide".equals(flag)) {
+                groupConfig.setEnable(false);
+                ConfigLoader.saveConfig(groupConfig);
+                AesopPlugin.logger.log(sender, "&c已隐藏");
+            }
+        }else if("give".equals(args[1])) {
             String playerName = args[2];
 
             String groupKey = args[3];

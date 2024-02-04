@@ -13,7 +13,7 @@ import top.mcos.config.ConfigLoader;
 import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.database.domain.PlayerFirework;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 
 import java.sql.SQLException;
 import java.util.List;

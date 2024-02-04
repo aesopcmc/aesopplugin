@@ -1,4 +1,4 @@
-package top.mcos.hook.firework;
+package top.mcos.business.firework;
 
 import de.slikey.effectlib.EffectManager;
 import de.slikey.effectlib.EffectType;
@@ -10,7 +10,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
 
-import java.net.URL;
 import java.util.function.BiFunction;
 
 public class EffectsPreviewer {

@@ -3,6 +3,7 @@ package top.mcos.command.subcommands;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
+import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -24,7 +25,10 @@ import top.mcos.business.yanhua.config.sub.RunTaskPlanConfig;
 import top.mcos.business.yanhua.config.sub.YGroupConfig;
 import top.mcos.business.yanhua.config.sub.YTaskConfig;
 import top.mcos.config.ConfigLoader;
+import top.mcos.util.ColorUtil;
 import top.mcos.util.MessageUtil;
+import top.mcos.util.PlayerUtil;
+import top.mcos.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,10 +76,11 @@ public final class YanHuaSubCommand extends Command implements Helpable {
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
             if(args.length==2) {
+                possibleCompletions.add("giverandom");  // 给与玩家烟花，特效随机：yanhua giverandom <玩家> <数量>
                 possibleCompletions.add("give");        // 给予烟花发射位置物品: yanhua give <分组KEY(不存在会创建)>
-                possibleCompletions.add("clear");       // 清理所有进行中的烟花任务: yanhua clear
+                possibleCompletions.add("clear");       // 清理所有进行中的烟花任务: yanhua clear [玩家名称（仅用于显示消息）]
                 possibleCompletions.add("fire");        // 发射烟花： yanhua fire <任务Key，多个使用逗号分割>
-                possibleCompletions.add("fireplan");    // 发射烟花计划： yanhua fireplan <计划Key>
+                possibleCompletions.add("fireplan");    // 执行烟花计划： yanhua fireplan <计划Key> [玩家名称（仅用于显示消息）]
                 possibleCompletions.add("preview");     // 发射预览烟花特效: yanhua preview <类型> [发射时长]
             }
             if(args.length==3) {
@@ -91,10 +96,22 @@ public final class YanHuaSubCommand extends Command implements Helpable {
                 if("preview".contains(args[1])) {
                     possibleCompletions.add("<类型1-99>");
                 }
+                if("giverandom".contains(args[1])) {
+                    possibleCompletions.addAll(PlayerUtil.getAllOnlinePlayerName());
+                }
+                if("clear".contains(args[1])) {
+                    possibleCompletions.add("[玩家名称（仅用于显示消息）]");
+                }
             }
             if(args.length==4) {
                 if("preview".contains(args[1])) {
                     possibleCompletions.add("[发射时长1-99]");
+                }
+                if("giverandom".contains(args[1])) {
+                    possibleCompletions.add("<数量>");
+                }
+                if("fireplan".contains(args[1])) {
+                    possibleCompletions.add("[玩家名称（仅用于显示消息）]");
                 }
             }
         };
@@ -102,7 +119,52 @@ public final class YanHuaSubCommand extends Command implements Helpable {
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
-        if("give".equals(args[1])) {
+        if("giverandom".equals(args[1])) {
+            // 给与玩家烟花，特效随机：yanhua giverandom <玩家> <数量>
+            String playerName = args[2];
+            Integer amount = Integer.parseInt(args[3]);
+            Player onlinePlayer = PlayerUtil.getOnlinePlayer(playerName);
+            if(onlinePlayer==null) {
+                AesopPlugin.logger.log("&c玩家不存在", ConsoleLogger.Level.ERROR);
+                return;
+            }
+            ItemStack itemStack = new ItemStack(Material.FIREWORK_ROCKET, amount);
+            FireworkMeta meta = (FireworkMeta) itemStack.getItemMeta();
+            if(meta==null) {
+                AesopPlugin.logger.log("&c不是烟花物品", ConsoleLogger.Level.ERROR);
+                return;
+            }
+            meta.setDisplayName(MessageUtil.colorize("&d\uD83C\uDF86&#fe0000新&#ffb6b6年&#ff55ff烟&#f8aaff花 &b(随机效果)"));
+            // 设置飞行高度
+            meta.setPower(1);
+
+            int typeSize = RandomUtil.get(1,3);
+            for (int j=0;j<typeSize;j++) {
+                var colors = new ArrayList<>();
+                int colorSize = RandomUtil.get(1, 2);
+                for (int i=0;i<colorSize;i++) {
+                    colors.add(ColorUtil.getByInteger(RandomUtil.get(1, 44)));
+                }
+                var fadeOutColor = new ArrayList<>();
+                if(RandomUtil.get(0, 1)==1) {
+                    fadeOutColor.add(ColorUtil.getByInteger(RandomUtil.get(1, 44)));
+                }
+                int type = RandomUtil.get(1,5);
+                FireworkEffect.Type ft = switch (type) {
+                    case 1 -> FireworkEffect.Type.BALL;
+                    case 2 -> FireworkEffect.Type.BALL_LARGE;
+                    case 3 -> FireworkEffect.Type.STAR;
+                    case 4 -> FireworkEffect.Type.BURST;
+                    case 5 -> FireworkEffect.Type.CREEPER;
+                    default -> FireworkEffect.Type.BALL;
+                };
+                boolean trail = RandomUtil.get(0, 1) == 1;
+                boolean flicker = RandomUtil.get(0, 1) == 1;
+                meta.addEffect(FireworkEffect.builder().withColor(colors).with(ft).trail(trail).withFade(fadeOutColor).flicker(flicker).build());
+            }
+            itemStack.setItemMeta(meta);
+            onlinePlayer.getInventory().addItem(itemStack);
+        }else if("give".equals(args[1])) {
             if(sender instanceof Player player) {
                 String groupKey = args[2];
 
@@ -127,10 +189,28 @@ public final class YanHuaSubCommand extends Command implements Helpable {
             }
         } else if("clear".equals(args[1])) {
             YanHuaEvent.clearQueue();
-            AesopPlugin.logger.log(sender, "&a已停止发射。");
+            Player onlinePlayer = null;
+            if(args.length>2) {
+                onlinePlayer = PlayerUtil.getOnlinePlayer(args[2]);
+            }
+
+            if(onlinePlayer!=null) {
+                AesopPlugin.logger.log(onlinePlayer, "&a已停止发射。");
+            } else {
+                AesopPlugin.logger.log(sender, "&a已停止发射。");
+            }
         } else if("fireplan".equals(args[1])) {
+            Player onlinePlayer = null;
+            if(args.length>3) {
+                onlinePlayer = PlayerUtil.getOnlinePlayer(args[3]);
+            }
+
             if(YanHuaEvent.hasSize()) {
-                AesopPlugin.logger.log(sender, "&c当前烟花正在发射中...请勿重复操作!");
+                if(onlinePlayer!=null) {
+                    AesopPlugin.logger.log(onlinePlayer, "&c当前烟花正在发射中...请勿重复操作!");
+                } else {
+                    AesopPlugin.logger.log(sender, "&c当前烟花正在发射中...请勿重复操作!");
+                }
                 return;
             }
             String planKey = args[2];
@@ -138,7 +218,11 @@ public final class YanHuaSubCommand extends Command implements Helpable {
             for (RunTaskPlanConfig plan : plans) {
                 if(plan.getKey().equals(planKey)) {
                     YanHuaEvent.fireTaskPlan(plan);
-                    AesopPlugin.logger.log(sender, "&a&l烟火盛宴正在启动---====>>>>>>");
+                    if(onlinePlayer!=null) {
+                        onlinePlayer.sendTitle(MessageUtil.colorize("&a&l烟火盛宴"), MessageUtil.colorize("&a&l正在启动---====>>>>>>"), 20, 50, 20);
+                    } else {
+                        AesopPlugin.logger.log(sender, "&a&l烟火盛宴正在启动---====>>>>>>");
+                    }
                     return;
                 }
             }

@@ -36,7 +36,6 @@ public final class ItemEvent {
                     List<ItemBindCommandsConfig> configs = ConfigLoader.baseConfig.getItemBindCommandConfigs();
                     configs = configs.stream().filter(c -> c.isEnable() && c.getExecuteType() == 1 && c.getLocations()!=null && c.getLocations().size()>0).toList();
                     for (ItemBindCommandsConfig config : configs) {
-                        System.out.println(config.getLocations());
                         if (config.getLocations().contains(formatLocation(clicked.getLocation()))) {
                             // 处理命令事件
                             //System.out.println("处理方块命令事件。。。");

@@ -1,4 +1,4 @@
-package top.mcos.hook.firework;
+package top.mcos.business.firework;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

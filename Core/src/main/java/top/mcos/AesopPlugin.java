@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.config.ConfigLoader;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 import top.mcos.listener.PlayerListener;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsBuilder;

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.business.yanhua.YanHuaEvent;
 import top.mcos.config.ConfigLoader;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 import top.mcos.message.MessageHandler;
 import top.mcos.scheduler.SchedulerHandler;
 

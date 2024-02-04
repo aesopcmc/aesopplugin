@@ -1,7 +1,9 @@
 package top.mcos.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,10 +42,26 @@ public class PlayerUtil {
      * @return 在线玩家ID集合
      */
     public static String getOnlinePlayerId(String playerName) {
+        if(StringUtils.isBlank(playerName)) return null;
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player onlinePlayer : onlinePlayers) {
             if(playerName.equals(onlinePlayer.getName())) {
                 return onlinePlayer.getUniqueId().toString();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有在线玩家的ID
+     * @return 在线玩家ID集合
+     */
+    public static @Nullable Player getOnlinePlayer(String playerName) {
+        if(StringUtils.isBlank(playerName)) return null;
+        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        for (Player onlinePlayer : onlinePlayers) {
+            if(playerName.equals(onlinePlayer.getName())) {
+                return onlinePlayer;
             }
         }
         return null;

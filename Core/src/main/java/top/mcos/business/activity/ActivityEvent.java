@@ -199,18 +199,6 @@ public class ActivityEvent {
             return;
         }
 
-        // 检查是否有足够的背包空间
-        int slotRequireCount = eventConfig.getGiftKeys()!=null ? eventConfig.getGiftKeys().size() : 0;
-        ItemStack[] storageContents = player.getInventory().getStorageContents();
-        int emptyClotCount = 0;
-        for (ItemStack storageContent : storageContents) {
-            if(storageContent==null) emptyClotCount++;
-        }
-        if(emptyClotCount<slotRequireCount) {
-            AesopPlugin.logger.log(player, "&c背包空间不足，请至少留出"+slotRequireCount+"个槽位");
-            return;
-        }
-
         // =========》 构建礼物
         List<GiftItem> giftItemDbList = new ArrayList<>();
         List<String> giftKeys = eventConfig.getGiftKeys();
@@ -226,7 +214,7 @@ public class ActivityEvent {
         Map<String, GiftKey> currGiftMaps = new HashMap<>();
         for (String giftKeyCon : giftKeys) {
             String[] conArr = StringUtils.split(giftKeyCon, ":");
-            String pgroup = null;
+            String pgroup = "EMPTY_KEY";
             if(conArr.length>3) {
                 pgroup = conArr[3];
                 //List<String> groups = rateGroups.computeIfAbsent(g, k -> new ArrayList<>());
@@ -256,7 +244,8 @@ public class ActivityEvent {
         // 概率组 group - giftkeys
         Map<String, List<GiftKey>> groupGift = currGiftMaps.values().stream().collect(Collectors.groupingBy(GiftKey::getPgroup));
         for(Map.Entry<String, List<GiftKey>> entry : groupGift.entrySet()) {
-            if (StringUtils.isNotBlank(entry.getKey())) {
+            if (StringUtils.isNotBlank(entry.getKey()) && !"EMPTY_KEY".equals(entry.getKey())) {
+                // 设置概率组的情况，根据同组内概率进行计算，必定会选中1个
                 Map<String, Integer> randomMap = new HashMap<>();
                 List<GiftKey> value = entry.getValue();
                 for (GiftKey gk : value) {
@@ -264,6 +253,13 @@ public class ActivityEvent {
                 }
                 String giftKey = RandomUtil.weightRandom(randomMap);
                 currGiftMaps.get(giftKey).setProbSuccess(true);
+            } else {
+                // 不设置概率组的情况,根据概率选择，可能选不上
+                List<GiftKey> value = entry.getValue();
+                for (GiftKey giftKey : value) {
+                    currGiftMaps.get(giftKey.getGiftKey().getKey())
+                            .setProbSuccess(RandomUtil.probRandom(giftKey.getProb()));
+                }
             }
         }
 
@@ -297,6 +293,19 @@ public class ActivityEvent {
             AesopPlugin.logger.log( "&c没有检测到礼物", ConsoleLogger.Level.ERROR);
             return;
         }
+
+        // 检查是否有足够的背包空间
+        int slotRequireCount = giftItemDbList.size();
+        ItemStack[] storageContents = player.getInventory().getStorageContents();
+        int emptyClotCount = 0;
+        for (ItemStack storageContent : storageContents) {
+            if(storageContent==null) emptyClotCount++;
+        }
+        if(emptyClotCount<slotRequireCount) {
+            AesopPlugin.logger.log(player, "&c背包空间不足，请至少留出"+slotRequireCount+"个槽位");
+            return;
+        }
+
         // 数据库持久化
         // 包含进事务块
         GiftClaimRecord finalRecord = record;
@@ -330,12 +339,12 @@ public class ActivityEvent {
             i++;
         }
         AesopPlugin.logger.log(player, "&d---------------------------------");
-        player.sendTitle("&a&l恭喜您", "&e成功领取一份礼物", 10, 20, 10);
+        player.sendTitle(MessageUtil.colorize("&a&l~恭喜您^_^"), MessageUtil.colorize("&e成功领取一份礼物"), 20, 80, 20);
 
         // 广播特殊礼物
         if(specialGiftStr.length()>0) {
             String str = specialGiftStr.substring(0, specialGiftStr.length() - 1);
-            Bukkit.broadcastMessage(MessageUtil.colorize("&d&l活动消息 &6>> &d玩家 " +player.getName()+" 在【"+eventConfig.getEventName()+"】中领取了礼物：&6"+str));
+            Bukkit.broadcastMessage(MessageUtil.colorize("&d&l活动消息 &6>> &d玩家 " +player.getName()+" 在【"+eventConfig.getEventName()+"】中获得了一份特别礼物：&6"+str));
         }
 
         AesopPlugin.logger.log("玩家"+player.getName()+"成功领取"+eventConfig.getEventName()+"礼物。");

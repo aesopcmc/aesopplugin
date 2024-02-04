@@ -35,7 +35,7 @@ import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.enums.GiftTypeEnum;
-import top.mcos.hook.firework.FireWorkManage;
+import top.mcos.business.firework.FireWorkManage;
 import top.mcos.business.itmebind.ItemEvent;
 import top.mcos.util.MessageUtil;
 import top.mcos.util.RandomUtil;
