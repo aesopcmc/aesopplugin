@@ -20,7 +20,7 @@ import java.util.Map;
  */
 //设定的时间间隔为3秒,但job执行时间是5秒,设置@DisallowConcurrentExecution以后程序会等任务执行完毕以后再去执行,否则会在3秒时再启用新的线程执行
 //@DisallowConcurrentExecution
-public class NoticeJob extends AbstractJob implements Job {
+public class NoticeJob extends AbstractJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
@@ -38,25 +38,6 @@ public class NoticeJob extends AbstractJob implements Job {
             e.printStackTrace();
             log(context, "执行任务出错", ConsoleLogger.Level.ERROR);
         }
-    }
-
-    public static void registerJob(NoticeConfig config) {
-        String jobName = "notice-"+config.getKey()+"-task";
-        String groupName = "noticeGroup";
-        try {
-            Map<String, Object> jobParams = BeanMapUtil.beanToMap(config);
-            SchedulerHandler.registerJob(NoticeJob.class, jobName, groupName, config.getStart(),
-                    config.getEnd(), config.getCron(), jobParams);
-        } catch (Exception e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("定时任务【"+jobName+"】激活失败，已跳过", ConsoleLogger.Level.ERROR);
-        }
-    }
-
-    public static void unRegisterJob(NoticeConfig config) {
-        String jobName = "notice-"+config.getKey()+"-task";
-        String groupName = "noticeGroup";
-        SchedulerHandler.unRegisterJob(jobName, groupName);
     }
 
 }

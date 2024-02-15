@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.configs.subconfig.LocationFireworkGroupConfig;
-import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
+import top.mcos.business.firework.config.sub.LocationFireworkGroupConfig;
+import top.mcos.business.firework.config.sub.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.business.firework.FireWorkManage;
 
@@ -88,7 +88,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
             }
             if(args.length==4) {
                 if("give,remove".contains(args[1])) {
-                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
                     for (PlayerFireworkGroupConfig playerFireworkGroup : playerFireworkGroups) {
                         possibleCompletions.add(playerFireworkGroup.getKey());
                     }
@@ -97,7 +97,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
                     possibleCompletions.add("<自定义组key>");
                 }
                 if("location".contains(args[1])) {
-                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fwConfig.getLocationFireworkGroups();
+                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fireworkConfig.getLocationFireworkGroups();
                     List<String> keys = locationFireworkGroups.stream().map(LocationFireworkGroupConfig::getKey).toList();
                     possibleCompletions.addAll(keys);
                 }
@@ -116,7 +116,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
             String flag = args[2];
             String groupKey = args[3];
 
-            List<LocationFireworkGroupConfig> fgList = ConfigLoader.fwConfig.getLocationFireworkGroups();
+            List<LocationFireworkGroupConfig> fgList = ConfigLoader.fireworkConfig.getLocationFireworkGroups();
             Map<String, LocationFireworkGroupConfig> fgMaps = fgList.stream().collect(Collectors.toMap(LocationFireworkGroupConfig::getKey, c -> c));
             LocationFireworkGroupConfig groupConfig = fgMaps.get(groupKey);
             if(groupConfig==null) {
@@ -139,7 +139,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
 
             PlayerFireworkGroupConfig currCconfig = null;
 
-            List<PlayerFireworkGroupConfig> configs = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+            List<PlayerFireworkGroupConfig> configs = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
             for (PlayerFireworkGroupConfig config : configs) {
                 if(groupKey.equals(config.getKey())) {
                     currCconfig = config;
@@ -191,7 +191,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
                 PlayerFireworkGroupConfig currCconfig = null;
 
                 if(StringUtils.isNotBlank(groupKey)) {
-                    List<PlayerFireworkGroupConfig> configs = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    List<PlayerFireworkGroupConfig> configs = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
                     for (PlayerFireworkGroupConfig config : configs) {
                         if (groupKey.equals(config.getKey())) {
                             currCconfig = config;
@@ -242,7 +242,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
                 String groupName = args[4];
 
                 if ("location".equals(type)) {
-                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fwConfig.getLocationFireworkGroups();
+                    List<LocationFireworkGroupConfig> locationFireworkGroups = ConfigLoader.fireworkConfig.getLocationFireworkGroups();
                     for (LocationFireworkGroupConfig groupConfig : locationFireworkGroups) {
                         if(groupConfig.getKey().equals(groupKey)) {
                             AesopPlugin.logger.log(player, "&c组key '"+groupKey+"' 已存在，请另起一个名称");
@@ -263,7 +263,7 @@ public final class FireworkSubCommand extends Command implements Helpable {
 
                     AesopPlugin.logger.log(player, "&a设置成功.");
                 } else if("player".equals(type)) {
-                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    List<PlayerFireworkGroupConfig> playerFireworkGroups = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
                     for (PlayerFireworkGroupConfig groupConfig : playerFireworkGroups) {
                         if(groupConfig.getKey().equals(groupKey)) {
                             AesopPlugin.logger.log(player, "&c组key '"+groupKey+"' 已存在，请重新换一个");

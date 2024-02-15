@@ -15,10 +15,10 @@ public final class MultiverseProvider extends Provider<MultiverseCore> implement
             if(multiverseCore!=null) {
                 AesopPlugin.logger.log("MultiverseCore已挂钩");
             } else {
-                AesopPlugin.logger.log("未检测到MultiverseCore插件，已跳过加载");
+                AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过加载");
             }
         }catch (Throwable e) {
-            AesopPlugin.logger.log("未检测到MultiverseCore插件，已跳过加载");
+            AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过加载");
         }
     }
 

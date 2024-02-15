@@ -85,7 +85,7 @@ public final class AesopPlugin extends JavaPlugin {
         for (NmsBuilder builder : builders) {
             if (builder.checked(nmsVersion)) {
                 nmsProvider = builder.build();
-                logger.log("成功加载NMS");
+                logger.log("&a成功加载NMS");
                 break;
             }
         }
@@ -109,7 +109,7 @@ public final class AesopPlugin extends JavaPlugin {
         // 初始化第三方插件挂钩
         HookHandler.init();
         // 注册任务
-        SchedulerHandler.registerJobs();
+        SchedulerHandler.registerAllJobs();
 
         // 注册粒子特效
         FireWorkManage.load();
@@ -117,7 +117,7 @@ public final class AesopPlugin extends JavaPlugin {
         // 启动烟花监听
         YanHuaEvent.onFireListen();
 
-        logger.log("&a成功加载插件");
+        logger.log("&2成功加载插件。");
     }
 
     @Override

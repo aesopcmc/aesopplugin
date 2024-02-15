@@ -43,15 +43,17 @@ public class YanHuaEvent {
 
     public static void onFireListen() {
         // todo 全局开关配置
+        if(ConfigLoader.yanHuaConfig.isTaskEnable()) {
+            AesopPlugin.logger.log("&a已启用烟花任务监听");
+            Bukkit.getScheduler().runTaskTimer(AesopPlugin.getInstance(), () -> {
+                YanHuaEntity poll = yanhuaQueue.poll();
+                if (poll != null) {
+                    //System.out.println("成功消费...");
+                    spawnFirework(poll.getLocation(), poll.getPower(), poll.getCellsMode(), poll.getCellKeys());
+                }
 
-        Bukkit.getScheduler().runTaskTimer(AesopPlugin.getInstance(), () -> {
-            YanHuaEntity poll = yanhuaQueue.poll();
-            if(poll!=null) {
-                //System.out.println("成功消费...");
-                spawnFirework(poll.getLocation(), poll.getPower(), poll.getCellsMode(), poll.getCellKeys());
-            }
-
-        }, 1, 1);
+            }, 1, 1);
+        }
     }
 
     public static boolean hasSize() {

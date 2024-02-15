@@ -83,6 +83,8 @@ tasks:
     zy:
       enable: false
       cron: '0 0 5 * * ?'
+      start: '' #若为空则开始时间为1999年，格式 yyyy-MM-dd HH:mm:ss
+      end: '' # 若留空则不限制结束时间，格式 yyyy-MM-dd HH:mm:ss
       new-seed: true # 是否创建新的种子。若为false，将忽略random-seed 和 seed 参数
       random-seed: true # 随机种子，new-seed为true时生效
       seed: '' # 指定种子，random-seed为false时生效
@@ -94,7 +96,7 @@ tasks:
       loaded-chunky-radius: 500.0
       # 消息名称key。世界重置后，发送指定消息通知。
       # 被指向的消息，将会由程序自动改变消息的属性：enable、start、end、message
-      loaded-notice-key: 'msg0'
+      loaded-notice-key: 'regen-msg'
       # 世界重置后，发送通知内容。
       # 该配置会修改消息任务的message值
       loaded-notice-message: '&a【{world-name}】已重置，快去探索新天地吧~'
@@ -113,11 +115,11 @@ tasks:
     msg0:
       enable: false
       cron: '0 0 0/1 * * ?' # 每隔一小时执行一次
-      start: ''
-      end: ''
-      position: 'actionbar'
-      message: ''
-      sub-message: ''
+      start: '' #若为空则开始时间为1999年，格式 yyyy-MM-dd HH:mm:ss
+      end: '' # 若留空则不限制结束时间，格式 yyyy-MM-dd HH:mm:ss
+      position: 'actionbar' # 类型: title 、 actionbar
+      message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。'
+      sub-message: '' #子标题消息，仅在position类型为title时生效
     msg1:
       enable: false
       cron: '0/5 * * * * ?' # 每5秒执行一次
@@ -125,16 +127,27 @@ tasks:
       end: ''
       position: 'title'
       message: '&c警告！当前系统正在维护中。'
-      #子标题消息，仅在position类型为title时生效
       sub-message: '&a子标题我是说似乎'
-    msg2:
+    regen-msg:
       enable: false
-      cron: '0/5 * * * * ?'
+      cron: '0 0 0/1 * * ?' # 每隔一小时执行一次
       start: ''
       end: ''
-      position: 'actionbar'
-      message: '&a2-关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。求之不得，寤寐思服。'
+      position: 'actionbar' # 类型
+      message: ''
       sub-message: ''
+  # 定时广播
+  broadcast:
+    tip:
+      enable: false
+      cron: '0 0/25 * * * ?'
+      start: ''
+      end: ''
+      prefix: "&f[ &a&l✓ 游玩提示&f ] &e>>"
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP" # org.bukkit.Sound
+      execute-order: 0 # 0顺序执行 1随机执行
+      messages: # 消息内容，请勿使用单引号，必须使用双引号
+        - "\n&8- 春江潮水连海平，海上明月共潮生。\n&8- 滟滟随波千万里，何处春江无月明。\n&8- "
   # 执行控制台指令任务
   command:
     cm1:
@@ -145,18 +158,6 @@ tasks:
       commands:
         - ''
         - ''
-  # 粒子特效
-  firework:
-    f1:
-      enable: false # true启用 false禁用
-      text: '圣诞节快乐！' # 文本内容
-      text-size: 25 # 文字大小
-      # 粒子特效，可选项参见 org.bukkit.Particle（目前仅支持无数据的粒子）
-      # 效果较好的粒子 SOUL_FIRE_FLAME FLAME SNOWBALL ELECTRIC_SPARK GLOW SNOWFLAKE SMALL_FLAME DRIPPING_DRIPSTONE_LAVA
-      particle: 'SOUL_FIRE_FLAME'
-      period: 5 # 闪烁周期 设置为小于1，重启后可能不生效
-      duration: 0 # 持续时间,单位毫秒。若设为0将永久显示
-      text-location: 'world,17,78,30,0,0' # 位置。组成：世界名称,x,y,z,以X平面旋转角度,以Y平面旋转角度
 
 # 物品绑定事件
 item-bind-event:
@@ -164,7 +165,7 @@ item-bind-event:
     # 自定义唯一key 。
     # op可以通过命令 /aep itembind give key1获取该物品
     # 特殊key: menu。菜单命令。普通玩家可通过命令获取菜单（ /aep givemenu）
-    key1:
+    menu:
       enable: true # 是否启用
       material: 'clock' # 物品材质
       display-name: '&#2796e7&l[系统菜单]'

@@ -70,7 +70,7 @@ public final class ReloadSubCommand extends Command implements Helpable {
                 // 重新读取配置
                 ConfigLoader.load(null);
                 // 重新注册消息通知任务
-                SchedulerHandler.registerJobs();
+                SchedulerHandler.registerAllJobs();
                 // 重新注册粒子特效
                 FireWorkManage.getInstance().reload();
             } else if (args.length==2) {

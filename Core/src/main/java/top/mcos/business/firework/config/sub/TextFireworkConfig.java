@@ -1,4 +1,4 @@
-package top.mcos.config.configs.subconfig;
+package top.mcos.business.firework.config.sub;
 
 import lombok.Getter;
 import lombok.Setter;

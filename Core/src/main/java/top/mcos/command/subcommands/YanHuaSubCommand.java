@@ -84,33 +84,33 @@ public final class YanHuaSubCommand extends Command implements Helpable {
                 possibleCompletions.add("preview");     // 发射预览烟花特效: yanhua preview <类型> [发射时长]
             }
             if(args.length==3) {
-                if("give".contains(args[1])) {
+                if("give".equals(args[1])) {
                     possibleCompletions.add("<分组KEY(不存在会创建)>");
                 }
-                if("fire".contains(args[1])) {
+                if("fire".equals(args[1])) {
                     possibleCompletions.add("<任务KEY，多个使用逗号分割>");
                 }
-                if("fireplan".contains(args[1])) {
+                if("fireplan".equals(args[1])) {
                     possibleCompletions.addAll(ConfigLoader.yanHuaConfig.getPlans().stream().map(RunTaskPlanConfig::getKey).toList());
                 }
-                if("preview".contains(args[1])) {
+                if("preview".equals(args[1])) {
                     possibleCompletions.add("<类型1-99>");
                 }
-                if("giverandom".contains(args[1])) {
+                if("giverandom".equals(args[1])) {
                     possibleCompletions.addAll(PlayerUtil.getAllOnlinePlayerName());
                 }
-                if("clear".contains(args[1])) {
+                if("clear".equals(args[1])) {
                     possibleCompletions.add("[玩家名称（仅用于显示消息）]");
                 }
             }
             if(args.length==4) {
-                if("preview".contains(args[1])) {
+                if("preview".equals(args[1])) {
                     possibleCompletions.add("[发射时长1-99]");
                 }
-                if("giverandom".contains(args[1])) {
+                if("giverandom".equals(args[1])) {
                     possibleCompletions.add("<数量>");
                 }
-                if("fireplan".contains(args[1])) {
+                if("fireplan".equals(args[1])) {
                     possibleCompletions.add("[玩家名称（仅用于显示消息）]");
                 }
             }

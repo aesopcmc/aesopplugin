@@ -1,12 +1,12 @@
 package top.mcos.scheduler;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 
-public abstract class AbstractJob {
-    protected static String jobSuffer;
+public abstract class AbstractJob implements Job {
     protected void log(JobExecutionContext context, String message) {
         log(context, message, ConsoleLogger.Level.INFO);
     }

@@ -10,13 +10,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.configs.subconfig.FireworkConfig;
-import top.mcos.config.configs.subconfig.LocationFireworkGroupConfig;
-import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
-import top.mcos.config.configs.subconfig.TextFireworkConfig;
+import top.mcos.business.firework.config.sub.LocationFireworkGroupConfig;
+import top.mcos.business.firework.config.sub.PlayerFireworkGroupConfig;
+import top.mcos.business.firework.config.sub.TextFireworkConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.database.domain.PlayerFirework;
-import top.mcos.util.MessageUtil;
 
 import java.awt.*;
 import java.io.IOException;
@@ -83,106 +81,115 @@ public final class FireWorkManage {
     //}
 
     public synchronized void reload() {
-        unLoadEffect(null);
-        for (FireworkConfig config : ConfigLoader.baseConfig.getFireworkConfigs()) {
-            try {
-                loadEffect(config);
-                //TimeUnit.MILLISECONDS.sleep(100);
-            } catch (Exception e) {
-                e.printStackTrace();
-                AesopPlugin.logger.log("读取粒子特效 '"+config.getKey()+"' 出错", ConsoleLogger.Level.ERROR);
-            }
-        }
-        AesopPlugin.logger.log("粒子特效加载完成");
+        clear();
+        //for (FireworkConfig config : ConfigLoader.baseConfig.getFireworkConfigs()) {
+        //    try {
+        //        loadEffect(config);
+        //        //TimeUnit.MILLISECONDS.sleep(100);
+        //    } catch (Exception e) {
+        //        e.printStackTrace();
+        //        AesopPlugin.logger.log("读取粒子特效 '"+config.getKey()+"' 出错", ConsoleLogger.Level.ERROR);
+        //    }
+        //}
+        //AesopPlugin.logger.log("粒子特效加载完成");
     }
     public synchronized void clear() {
         unLoadEffect(null);
     }
 
-    // 定时显示玩家粒子特效组
+    /**
+     * 监听用户粒子特效生成
+     */
     private void startPlayerListener() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(AesopPlugin.getInstance(), ()->{
-            Map<String, TextFireworkConfig> fireworkKeys = ConfigLoader.fwConfig.getTextFireworks().stream().collect(Collectors.toMap(TextFireworkConfig::getKey, c -> c));
-            Map<String, PlayerFireworkGroupConfig> groupKeys = ConfigLoader.fwConfig.getPlayerFireworkGroups().stream().collect(Collectors.toMap(PlayerFireworkGroupConfig::getKey, c -> c));
+        if(ConfigLoader.fireworkConfig.isPlayerEnable()) {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(AesopPlugin.getInstance(), () -> {
+                Map<String, TextFireworkConfig> fireworkKeys = ConfigLoader.fireworkConfig.getTextFireworks().stream().collect(Collectors.toMap(TextFireworkConfig::getKey, c -> c));
+                Map<String, PlayerFireworkGroupConfig> groupKeys = ConfigLoader.fireworkConfig.getPlayerFireworkGroups().stream().collect(Collectors.toMap(PlayerFireworkGroupConfig::getKey, c -> c));
 
-            Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-            for (Player player : onlinePlayers) {
-                List<PlayerFirework> playerFireworkList = playerFireworkCache.get(player.getUniqueId().toString());
-                if(playerFireworkList!=null) {
-                    for (PlayerFirework playerFirework : playerFireworkList) {
-                        Integer enable = playerFirework.getEnable();
-                        String groupKey = playerFirework.getPlayerFireworkGroupKey();
-                        if (enable == 1) {
-                            PlayerFireworkGroupConfig groupConfig = groupKeys.get(groupKey);
-                            if (groupConfig!=null && groupConfig.isEnable()) {
-                                List<String> pfwKeys = groupConfig.getFireworkKeys();
-                                for (String pfwKey : pfwKeys) {
-                                    this.spawnPlayerTextEffect(fireworkKeys.get(pfwKey), player, groupConfig.getOffsetY());
+                Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+                for (Player player : onlinePlayers) {
+                    List<PlayerFirework> playerFireworkList = playerFireworkCache.get(player.getUniqueId().toString());
+                    if (playerFireworkList != null) {
+                        for (PlayerFirework playerFirework : playerFireworkList) {
+                            Integer enable = playerFirework.getEnable();
+                            String groupKey = playerFirework.getPlayerFireworkGroupKey();
+                            if (enable == 1) {
+                                PlayerFireworkGroupConfig groupConfig = groupKeys.get(groupKey);
+                                if (groupConfig != null && groupConfig.isEnable()) {
+                                    List<String> pfwKeys = groupConfig.getFireworkKeys();
+                                    for (String pfwKey : pfwKeys) {
+                                        this.spawnPlayerTextEffect(fireworkKeys.get(pfwKey), player, groupConfig.getOffsetY());
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            // TODO period决定粒子生成频率，单位tick
-        }, 100, 200);
-        AesopPlugin.logger.log("已启动玩家粒子特效监控");
+                // TODO period决定粒子生成频率，单位tick
+            }, 100, 200);
+            AesopPlugin.logger.log("&a已启动玩家粒子特效监控");
+        }
     }
 
-    // 定时显示固定位置粒子组
+    /**
+     * 监听固定位置粒子特效生成
+     */
     private void startLocationListener() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(AesopPlugin.getInstance(), ()->{
-            Map<String, TextFireworkConfig> fireworkKeys = ConfigLoader.fwConfig.getTextFireworks().stream().collect(Collectors.toMap(TextFireworkConfig::getKey, c -> c));
-            List<LocationFireworkGroupConfig> groupConfigs = ConfigLoader.fwConfig.getLocationFireworkGroups();
+        if(ConfigLoader.fireworkConfig.isLocationEnable()) {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(AesopPlugin.getInstance(), () -> {
+                Map<String, TextFireworkConfig> fireworkKeys = ConfigLoader.fireworkConfig.getTextFireworks().stream().collect(Collectors.toMap(TextFireworkConfig::getKey, c -> c));
+                List<LocationFireworkGroupConfig> groupConfigs = ConfigLoader.fireworkConfig.getLocationFireworkGroups();
 
-            for (LocationFireworkGroupConfig groupConfig : groupConfigs) {
-                if(groupConfig.isEnable()) {
-                    List<String> keys = groupConfig.getFireworkKeys();
-                    for (String key : keys) {
-                        this.spawnLocationTextEffect(fireworkKeys.get(key), groupConfig.getLocation());
+                for (LocationFireworkGroupConfig groupConfig : groupConfigs) {
+                    if (groupConfig.isEnable()) {
+                        List<String> keys = groupConfig.getFireworkKeys();
+                        for (String key : keys) {
+                            this.spawnLocationTextEffect(fireworkKeys.get(key), groupConfig.getLocation());
+                        }
                     }
                 }
-            }
-            // TODO period决定粒子生成频率，单位tick
-        }, 100, 500);
-        AesopPlugin.logger.log("已启动固定位置粒子特效监控");
-    }
-
-    private void loadEffect(FireworkConfig config) throws IOException, FontFormatException {
-        if(!config.isEnable()) return;
-
-        Particle particle = Particle.valueOf(config.getParticle());
-        String textLocation = config.getTextLocation();
-        String[] textArray = textLocation.split(",");
-        String worldName = textArray[0];
-        double x = Double.parseDouble(textArray[1]);
-        double y = Double.parseDouble(textArray[2]);
-        double z = Double.parseDouble(textArray[3]);
-        float xr = Float.parseFloat(textArray[4]);
-        float yr = Float.parseFloat(textArray[5]);
-
-        InputStream fi;
-        if(MessageUtil.hasChineseChar(config.getText())) {
-            fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/DouyinSansBold.ttf");
-        } else {
-            fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/zool-addict-Italic-02.ttf");
+                // TODO period决定粒子生成频率，单位tick
+            }, 100, 500);
+            AesopPlugin.logger.log("&a已启动固定位置粒子特效监控");
         }
-        TextEffect effect = new TextEffect(effectManager);
-        // 设置位置
-        effect.setDynamicOrigin(new DynamicLocation(new Location(Bukkit.getWorld(worldName), x, y, z, xr, yr)));
-        // 设置粒子特效（暂时只能选择不需要特效数据的）
-        effect.particle = particle;
-        // 设置文本
-        effect.text = config.getText();
-        //effect.color = Color.GREEN;
-        // 时间间隔，数值越小，显示越快
-        effect.period = config.getPeriod();
-        effect.duration = config.getDuration()<=0 ? null : config.getDuration();// 持续时间，持续时间结束后特效消失（当持续时间非空时，优先级会比iterations高）
-        effect.iterations = config.getDuration()<=0 ? -1 : 0; // -1永久显示 0默认
-        effect.setFont(Font.createFont(Font.PLAIN, fi).deriveFont(Font.PLAIN, config.getTextSize()));
-        effect.start();
-        textEffectMap.put(config.getKey(), effect);
     }
+
+    //@Deprecated
+    //private void loadEffect(FireworkConfig config) throws IOException, FontFormatException {
+    //    if(!config.isEnable()) return;
+    //
+    //    Particle particle = Particle.valueOf(config.getParticle());
+    //    String textLocation = config.getTextLocation();
+    //    String[] textArray = textLocation.split(",");
+    //    String worldName = textArray[0];
+    //    double x = Double.parseDouble(textArray[1]);
+    //    double y = Double.parseDouble(textArray[2]);
+    //    double z = Double.parseDouble(textArray[3]);
+    //    float xr = Float.parseFloat(textArray[4]);
+    //    float yr = Float.parseFloat(textArray[5]);
+    //
+    //    InputStream fi;
+    //    if(MessageUtil.hasChineseChar(config.getText())) {
+    //        fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/DouyinSansBold.ttf");
+    //    } else {
+    //        fi = FireWorkManage.class.getClassLoader().getResourceAsStream("font/zool-addict-Italic-02.ttf");
+    //    }
+    //    TextEffect effect = new TextEffect(effectManager);
+    //    // 设置位置
+    //    effect.setDynamicOrigin(new DynamicLocation(new Location(Bukkit.getWorld(worldName), x, y, z, xr, yr)));
+    //    // 设置粒子特效（暂时只能选择不需要特效数据的）
+    //    effect.particle = particle;
+    //    // 设置文本
+    //    effect.text = config.getText();
+    //    //effect.color = Color.GREEN;
+    //    // 时间间隔，数值越小，显示越快
+    //    effect.period = config.getPeriod();
+    //    effect.duration = config.getDuration()<=0 ? null : config.getDuration();// 持续时间，持续时间结束后特效消失（当持续时间非空时，优先级会比iterations高）
+    //    effect.iterations = config.getDuration()<=0 ? -1 : 0; // -1永久显示 0默认
+    //    effect.setFont(Font.createFont(Font.PLAIN, fi).deriveFont(Font.PLAIN, config.getTextSize()));
+    //    effect.start();
+    //    textEffectMap.put(config.getKey(), effect);
+    //}
 
     private void unLoadEffect(String key) {
         if(key==null) {

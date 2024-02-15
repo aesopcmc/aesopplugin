@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.config.configs.subconfig.PlayerFireworkGroupConfig;
+import top.mcos.business.firework.config.sub.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.database.domain.PlayerFirework;
 import top.mcos.business.firework.FireWorkManage;
@@ -94,7 +94,7 @@ public final class FireSubCommand extends Command implements Helpable {
                 PlayerFireworkDao playerFireworkDao = AesopPlugin.getInstance().getDatabase().getPlayerFireworkDao();
                 List<PlayerFirework> playerFireworkList = playerFireworkDao.queryGroupKeys(player.getUniqueId().toString(), null);
 
-                List<PlayerFireworkGroupConfig> configs = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                List<PlayerFireworkGroupConfig> configs = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
                 Map<String, PlayerFireworkGroupConfig> fireworkGroupKeys = configs.stream().collect(Collectors.toMap(PlayerFireworkGroupConfig::getKey, c -> c));
 
                 AesopPlugin.logger.log(player, "&2 你当前拥有的粒子组列表：");
@@ -124,7 +124,7 @@ public final class FireSubCommand extends Command implements Helpable {
                 PlayerFireworkGroupConfig currCconfig = null;
 
                 if (StringUtils.isNotBlank(groupKey)) {
-                    List<PlayerFireworkGroupConfig> configs = ConfigLoader.fwConfig.getPlayerFireworkGroups();
+                    List<PlayerFireworkGroupConfig> configs = ConfigLoader.fireworkConfig.getPlayerFireworkGroups();
                     for (PlayerFireworkGroupConfig config : configs) {
                         if (groupKey.equals(config.getKey())) {
                             currCconfig = config;

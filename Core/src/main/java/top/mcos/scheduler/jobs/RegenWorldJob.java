@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 //@DisallowConcurrentExecution
-public class RegenWorldJob extends AbstractJob implements Job {
+public class RegenWorldJob extends AbstractJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
@@ -67,7 +67,7 @@ public class RegenWorldJob extends AbstractJob implements Job {
                     // 获取消息通知配置
                     NoticeConfig noticeConfig = noticeConfigMap.get(afterNoticeKey);
                     // 取消注册消息
-                    NoticeJob.unRegisterJob(noticeConfig);
+                    SchedulerHandler.unRegisterJob(noticeConfig);
                     // 更改配置
                     noticeConfig.setEnable(true);
                     String message = config.getLoadedNoticeMessage().replace("{world-name}", aliasWorldName);
@@ -77,7 +77,7 @@ public class RegenWorldJob extends AbstractJob implements Job {
                     // 保存配置
                     ConfigLoader.saveConfig(noticeConfig);
                     // 重新注册消息
-                    NoticeJob.registerJob(noticeConfig);
+                    SchedulerHandler.registerJob(noticeConfig);
                 }
 
                 /*
@@ -120,23 +120,5 @@ public class RegenWorldJob extends AbstractJob implements Job {
             log(context, "执行任务出错", ConsoleLogger.Level.ERROR);
         }
 
-    }
-
-    public static void registerJob(RegenWorldConfig config) {
-        String jobName = "regen-world-"+config.getKey()+"-task";
-        String groupName = "regenGroup";
-        try {
-            Map<String, Object> jobParams = BeanMapUtil.beanToMap(config);
-            SchedulerHandler.registerJob(RegenWorldJob.class, jobName, groupName, null, null,
-                    config.getCron(), jobParams);
-        } catch (Exception e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("定时任务【"+jobName+"】激活失败，已跳过", ConsoleLogger.Level.ERROR);
-        }
-    }
-    public static void unRegisterJob(RegenWorldConfig config) {
-        String jobName = "regen-world-"+config.getKey()+"-task";
-        String groupName = "regenGroup";
-        SchedulerHandler.unRegisterJob(jobName, groupName);
     }
 }

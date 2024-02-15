@@ -9,6 +9,7 @@ import top.mcos.business.yanhua.config.sub.YGroupConfig;
 import top.mcos.business.yanhua.config.sub.YTaskConfig;
 import top.mcos.config.ann.ConfigFileName;
 import top.mcos.config.ann.PathList;
+import top.mcos.config.ann.PathValue;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ import java.util.List;
 @ToString
 @ConfigFileName("yanhua.yml")
 public final class YanHuaConfig {
+
+    @PathValue("task-enable")
+    private boolean taskEnable;
+
     @PathList("cells")
     private List<YCellConfig> cells;
 

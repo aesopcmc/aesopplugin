@@ -14,7 +14,7 @@ import top.mcos.config.ann.PathKey;
 import top.mcos.config.ann.PathList;
 import top.mcos.config.ann.PathValue;
 import top.mcos.config.configs.BaseConfig;
-import top.mcos.config.configs.FwConfig;
+import top.mcos.business.firework.config.FireworkConfig;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -33,7 +33,7 @@ public final class ConfigLoader {
     /**
      * firework.yml 配置
      */
-    public static FwConfig fwConfig;
+    public static FireworkConfig fireworkConfig;
     /**
      * yanhua.yml 配置
      */
@@ -49,7 +49,7 @@ public final class ConfigLoader {
     public static synchronized void load(String configFile) {
         if(configFile==null) {
             baseConfig = initConfig(BaseConfig.class);
-            fwConfig = initConfig(FwConfig.class);
+            fireworkConfig = initConfig(FireworkConfig.class);
             yanHuaConfig = initConfig(YanHuaConfig.class);
             activityConfig = initConfig(ActivityConfig.class);
         } else if(configFile.contains("yanhua")) {
@@ -66,7 +66,7 @@ public final class ConfigLoader {
         //    System.out.println("重置世界条目："+s);
         //}
 
-        //System.out.println("yanHuaConfig配置："+ yanHuaConfig.getGroups());
+        //System.out.println("yanHuaConfig配置："+ yanHuaConfig);
 
     }
 

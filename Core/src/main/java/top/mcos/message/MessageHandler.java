@@ -1,7 +1,13 @@
 package top.mcos.message;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
@@ -42,7 +48,7 @@ public final class MessageHandler {
             }
             msgPayloadQueue.clear();
         });
-        AesopPlugin.logger.log("已启动消息监听");
+        AesopPlugin.logger.log("&a已启动消息监听");
     }
 
     /**
@@ -87,6 +93,22 @@ public final class MessageHandler {
         }
     }
 
+    public static void sendBroadcast(String prefix, String message, String sound) {
+        if(StringUtils.isBlank(message)) return;
+        //String[] split = message.split("\\\\n");
+        //for(int i=0;i<split.length;i++) {
+        //    Bukkit.broadcastMessage(MessageUtil.colorize((i==0?prefix:"&8- ") + split[i]));
+        //}
+        Bukkit.broadcastMessage(MessageUtil.colorize(prefix+message));
+
+        if(StringUtils.isNotBlank(sound)) {
+            Sound s = Sound.valueOf(sound);
+            Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+            for (Player player : players) {
+                player.playSound(player, s, 50, 1);
+            }
+        }
+    }
 
     /**
      * 发送消息给指定用户

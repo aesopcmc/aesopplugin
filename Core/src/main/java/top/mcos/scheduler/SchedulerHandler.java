@@ -1,20 +1,20 @@
 package top.mcos.scheduler;
 
 import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import top.mcos.AesopPlugin;
 import top.mcos.business.yanhua.config.sub.RunTaskPlanConfig;
 import top.mcos.config.ConfigLoader;
+import top.mcos.config.configs.subconfig.BroadcastConfig;
 import top.mcos.config.configs.subconfig.CommandConfig;
 import top.mcos.config.configs.subconfig.NoticeConfig;
 import top.mcos.config.configs.subconfig.RegenWorldConfig;
-import top.mcos.scheduler.jobs.CommandJob;
 import top.mcos.scheduler.jobs.DemoJob;
-import top.mcos.scheduler.jobs.NoticeJob;
-import top.mcos.scheduler.jobs.RegenWorldJob;
-import top.mcos.scheduler.jobs.YanhuaRunTaskJob;
+import top.mcos.util.BeanMapUtil;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -41,8 +41,9 @@ import java.util.concurrent.TimeUnit;
 public final class SchedulerHandler {
     public static Scheduler scheduler;
 
-    private SchedulerHandler() {
-    }
+    private static List<JobConfig> allJob = new ArrayList<>();
+
+    private SchedulerHandler() {}
 
     public static synchronized void init() {
         // 1、创建调度器Scheduler
@@ -50,91 +51,45 @@ public final class SchedulerHandler {
             SchedulerFactory schedulerFactory = new StdSchedulerFactory();
             scheduler = schedulerFactory.getScheduler();
             scheduler.start();
-            AesopPlugin.logger.log("已启动定时任务调度器");
+            AesopPlugin.logger.log("&a已启动定时任务调度器");
         } catch (SchedulerException e) {
             e.printStackTrace();
             AesopPlugin.logger.log("任务调度器创建失败", ConsoleLogger.Level.ERROR);
         }
     }
 
-    // todo 注册任务、激活所有任务、激活指定任务、暂停指定任务、暂停所有任务、移除所有任务
-
     /**
      *  注册任务
      */
-    public static void registerJobs() {
+    public static void registerAllJobs() {
         // 注册世界生成任务
         for (RegenWorldConfig config : ConfigLoader.baseConfig.getRegenWorldConfigs()) {
-            if (config.isEnable()) RegenWorldJob.registerJob(config);
+            allJob.add(config);
+            registerJob(config);
+        }
+
+        // 注册消息通知任务
+        for (NoticeConfig config : ConfigLoader.baseConfig.getNoticeConfigs()) {
+            allJob.add(config);
+            registerJob(config);
         }
 
         // 注册消息广播任务
-        for (NoticeConfig config : ConfigLoader.baseConfig.getNoticeConfigs()) {
-            if(config.isEnable()) NoticeJob.registerJob(config);
+        for (BroadcastConfig config : ConfigLoader.baseConfig.getBroadcastConfigs()) {
+            allJob.add(config);
+            registerJob(config);
         }
 
         // 注册指令任务
         for (CommandConfig config : ConfigLoader.baseConfig.getCommandConfigs()) {
-            if(config.isEnable()) CommandJob.registerJob(config);
+            allJob.add(config);
+            registerJob(config);
         }
 
         // 注册烟花执行任务
         for (RunTaskPlanConfig config : ConfigLoader.yanHuaConfig.getPlans()) {
-            if(config.isEnable()) YanhuaRunTaskJob.registerJob(config);
-        }
-    }
-
-    public static void registerJob(Class<? extends Job> clazz, String jobName, String groupName, Date startAt, Date endAt, String cron, Map<String, Object> jobParams) {
-        try {
-            JobDetail jobDetail = JobBuilder.newJob(clazz)
-                .withIdentity(jobName, groupName).build();
-            jobDetail.getJobDataMap().putAll(jobParams);
-            // 3、构建Trigger实例,每隔1s执行一次
-            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName+"trigger", groupName+"triggerGroup")
-                    .startNow()//立即生效
-                    .endAt(endAt) //表示触发器结束触发的时间;
-                .startAt(startAt==null ? new Date() : startAt) //表示触发器首次被触发的时间;
-                .withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed()).build();
-            scheduler.scheduleJob(jobDetail, trigger);
-
-            AesopPlugin.logger.log("定时任务【"+jobName+"】已激活");
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("任务加载失败！", ConsoleLogger.Level.ERROR);
-        }
-    }
-
-    public static void executeNow(String jobName, String groupName) {
-        try {
-            scheduler.triggerJob(JobKey.jobKey(jobName, groupName));
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("手动执行任务失败！", ConsoleLogger.Level.ERROR);
-        }
-    }
-
-    public static void unRegisterJob(String jobName, String groupName) {
-        try {
-            scheduler.deleteJob(JobKey.jobKey(jobName, groupName));
-            AesopPlugin.logger.log("成功移除任务【"+jobName+"】");
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("移除任务【"+jobName+"】失败!", ConsoleLogger.Level.ERROR);
-        }
-    }
-
-    public static synchronized void clear() {
-        shutdown();
-        init();
-    }
-
-    public static synchronized void start() {
-        try {
-            scheduler.start();
-            AesopPlugin.logger.log("成功启动任务调度器。");
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-            AesopPlugin.logger.log("任务调度器启动失败!", ConsoleLogger.Level.ERROR);
+            allJob.add(config);
+            registerJob(config);
         }
     }
 
@@ -145,6 +100,92 @@ public final class SchedulerHandler {
         } catch (SchedulerException e) {
             e.printStackTrace();
             AesopPlugin.logger.log("任务调度器停止失败", ConsoleLogger.Level.ERROR);
+        }
+    }
+
+    public static synchronized void clear() {
+        allJob.clear();
+        shutdown();
+        init();
+    }
+
+
+    public static List<JobConfig> getAllJob() {
+        return allJob;
+    }
+
+    //public static synchronized void start() {
+    //    try {
+    //        scheduler.start();
+    //        AesopPlugin.logger.log("成功启动任务调度器。");
+    //    } catch (SchedulerException e) {
+    //        e.printStackTrace();
+    //        AesopPlugin.logger.log("任务调度器启动失败!", ConsoleLogger.Level.ERROR);
+    //    }
+    //}
+
+    public static boolean registerJob(JobConfig config) {
+        if(!config.isEnable()) return false;
+        String keyPrefix = config.getKeyPrefix() + "-task";
+        String jobName = keyPrefix+"-"+config.getKey();
+        String groupName = keyPrefix + "-group";
+        try {
+            Map<String, Object> jobParams = BeanMapUtil.beanToMap(config);
+            SchedulerHandler.registerJob(config.getJobClass(), jobName, groupName, config.getStart(),
+                    config.getEnd(), config.getCron(), jobParams);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            AesopPlugin.logger.log("&c定时任务【"+jobName+"】激活失败，已跳过", ConsoleLogger.Level.ERROR);
+        }
+        return false;
+    }
+
+    public static void unRegisterJob(JobConfig config) {
+        String keyPrefix = config.getKeyPrefix() + "-task";
+        String jobName = keyPrefix+"-"+config.getKey();
+        String groupName = keyPrefix + "-group";
+        SchedulerHandler.unRegisterJob(jobName, groupName);
+    }
+
+    public static void executeNow(JobConfig config) {
+        String keyPrefix = config.getKeyPrefix() + "-task";
+        String jobName = keyPrefix+"-"+config.getKey();
+        String groupName = keyPrefix + "-group";
+        SchedulerHandler.executeNow(jobName, groupName);
+    }
+
+    private static void registerJob(Class<? extends Job> clazz, String jobName, String groupName, Date startAt, Date endAt, String cron, Map<String, Object> jobParams) throws SchedulerException, ParseException {
+        JobDetail jobDetail = JobBuilder.newJob(clazz)
+            .withIdentity(jobName, groupName).build();
+        jobDetail.getJobDataMap().putAll(jobParams);
+        // 3、构建Trigger实例,每隔1s执行一次
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName+"trigger", groupName+"triggerGroup")
+                .startNow()//立即生效
+                .startAt(startAt==null ? DateUtils.parseDate("1999-01-01", "yyyy-MM-dd") : startAt) //表示触发器首次被触发的时间;
+                .endAt(endAt) //表示触发器结束触发的时间;
+            //.withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionFireAndProceed()).build();
+            .withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
+        scheduler.scheduleJob(jobDetail, trigger);
+        AesopPlugin.logger.log("&b定时任务【"+jobName+"】已激活");
+    }
+
+    private static void unRegisterJob(String jobName, String groupName) {
+        try {
+            scheduler.deleteJob(JobKey.jobKey(jobName, groupName));
+            AesopPlugin.logger.log("&e成功移除任务【"+jobName+"】");
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            AesopPlugin.logger.log("移除任务【"+jobName+"】失败!", ConsoleLogger.Level.ERROR);
+        }
+    }
+
+    private static void executeNow(String jobName, String groupName) {
+        try {
+            scheduler.triggerJob(JobKey.jobKey(jobName, groupName));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            AesopPlugin.logger.log("手动执行任务失败！", ConsoleLogger.Level.ERROR);
         }
     }
 
@@ -189,4 +230,5 @@ public final class SchedulerHandler {
         scheduler.shutdown();
         System.out.println("--------scheduler shutdown ! ------------");
     }
+
 }

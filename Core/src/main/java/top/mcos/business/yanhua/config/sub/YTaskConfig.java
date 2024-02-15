@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @ToString
 @ConfigFileName("yanhua.yml")
-public class YTaskConfig {
+public class YTaskConfig{
     @PathKey
     private String key;
     @PathValue("tasks.{key}.group-key")
