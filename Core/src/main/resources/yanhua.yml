@@ -1,7 +1,7 @@
 task-enable: false # 是否开启烟花任务监听（控制烟花是否显示，相当于全局开关，重启生效）
 run-task-plan:
-  cm1:
-    enable: false
+  p1:
+    enable: false # 当设置为false时，可通过指令主动触发 aep yanhua fireplan p1 {player}
     cron: '0 0 1 * * ?'
     start: ''
     end: ''

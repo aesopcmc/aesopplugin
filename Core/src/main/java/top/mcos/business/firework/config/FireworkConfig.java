@@ -7,6 +7,7 @@ import top.mcos.config.ann.PathList;
 import top.mcos.business.firework.config.sub.LocationFireworkGroupConfig;
 import top.mcos.business.firework.config.sub.PlayerFireworkGroupConfig;
 import top.mcos.business.firework.config.sub.TextFireworkConfig;
+import top.mcos.config.ann.PathValue;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import java.util.List;
 @Getter
 @ConfigFileName("firework.yml")
 public final class FireworkConfig {
-    @PathList("player-enable")
+    @PathValue("player-enable")
     private boolean playerEnable;
-    @PathList("location-enable")
+    @PathValue("location-enable")
     private boolean locationEnable;
     @PathList("player-firework-group")
     private List<PlayerFireworkGroupConfig> playerFireworkGroups;
