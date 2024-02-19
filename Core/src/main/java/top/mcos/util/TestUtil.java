@@ -2,6 +2,8 @@ package top.mcos.util;
 
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,8 +39,10 @@ public class TestUtil {
         return String.format("%08x", b);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Date().getTime());
+    public static void main(String[] args) throws IOException {
+        System.out.println(new File("c:\\ff/bb/a.png").getCanonicalPath());
+
+        //System.out.println(new Date().getTime());
         //System.out.println(numToHex16(15435844));
         //System.out.println(new Random().nextInt(4));
 

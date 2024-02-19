@@ -3,17 +3,9 @@ package top.mcos.command;
 import com.epicnicity322.epicpluginlib.bukkit.command.Command;
 import com.epicnicity322.epicpluginlib.bukkit.command.CommandManager;
 import top.mcos.AesopPlugin;
-import top.mcos.command.subcommands.ActivitySubCommand;
-import top.mcos.command.subcommands.FireworkSubCommand;
-import top.mcos.command.subcommands.FireSubCommand;
-import top.mcos.command.subcommands.ItemBindSubCommand;
-import top.mcos.command.subcommands.MsgSubCommand;
-import top.mcos.command.subcommands.ReloadSubCommand;
-import top.mcos.command.subcommands.TaskSubCommand;
+import top.mcos.command.subcommands.*;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import top.mcos.command.subcommands.HelpSubCommand;
-import top.mcos.command.subcommands.YanHuaSubCommand;
 
 import java.util.LinkedHashSet;
 
@@ -36,6 +28,7 @@ public final class CommandLoader {
             commands.add(new FireSubCommand());
             commands.add(new ItemBindSubCommand());
             commands.add(new YanHuaSubCommand());
+            commands.add(new CleanCommand());
 
             // 注册主命令 + 子命令
             CommandManager.registerCommand(Bukkit.getPluginCommand("aesopplugin"), commands,

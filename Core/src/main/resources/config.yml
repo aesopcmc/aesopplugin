@@ -152,12 +152,11 @@ tasks:
   command:
     cm1:
       enable: false
-      cron: '0/30 * * * * ?'
+      cron: '0 0 6 * * ?'
       start: ''
       end: ''
       commands:
-        - ''
-        - ''
+        - 'clean logs 1w' #清理日志文件 clean logs <1d|1w|1mo>(保留时长)
 
 # 物品绑定事件
 item-bind-event:
