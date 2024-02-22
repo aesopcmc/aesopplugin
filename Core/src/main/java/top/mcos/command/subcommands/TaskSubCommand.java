@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
-import top.mcos.scheduler.AbstractJob;
 import top.mcos.scheduler.SchedulerHandler;
 import top.mcos.scheduler.JobConfig;
 
@@ -102,13 +101,10 @@ public final class TaskSubCommand extends Command implements Helpable {
                     return;
                 }
             }
-
             //Boolean setFlag = Boolean.valueOf(args[2]);
             //config.set("tasks.refresh-map.enable", setFlag);
             //AesopPlugin.getInstance().saveConfig();
             //AesopPlugin.logger.log(player, "设为："+ setFlag);
-
-            sender.sendMessage("已执行任务："+taskName+"...");
         } else if ("disable".equals(args[1])) {
             if(args.length<3) {
                 AesopPlugin.logger.log(sender, "&c参数不足");

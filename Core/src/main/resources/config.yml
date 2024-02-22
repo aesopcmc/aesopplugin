@@ -156,7 +156,7 @@ tasks:
       start: ''
       end: ''
       commands:
-        - 'clean logs 1w' #清理日志文件 clean logs <1d|1w|1mo>(保留时长)
+        - "clean logs 1w" #清理日志文件 clean logs <1d|1w|1mo>(保留时长)
 
 # 物品绑定事件
 item-bind-event:
