@@ -150,13 +150,13 @@ tasks:
         - "\n&8- 春江潮水连海平，海上明月共潮生。\n&8- 滟滟随波千万里，何处春江无月明。\n&8- "
   # 执行控制台指令任务
   command:
-    cm1:
+    cleanlogs:
       enable: false
       cron: '0 0 6 * * ?'
       start: ''
       end: ''
       commands:
-        - "clean logs 1w" #清理日志文件 clean logs <1d|1w|1mo>(保留时长)
+        - "aep clean logs 1w" #清理日志文件 clean logs <1d|1w|1mo>(保留时长)
 
 # 物品绑定事件
 item-bind-event:

@@ -183,6 +183,7 @@ public final class SchedulerHandler {
     private static void executeNow(String jobName, String groupName) {
         try {
             scheduler.triggerJob(JobKey.jobKey(jobName, groupName));
+            AesopPlugin.logger.log("&e已手动触发任务job【jobname:"+jobName+",groupname:"+groupName+"】");
         } catch (SchedulerException e) {
             e.printStackTrace();
             AesopPlugin.logger.log("手动执行任务失败！", ConsoleLogger.Level.ERROR);
