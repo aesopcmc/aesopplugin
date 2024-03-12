@@ -57,6 +57,7 @@ public final class TaskSubCommand extends Command implements Helpable {
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
             if(args.length==2) {
+                possibleCompletions.add("list");         //查看任务列表
                 possibleCompletions.add("run");         //执行任务 task run 任务名称
                 possibleCompletions.add("disable");     //停止任务 task disable 任务名称
                 possibleCompletions.add("enable");      //重新注册任务 task enable 任务名称
@@ -84,7 +85,12 @@ public final class TaskSubCommand extends Command implements Helpable {
 
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
-        if("run".equals(args[1])) {
+        if("list".equals(args[1])) {
+            List<JobConfig> allJob = SchedulerHandler.getAllJob();
+            for (JobConfig jobConfig : allJob) {
+                AesopPlugin.logger.log(sender,jobConfig.getKeyPrefix()+"-"+jobConfig.getKey());
+            }
+        } else if("run".equals(args[1])) {
             if(args.length<3) {
                 AesopPlugin.logger.log(sender, "&c参数不足");
                 return;
@@ -101,7 +107,7 @@ public final class TaskSubCommand extends Command implements Helpable {
                     return;
                 }
             }
-            //Boolean setFlag = Boolean.valueOf(args[2]);
+            AesopPlugin.logger.log(sender, "&c未找到任务："+taskName);
             //config.set("tasks.refresh-map.enable", setFlag);
             //AesopPlugin.getInstance().saveConfig();
             //AesopPlugin.logger.log(player, "设为："+ setFlag);
