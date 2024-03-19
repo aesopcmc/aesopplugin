@@ -5,11 +5,15 @@ import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
 import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.util.MessageUtil;
+
+import java.util.Locale;
 
 /**
  * 消息命令：/xxx msg
@@ -56,22 +60,23 @@ public final class MsgSubCommand extends Command implements Helpable {
             if(args.length==2) {
                 possibleCompletions.add("bc"); //广播消息 msg bc <消息分类> <消息内容>
                 possibleCompletions.add("out");
+                possibleCompletions.add("sound");// 测试声音 msg sound <声音>
             }
             if(args.length==3) {
                 if("bc".equals(args[1])) {
-                    possibleCompletions.add(""); //发 msg send
+                    possibleCompletions.add("");
+                }
+                if("sound".equals(args[1])) {
+                    for (Sound sound : Sound.values()) {
+                        possibleCompletions.add(sound.name());
+                    }
                 }
             }
 
-            //if (args.length == 2) {
-            //    for (String soundType : SoundType.getPresentSoundNames()) {
-            //        if (soundType.startsWith(args[1].toUpperCase(Locale.ROOT))) {
-            //            possibleCompletions.add(soundType);
-            //        }
-            //    }
-            //} else if (args.length == 3) {
-            //    CommandUtils.addTargetTabCompletion(possibleCompletions, args[2], sender, "playmoresounds.play.others");
-            //}
+            if (args.length == 4) {
+
+            } else if (args.length == 3) {
+            }
         };
     }
 
@@ -84,6 +89,10 @@ public final class MsgSubCommand extends Command implements Helpable {
             //  msg-bc-prefix: ""
             //  # 广播消息声音
             //  msg-bc-sound: ""
+        } else if ("sound".equals(args[1])) {
+            if (sender instanceof Player player) {
+                player.playSound(player, Sound.valueOf(args[2]), 50, 1);
+            }
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");
         }

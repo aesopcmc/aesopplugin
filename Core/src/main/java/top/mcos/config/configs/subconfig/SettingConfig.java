@@ -38,12 +38,31 @@ public class SettingConfig {
     private int noticeTitleKeep;
     @PathValue("config.notice.title.fadeout")
     private int noticeTitleFadeout;
-    @PathValue("config.activity.claimed-sound")
-    private String claimedSound;
-    @PathValue("config.activity.handle-block-locations")
-    private List<String> actHandleBlockLocations = new ArrayList<>();
-    @PathValue("config.activity.snowball-count")
-    private int actSnowballCount;
-    @PathValue("config.activity.handle-snowball-button-locations")
-    private List<String> actHandleSnowballButtonLocations = new ArrayList<>();
+
+    @PathValue("config.join-message.enable")
+    private boolean joinMessageEnable;
+
+    @PathValue("config.join-message.sound")
+    private String joinMessageSound;
+
+    @PathValue("config.join-message.message")
+    private String joinMessageMessage;
+
+    @PathValue("config.leave-message.enable")
+    private boolean leaveMessageEnable;
+
+    @PathValue("config.leave-message.sound")
+    private String leaveMessageSound;
+
+    @PathValue("config.leave-message.message")
+    private String leaveMessageMessage;
+
+    //@PathValue("config.activity.claimed-sound")
+    //private String claimedSound;
+    //@PathValue("config.activity.handle-block-locations")
+    //private List<String> actHandleBlockLocations = new ArrayList<>();
+    //@PathValue("config.activity.snowball-count")
+    //private int actSnowballCount;
+    //@PathValue("config.activity.handle-snowball-button-locations")
+    //private List<String> actHandleSnowballButtonLocations = new ArrayList<>();
 }
