@@ -66,11 +66,11 @@ config:
   join-message:
     enable: false
     sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
-    message: "&6[&a+&6] &a&l{player} &a加入游戏"
+    message: "&6[&a+&6] &7&l玩家 &a&l{player} &7&l加入了游戏！"
   leave-message:
     enable: false
     sound: ""
-    message: "&6[&4-&6] &4&l{player} &4离开了游戏."
+    message: "&6[&4-&6] &7&l玩家 &c&l{player} &7&l离开了游戏."
 
 #定时任务
 tasks:
