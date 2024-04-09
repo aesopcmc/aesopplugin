@@ -1,6 +1,6 @@
 package top.mcos.scheduler.jobs;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

@@ -1,6 +1,6 @@
 package top.mcos.scheduler;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import top.mcos.AesopPlugin;

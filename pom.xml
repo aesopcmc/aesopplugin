@@ -22,7 +22,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.name>AesopPlugin</project.name>
-        <global.version>1.3.7</global.version>
+        <!-- 插件版本号 -->
+        <global.version>1.3.8</global.version>
     </properties>
 
     <repositories>
@@ -71,12 +72,14 @@
             <scope>provided</scope>
 <!--            <classifier>remapped-mojang</classifier>-->
         </dependency>
-        <dependency>
+
+        <!-- 解除依赖 EpicPluginLib -->
+        <!--<dependency>
             <groupId>com.github.Epicnicity322</groupId>
             <artifactId>EpicPluginLib</artifactId>
             <version>2.6</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <!--多世界依赖-->
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>

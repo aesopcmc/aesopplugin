@@ -1,6 +1,6 @@
 package top.mcos.scheduler.jobs;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.apache.commons.lang3.StringUtils;

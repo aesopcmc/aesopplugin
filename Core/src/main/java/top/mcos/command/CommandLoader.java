@@ -1,7 +1,7 @@
 package top.mcos.command;
 
-import com.epicnicity322.epicpluginlib.bukkit.command.Command;
-import com.epicnicity322.epicpluginlib.bukkit.command.CommandManager;
+import top.mcos.util.epiclib.command.Command;
+import top.mcos.util.epiclib.command.CommandManager;
 import top.mcos.AesopPlugin;
 import top.mcos.command.subcommands.*;
 import org.bukkit.Bukkit;

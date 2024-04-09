@@ -1,6 +1,6 @@
 package top.mcos.business.firework;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import de.slikey.effectlib.EffectManager;
 import de.slikey.effectlib.effect.TextEffect;
 import de.slikey.effectlib.util.DynamicLocation;

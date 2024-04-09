@@ -1,6 +1,6 @@
 package top.mcos.business.activity;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.bukkit.Bukkit;

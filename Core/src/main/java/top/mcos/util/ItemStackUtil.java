@@ -1,6 +1,6 @@
 package top.mcos.util;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

@@ -13,7 +13,7 @@ public final class MultiverseProvider extends Provider<MultiverseCore> implement
         try {
             multiverseCore = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
             if(multiverseCore!=null) {
-                AesopPlugin.logger.log("MultiverseCore已挂钩");
+                AesopPlugin.logger.log("&aMultiverseCore已挂钩");
             } else {
                 AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过加载");
             }

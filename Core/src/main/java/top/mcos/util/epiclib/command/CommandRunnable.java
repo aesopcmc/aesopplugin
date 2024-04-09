@@ -1,6 +1,6 @@
 /*
- * PlayMoreSounds - A bukkit plugin that manages and plays sounds.
- * Copyright (C) 2022 Christiano Rangel
+ * EpicPluginLib - Library with basic utilities for bukkit plugins.
+ * Copyright (C) 2021  Christiano Rangel
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package top.mcos.command.subcommands;
+package top.mcos.util.epiclib.command;
 
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import top.mcos.util.epiclib.command.CommandRunnable;
 
-public interface Helpable {
-    @NotNull CommandRunnable onHelp();
+public interface CommandRunnable
+{
+    void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args);
 }

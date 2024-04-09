@@ -1,9 +1,9 @@
 package top.mcos.command.subcommands;
 
-import com.epicnicity322.epicpluginlib.bukkit.command.Command;
-import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
-import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.command.Command;
+import top.mcos.util.epiclib.command.CommandRunnable;
+import top.mcos.util.epiclib.command.TabCompleteRunnable;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;

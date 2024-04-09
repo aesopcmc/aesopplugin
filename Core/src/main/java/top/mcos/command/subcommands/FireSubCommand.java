@@ -1,8 +1,5 @@
 package top.mcos.command.subcommands;
 
-import com.epicnicity322.epicpluginlib.bukkit.command.Command;
-import com.epicnicity322.epicpluginlib.bukkit.command.CommandRunnable;
-import com.epicnicity322.epicpluginlib.bukkit.command.TabCompleteRunnable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +11,9 @@ import top.mcos.business.firework.config.sub.PlayerFireworkGroupConfig;
 import top.mcos.database.dao.PlayerFireworkDao;
 import top.mcos.database.domain.PlayerFirework;
 import top.mcos.business.firework.FireWorkManage;
+import top.mcos.util.epiclib.command.Command;
+import top.mcos.util.epiclib.command.CommandRunnable;
+import top.mcos.util.epiclib.command.TabCompleteRunnable;
 
 import java.sql.SQLException;
 import java.util.List;

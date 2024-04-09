@@ -1,6 +1,6 @@
 package top.mcos.message.payload;
 
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.bukkit.entity.Player;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;

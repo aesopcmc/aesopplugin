@@ -1,7 +1,5 @@
 package top.mcos;
 
-import com.epicnicity322.epicpluginlib.bukkit.logger.Logger;
-import com.epicnicity322.epicpluginlib.core.logger.ConsoleLogger;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.j256.ormlite.misc.TransactionManager;
@@ -22,6 +20,8 @@ import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsBuilder;
 import top.mcos.nms.spi.NmsProvider;
 import top.mcos.scheduler.SchedulerHandler;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
+import top.mcos.util.epiclib.logger.Logger;
 
 import java.sql.SQLException;
 import java.util.HashSet;
