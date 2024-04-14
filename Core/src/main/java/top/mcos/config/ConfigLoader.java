@@ -1,5 +1,6 @@
 package top.mcos.config;
 
+import top.mcos.business.gbclear.config.GbClearConfig;
 import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -39,21 +40,36 @@ public final class ConfigLoader {
      */
     public static YanHuaConfig yanHuaConfig;
     /**
-     * 活动配置
+     * 活动配置 activity.yml
      */
     public static ActivityConfig activityConfig;
+    /**
+     * 垃圾清理配置 gbclear.yml
+     */
+    public static GbClearConfig gbClearConfig;
 
     // 自定义配置文件
     private final static Map<String, CustomerConfigFile> ccMap = new HashMap<>();
 
+    /**
+     * 加载配置
+     * @param configFile 配置文件名称
+     */
     public static synchronized void load(String configFile) {
-        if(configFile==null) {
+        if(configFile==null || configFile.contains("config.yml")) {
             baseConfig = initConfig(BaseConfig.class);
+        }
+        if(configFile==null || configFile.contains("firework.yml")) {
             fireworkConfig = initConfig(FireworkConfig.class);
+        }
+        if(configFile==null || configFile.contains("yanhua.yml")) {
             yanHuaConfig = initConfig(YanHuaConfig.class);
+        }
+        if(configFile==null || configFile.contains("activity.yml")) {
             activityConfig = initConfig(ActivityConfig.class);
-        } else if(configFile.contains("yanhua")) {
-            yanHuaConfig = initConfig(YanHuaConfig.class);
+        }
+        if(configFile==null || configFile.contains("gbclear.yml")) {
+            gbClearConfig = initConfig(GbClearConfig.class);
         }
         //System.out.println("主配置："+ baseConfig.getSettingConfig());
         //List<NoticeConfig> msgs = baseConfig.getNoticeConfigs();
@@ -228,6 +244,7 @@ public final class ConfigLoader {
                             AesopPlugin.logger.log(annotationValue + "日期【" + v + "】转换出错，格式有误！", ConsoleLogger.Level.ERROR);
                         }
                     } else {
+
                         field.set(object, v);
                     }
                 } catch (Exception e) {

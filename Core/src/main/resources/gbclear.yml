@@ -1,0 +1,12 @@
+enable: true
+debug: false
+prefix: "&a【&#d7d7d7扫&#ebebeb地&#ffffff姬&a】"
+# 清理周期。单位毫秒
+clear-period: 600000
+notice:
+  enable: true
+  timeleft: [60000, 30000]
+  # 开始倒计时
+  countdown-in: 10000
+  # 倒计时显示类型： 1进度条 、2文字
+  countdown-type: 1

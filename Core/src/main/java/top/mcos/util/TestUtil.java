@@ -40,7 +40,10 @@ public class TestUtil {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(new File("c:\\ff/bb/a.png").getCanonicalPath());
+        long [] a  = new long[]{1};
+        System.out.println(a.getClass().getTypeName());
+
+        //System.out.println(new File("c:\\ff/bb/a.png").getCanonicalPath());
 
         //System.out.println(new Date().getTime());
         //System.out.println(numToHex16(15435844));

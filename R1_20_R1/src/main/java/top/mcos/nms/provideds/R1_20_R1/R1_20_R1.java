@@ -8,13 +8,21 @@ import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.network.PlayerConnection;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mcos.message.MessageHandler;
 import top.mcos.nms.spi.NmsProvider;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
 
 public class R1_20_R1 implements NmsProvider {
 	
@@ -75,7 +83,44 @@ public class R1_20_R1 implements NmsProvider {
 		}
 
 	}
-	
+
+	@Override
+	public boolean isCraftItem(@NotNull Entity entity, @Nullable Map<String, String> namespaceKeyFilters) {
+		// CraftItem ： 识别为凋落物，而不是其它生物
+		// c.getPickupDelay() : 获取该物品可供玩家拾取之前的延迟时间
+		if(entity instanceof CraftItem c && c.getPickupDelay()<=0) {
+
+			// 根据命名空间过滤
+			if(namespaceKeyFilters!=null) {
+				if(c.getItemStack().getItemMeta()!=null) {
+					Set<NamespacedKey> namespacedKeys = c.getItemStack().getItemMeta().getPersistentDataContainer().getKeys();
+					Set<String> nkFilters = namespaceKeyFilters.keySet();
+					for (String nkf : nkFilters) {
+						for (NamespacedKey namespacedKey : namespacedKeys) {
+							String namespaceKeyString = namespacedKey.getNamespace() + ":" + namespacedKey.getKey();
+							if (namespaceKeyString.contains(nkf)) {
+								String nvf = namespaceKeyFilters.get(nkf);
+
+								// 过滤生效情况1 namespace:key -> 空|*|''
+								if(nvf==null || nvf.trim().equals("*") || nvf.trim().isBlank()) {
+									return false;
+								}
+								// 过滤生效情况2 namespace:key -> 一个匹配的值
+								if(nvf.equals(c.getItemStack().getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING))) {
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// 清除掉落物
+			return true;
+		}
+		return false;
+	}
+
 	private NetworkManager getNetworkManager(Player player) {
 		try {
 			return (NetworkManager) networkManagerH.get(((CraftPlayer) player).getHandle().c);

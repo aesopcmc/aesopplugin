@@ -28,7 +28,7 @@ permissions:
     default: op
     children:
       aesopplugin.admin.reload: true
-      aesopplugin.admin.msg: true
+      aesopplugin.admin.test: true
       aesopplugin.admin.task: true
       aesopplugin.admin.activity: true
       aesopplugin.admin.firework: true

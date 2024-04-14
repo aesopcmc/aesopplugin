@@ -1,10 +1,5 @@
 package top.mcos.message;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -14,7 +9,6 @@ import top.mcos.config.ConfigLoader;
 import top.mcos.message.payload.ActionbarMessagePayload;
 import top.mcos.message.payload.TitleMessagePayload;
 import top.mcos.util.MessageUtil;
-
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -109,6 +103,22 @@ public final class MessageHandler {
             }
         }
     }
+    //public static synchronized void sendBossBar(String prefix, String message, double progress) {
+    //    if(bossBar==null) {
+    //        bossBar = Bukkit.createBossBar("", BarColor.GREEN, BarStyle.SOLID);
+    //    }
+    //    Collection<? extends Player> receivers = Bukkit.getOnlinePlayers();
+    //    for (Player p : receivers) {
+    //        bossBar.addPlayer(p);
+    //    }
+    //    bossBar.setTitle(MessageUtil.colorize(prefix + message));
+    //    bossBar.setProgress(progress);
+    //    if(progress>0) {
+    //        bossBar.setVisible(true);
+    //    } else {
+    //        bossBar.setVisible(false);
+    //    }
+    //}
 
     /**
      * 发送消息给指定用户

@@ -21,7 +21,7 @@ public final class CommandLoader {
 
             commands.add(new HelpSubCommand());
             commands.add(new ReloadSubCommand());
-            commands.add(new MsgSubCommand());
+            commands.add(new TestSubCommand());
             commands.add(new TaskSubCommand());
             commands.add(new ActivitySubCommand());
             commands.add(new FireworkSubCommand());

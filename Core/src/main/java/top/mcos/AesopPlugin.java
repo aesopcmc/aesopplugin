@@ -5,6 +5,7 @@ import com.google.common.collect.Interners;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.Bukkit;
+import top.mcos.business.BusRegister;
 import top.mcos.business.activity.christmas.NSKeys;
 import top.mcos.business.yanhua.YanHuaEvent;
 import top.mcos.database.config.SqliteDatabase;
@@ -111,6 +112,8 @@ public final class AesopPlugin extends JavaPlugin {
         // 注册任务
         SchedulerHandler.registerAllJobs();
 
+        BusRegister.register();
+
         // 注册粒子特效
         FireWorkManage.load();
 
@@ -128,6 +131,7 @@ public final class AesopPlugin extends JavaPlugin {
         YanHuaEvent.clearQueue();
         MessageHandler.setSendBreak(true);
         FireWorkManage.getInstance().clear();
+        BusRegister.unload();
         logger.log("&c插件已卸载");
     }
 

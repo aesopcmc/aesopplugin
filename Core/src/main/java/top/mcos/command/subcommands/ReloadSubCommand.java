@@ -1,5 +1,6 @@
 package top.mcos.command.subcommands;
 
+import top.mcos.business.BusRegister;
 import top.mcos.util.epiclib.command.Command;
 import top.mcos.util.epiclib.command.CommandRunnable;
 import top.mcos.util.epiclib.command.TabCompleteRunnable;
@@ -73,6 +74,8 @@ public final class ReloadSubCommand extends Command implements Helpable {
                 SchedulerHandler.registerAllJobs();
                 // 重新注册粒子特效
                 FireWorkManage.getInstance().reload();
+                // 重载业务
+                BusRegister.reload();
             } else if (args.length==2) {
                 ConfigLoader.load(args[1]);
             } else {

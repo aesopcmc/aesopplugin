@@ -1,5 +1,13 @@
 package top.mcos.command.subcommands;
 
+import com.j256.ormlite.stmt.query.In;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.inventory.CraftItemEvent;
+import top.mcos.business.BusRegister;
+import top.mcos.config.ConfigLoader;
+import top.mcos.message.MessageHandler;
 import top.mcos.util.epiclib.command.Command;
 import top.mcos.util.epiclib.command.CommandRunnable;
 import top.mcos.util.epiclib.command.TabCompleteRunnable;
@@ -13,25 +21,25 @@ import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.util.MessageUtil;
 
-import java.util.Locale;
+import java.util.List;
 
 /**
- * 消息命令：/xxx msg
+ * 命令测试：/xxx test
  */
-public final class MsgSubCommand extends Command implements Helpable {
+public final class TestSubCommand extends Command implements Helpable {
     @Override
     public @NotNull CommandRunnable onHelp() {
-        return (label, sender, args) -> AesopPlugin.logger.log(sender, "&2发送消息: &a/"+label + " "+getName());
+        return (label, sender, args) -> AesopPlugin.logger.log(sender, "&2命令测试: &a/"+label + " "+getName());
     }
 
     @Override
     public @Nullable String[] getAliases() {
-        return new String[]{"msg"};
+        return new String[]{"test"};
     }
 
     @Override
     public @NotNull String getName() {
-        return "msg";
+        return "test";
     }
 
     @Override
@@ -41,7 +49,7 @@ public final class MsgSubCommand extends Command implements Helpable {
 
     @Override
     public @Nullable String getPermission() {
-        return "aesopplugin.admin.msg";
+        return "aesopplugin.admin.test";
     }
 
     @Override
@@ -83,7 +91,6 @@ public final class MsgSubCommand extends Command implements Helpable {
     @Override
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if("bc".equals(args[1])) {
-
             Bukkit.broadcastMessage(MessageUtil.colorize("&#2796e7测试&a你好\n可以吗"));
             //  # 广播消息前缀
             //  msg-bc-prefix: ""
@@ -93,6 +100,11 @@ public final class MsgSubCommand extends Command implements Helpable {
             if (sender instanceof Player player) {
                 player.playSound(player, Sound.valueOf(args[2]), 50, 1);
             }
+        } else if("bar".equals(args[1])){
+            double pro = Double.parseDouble(args[2]);
+            //MessageHandler.sendBossBar(ConfigLoader.gbClearConfig.getPrefix(), "&e即将清理掉落物"+pro*100 +"%", pro);
+        } else if("clear".equals(args[1])){
+            BusRegister.clearBus.clear();
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");
         }
