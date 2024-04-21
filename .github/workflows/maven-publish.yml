@@ -8,8 +8,8 @@ name: Maven Package
 #    types: [created]
 
 on:
- push:
-   branches: [ "master" ]
+  push:
+    branches: [ "master" ]
 
 #on:
 #  push:
