@@ -21,7 +21,7 @@ import java.time.ZoneOffset;
 public final class CleanCommand extends Command implements Helpable {
     @Override
     public @NotNull CommandRunnable onHelp() {
-        return (label, sender, args) -> AesopPlugin.logger.log(sender, "&2发送消息: &a/"+label + " "+getName());
+        return (label, sender, args) -> AesopPlugin.logger.log(sender, "&2日志清理: &a/"+label + " "+getName());
     }
 
     @Override

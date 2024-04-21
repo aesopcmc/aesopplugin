@@ -1,8 +1,20 @@
-enable: true
 debug: false
-prefix: "&a【&#d7d7d7扫&#ebebeb地&#ffffff姬&a】"
-# 清理周期。单位毫秒
-clear-period: 600000
+prefix: "&#00aa00&l♻&#89d899&l扫&#b7e7cc&l地&#e5f6ff&l姬 &6>> "
+
+# 是否开启自动清理掉落物
+auto-clear-enable: false
+# 自动清理周期。单位毫秒
+auto-clear-period: 600000
+
+# 是否清理未加载的掉落物
+unload-clean-enable: false
+# 未加载掉落物保留时长
+unload-keep-time: 600000
+
+# 排除的世界
+exclude-worlds: []
+
+# 清理通知开关
 notice:
   enable: true
   timeleft: [60000, 30000]

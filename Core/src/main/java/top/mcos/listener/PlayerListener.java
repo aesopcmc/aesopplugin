@@ -13,9 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -23,6 +27,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import top.mcos.AesopPlugin;
+import top.mcos.business.BusRegister;
 import top.mcos.business.yanhua.YanHuaEvent;
 import top.mcos.business.activity.christmas.NSKeys;
 import top.mcos.business.firework.FireWorkManage;
@@ -273,6 +278,38 @@ public class PlayerListener implements Listener {
 
         });
 
+    }
+
+    /**
+     * 区块加载事件
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onChunkLoadEvent(ChunkLoadEvent loadEvent) {
+        BusRegister.clearBus.chunkLoadEvent(loadEvent);
+    }
+
+    /**
+     * 区块卸载事件
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onChunkUnloadEvent(ChunkUnloadEvent unloadEvent) {
+        BusRegister.clearBus.chunkUnloadEvent(unloadEvent);
+    }
+
+    /**
+     * 物品自然消失事件（倒计时结束）
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onItemDespawnEvent(ItemDespawnEvent itemDespawnEvent) {
+        BusRegister.clearBus.itemDespawnEvent(itemDespawnEvent);
+    }
+
+    /**
+     * 捡起物品事件
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPickupItemEvent(EntityPickupItemEvent pickupItemEvent) {
+        BusRegister.clearBus.pickupItemEvent(pickupItemEvent);
     }
 
     ///**

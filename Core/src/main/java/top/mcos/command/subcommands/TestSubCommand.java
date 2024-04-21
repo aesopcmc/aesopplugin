@@ -1,13 +1,5 @@
 package top.mcos.command.subcommands;
 
-import com.j256.ormlite.stmt.query.In;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.inventory.CraftItemEvent;
-import top.mcos.business.BusRegister;
-import top.mcos.config.ConfigLoader;
-import top.mcos.message.MessageHandler;
 import top.mcos.util.epiclib.command.Command;
 import top.mcos.util.epiclib.command.CommandRunnable;
 import top.mcos.util.epiclib.command.TabCompleteRunnable;
@@ -20,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mcos.AesopPlugin;
 import top.mcos.util.MessageUtil;
-
-import java.util.List;
 
 /**
  * 命令测试：/xxx test
@@ -65,10 +55,13 @@ public final class TestSubCommand extends Command implements Helpable {
     @Override
     protected @Nullable TabCompleteRunnable getTabCompleteRunnable() {
         return (possibleCompletions, label, sender, args) -> {
+            if(args.length==1) {
+
+            }
             if(args.length==2) {
-                possibleCompletions.add("bc"); //广播消息 msg bc <消息分类> <消息内容>
-                possibleCompletions.add("out");
-                possibleCompletions.add("sound");// 测试声音 msg sound <声音>
+                possibleCompletions.add("bc");      // test bc <消息分类> <消息内容>  #广播消息
+                possibleCompletions.add("sound");   // test sound <声音> #测试声音
+                possibleCompletions.add("test");    // test test # 通用测试
             }
             if(args.length==3) {
                 if("bc".equals(args[1])) {
@@ -92,19 +85,13 @@ public final class TestSubCommand extends Command implements Helpable {
     public void run(@NotNull String label, @NotNull CommandSender sender, @NotNull String[] args) {
         if("bc".equals(args[1])) {
             Bukkit.broadcastMessage(MessageUtil.colorize("&#2796e7测试&a你好\n可以吗"));
-            //  # 广播消息前缀
-            //  msg-bc-prefix: ""
-            //  # 广播消息声音
-            //  msg-bc-sound: ""
         } else if ("sound".equals(args[1])) {
             if (sender instanceof Player player) {
                 player.playSound(player, Sound.valueOf(args[2]), 50, 1);
             }
-        } else if("bar".equals(args[1])){
-            double pro = Double.parseDouble(args[2]);
+        } else if("test".equals(args[1])){
+            //double pro = Double.parseDouble(args[2]);
             //MessageHandler.sendBossBar(ConfigLoader.gbClearConfig.getPrefix(), "&e即将清理掉落物"+pro*100 +"%", pro);
-        } else if("clear".equals(args[1])){
-            BusRegister.clearBus.clear();
         } else {
             AesopPlugin.logger.log(sender, "&c参数有误");
         }

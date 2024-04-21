@@ -29,6 +29,7 @@ public final class CommandLoader {
             commands.add(new ItemBindSubCommand());
             commands.add(new YanHuaSubCommand());
             commands.add(new CleanCommand());
+            commands.add(new GbclearSubCommand());
 
             // 注册主命令 + 子命令
             CommandManager.registerCommand(Bukkit.getPluginCommand("aesopplugin"), commands,
