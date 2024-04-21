@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.name>AesopPlugin</project.name>
         <!-- 插件版本号 -->
-        <global.version>1.3.9.pre</global.version>
+        <global.version>1.3.9</global.version>
     </properties>
 
     <repositories>
