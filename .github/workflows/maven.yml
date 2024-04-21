@@ -8,12 +8,20 @@
 
 name: Java CI with Maven
 
+# 触发事件
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
+# 触发事件2
+# 当推送标签名为release/开头的，触发构建任务
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
+    tags:
+      - release/**
+      
 jobs:
   build:
 
