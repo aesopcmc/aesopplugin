@@ -6,10 +6,15 @@ name: Maven Package
 #on:
 #  release:
 #    types: [created]
+
 on:
-  push:
-    tags:
-      - release/**
+ push:
+   branches: [ "master" ]
+
+#on:
+#  push:
+#    tags:
+#      - release/**
 
 jobs:
   build:
