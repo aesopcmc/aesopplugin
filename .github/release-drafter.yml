@@ -26,6 +26,8 @@ version-resolver:
       - 'patch'
   default: patch
 template: |
-  ## Changes
+  ## 更新内容
+  1. 很好
+  2. 不好
 
   $CHANGES
