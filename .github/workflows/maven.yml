@@ -8,15 +8,14 @@
 
 name: Java CI with Maven
 
-# 触发事件
+# 触发事件：当推送master分支时触发
 # on:
 #   push:
 #     branches: [ "master" ]
 #   pull_request:
 #     branches: [ "master" ]
 
-# 触发事件2
-# 当推送标签名为release/开头的，触发构建任务
+# 触发事件 : 当推送标签名为‘release/’开头的，触发构建任务
 on:
   push:
     tags:
@@ -36,7 +35,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B clean package --file pom.xml
     - run: mkdir staging && cp Build/target/*.jar staging
     - uses: actions/upload-artifact@v4
       with:
