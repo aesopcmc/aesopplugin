@@ -7,9 +7,9 @@ name: Maven Package
 #  release:
 #    types: [created]
 
-on:
-  push:
-    branches: [ "master" ]
+#on:
+#  push:
+#    branches: [ "master" ]
 
 #on:
 #  push:
