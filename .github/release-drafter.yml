@@ -29,5 +29,7 @@ template: |
   ## 更新内容
   1. 很好
   2. 不好
-
+  ## 已合并的请求
   $CHANGES
+  # 贡献者
+  $CONTRIBUTORS
