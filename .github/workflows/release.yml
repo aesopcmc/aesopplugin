@@ -16,7 +16,6 @@ on:
 permissions:
   contents: read
 
-# 作业
 jobs:
   update_release_draft:
     permissions:
