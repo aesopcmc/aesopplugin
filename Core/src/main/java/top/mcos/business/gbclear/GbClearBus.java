@@ -130,6 +130,7 @@ public class GbClearBus implements Bus {
 
         Entity[] entities = loadEvent.getChunk().getEntities();
         long time = new Date().getTime();
+        int cleanedCount = 0;
         for (Entity entity : entities) {
             //AesopPlugin.logger.log("&e加载实体："+uid+"("+name+"),location:"+location.getX()+" "+location.getY()+" "+location.getZ());
 
@@ -143,11 +144,15 @@ public class GbClearBus implements Bus {
                 if((time - recordTime) >= unloadKeepTime ) {
                     entity.remove();
                     unloadItemStore.remove(uid);
+                    cleanedCount++;
                     if(debug) {
                         AesopPlugin.logger.log("&e移除实体：" + uid + "(" + name + "),location:" + lstr);
                     }
                 }
             }
+        }
+        if(cleanedCount>0) {
+            AesopPlugin.logger.log("清理未加载掉落物：" + cleanedCount);
         }
     }
 

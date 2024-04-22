@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import top.mcos.AesopPlugin;
 import top.mcos.config.ConfigLoader;
 import top.mcos.message.payload.ActionbarMessagePayload;
@@ -29,9 +30,10 @@ public final class MessageHandler {
 
     public static void initQueue() {
         // 启动消息监听线程
-        Bukkit.getScheduler().runTaskAsynchronously(AesopPlugin.getInstance(), bukkitTask -> {
-            while (AesopPlugin.getInstance().isPluginActive()) {
+        Bukkit.getScheduler().runTaskTimer(AesopPlugin.getInstance(), ()->{
+            if (AesopPlugin.getInstance().isPluginActive()) {
                 // 获取一组消息。一组消息由一个消息单元和多个在线用户组成
+                // poll不会阻塞
                 List<MessagePayload> poll = msgPayloadQueue.poll();
                 if(poll!=null) {
                     for (MessagePayload messagePayload : poll) {
@@ -40,8 +42,7 @@ public final class MessageHandler {
                     }
                 }
             }
-            msgPayloadQueue.clear();
-        });
+        }, 110, 20);
         AesopPlugin.logger.log("&a已启动消息监听");
     }
 
