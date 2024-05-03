@@ -13,6 +13,7 @@
         <module>R1_19_R3</module>
         <module>R1_20_R1</module>
         <module>R1_20_R2</module>
+        <module>R1_20_R3</module>
         <module>Build</module>
         <module>Database</module>
     </modules>
@@ -23,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.name>AesopPlugin</project.name>
         <!-- 插件版本号 -->
-        <global.version>1.3.10</global.version>
+        <global.version>1.3.11</global.version>
     </properties>
 
     <distributionManagement>

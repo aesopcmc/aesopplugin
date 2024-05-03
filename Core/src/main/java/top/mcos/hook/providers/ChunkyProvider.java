@@ -49,7 +49,7 @@ public final class ChunkyProvider extends Provider<ChunkyAPI> implements HookPro
                     }
                 });
 
-                AesopPlugin.logger.log("Chunky已挂钩");
+                AesopPlugin.logger.log("&aChunky已挂钩");
             } else {
                 AesopPlugin.logger.log("&e未检测到Chunky插件，已跳过加载");
             }
