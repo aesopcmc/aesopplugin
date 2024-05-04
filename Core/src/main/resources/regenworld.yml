@@ -1,0 +1,16 @@
+#############################
+# 世界重置
+# 强依赖于Multiverse-Core插件
+#############################
+worlds:
+  zy:
+    enable: false
+    delete-cron: "0 0 5 * * ?"
+    delete-region: true # 删除世界守卫WorldGuard区域
+    # NOW立即创建RESTART服务器启动完毕后创建:NORMAL NETHER THE_END:指定种子(null):指定生成器(null)
+    create-at: "RESTART:NORMAL:null:null"
+    # 设置游戏规则：org.bukkit.GameRule -> name
+    created-gamerules:
+      - "keepInventory:true"
+    created-commands: [] # 创建完成后执行命令
+    chunky-load-radius: 0 # 预加载地图半径（方块数） 等于0表示关闭预加载

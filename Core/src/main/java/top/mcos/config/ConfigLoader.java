@@ -1,6 +1,7 @@
 package top.mcos.config;
 
 import top.mcos.business.gbclear.config.GbClearConfig;
+import top.mcos.business.regen.config.RgConfig;
 import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -47,6 +48,10 @@ public final class ConfigLoader {
      * 垃圾清理配置 gbclear.yml
      */
     public static GbClearConfig gbClearConfig;
+    /**
+     * 世界重置配置 regenworld.yml
+     */
+    public static RgConfig rgConfig;
 
     // 自定义配置文件
     private final static Map<String, CustomerConfigFile> ccMap = new HashMap<>();
@@ -70,6 +75,9 @@ public final class ConfigLoader {
         }
         if(configFile==null || configFile.contains("gbclear.yml")) {
             gbClearConfig = initConfig(GbClearConfig.class);
+        }
+        if(configFile==null || configFile.contains("regenworld.yml")) {
+            rgConfig = initConfig(RgConfig.class);
         }
         //System.out.println("主配置："+ baseConfig.getSettingConfig());
         //List<NoticeConfig> msgs = baseConfig.getNoticeConfigs();

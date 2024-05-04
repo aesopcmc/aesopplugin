@@ -26,14 +26,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 //@DisallowConcurrentExecution
-public class RegenWorldJob extends AbstractJob {
+public class RegenWorldJob extends AbstractJob<RegenWorldConfig> {
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void run(JobExecutionContext context, RegenWorldConfig config) {
         try {
-            log(context, "执行任务");
-            JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-            Map<String, Object> wrappedMap = jobDataMap.getWrappedMap();
-            RegenWorldConfig config = BeanMapUtil.mapToBean(wrappedMap, RegenWorldConfig.class);
             List<String> afterRunCommands = config.getLoadedRunCommands();
             /*
             重置世界
@@ -41,7 +37,7 @@ public class RegenWorldJob extends AbstractJob {
             MultiverseProvider multiverseProvider = HookHandler.getMultiverseProvider();
             if(!multiverseProvider.isLoaded()) {
                 // 未检测到多世界插件，已跳过世界重置
-                log(context, "未检测到MultiverseCore插件，已跳过世界重置");
+                log("未检测到MultiverseCore插件，已跳过世界重置");
                 return;
             }
             // mvWorldManager.regenWorld();需要在同步环境中执行，故此使用bukkit的同步任务方法runTask执行
@@ -53,9 +49,9 @@ public class RegenWorldJob extends AbstractJob {
                 MVWorldManager mvWorldManager = core.getMVWorldManager();
                 String aliasWorldName = mvWorldManager.getMVWorld(config.getKey()).getAlias();
                 //long seed = (new Random()).nextLong();
-                log(context, "正在重置世界【"+aliasWorldName+"】");
+                log("正在重置世界【"+aliasWorldName+"】");
                 mvWorldManager.regenWorld(config.getKey(), config.isNewSeed(), config.isRandomSeed(), config.getSeed(), config.isKeepGameRules());
-                log(context, "世界【"+aliasWorldName+"】已重置完成");
+                log("世界【"+aliasWorldName+"】已重置完成");
 
                 /*
                 发送滚动消息提醒
@@ -95,10 +91,10 @@ public class RegenWorldJob extends AbstractJob {
                                 config.getLoadedChunkyRadius(),
                                 config.getLoadedChunkyRadius(),
                                 "concentric");
-                        log(context, "开始执行区块加载【"+config.getKey()+"】");
+                        log("开始执行区块加载【"+config.getKey()+"】");
                     }else {
                         // 未检测到区块加载插件，已跳过区块加载
-                        log(context, "未检测到Chunky插件，已跳过区块加载");
+                        log("未检测到Chunky插件，已跳过区块加载");
                     }
                 }
 
@@ -107,7 +103,7 @@ public class RegenWorldJob extends AbstractJob {
                  */
                 if(afterRunCommands!=null && afterRunCommands.size()>0) {
                     for (String cmdline : afterRunCommands) {
-                        log(context, "执行指令：" + cmdline);
+                        log("执行指令：" + cmdline);
                         // 获取控制台身份，以控制台身份执行指令
                         ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
                         Bukkit.getServer().dispatchCommand(consoleSender, cmdline);
@@ -117,8 +113,12 @@ public class RegenWorldJob extends AbstractJob {
 
         } catch (Throwable e) {
             e.printStackTrace();
-            log(context, "执行任务出错", ConsoleLogger.Level.ERROR);
+            log("执行任务出错", ConsoleLogger.Level.ERROR);
         }
+    }
 
+    @Override
+    protected Object getSonObject() {
+        return this;
     }
 }

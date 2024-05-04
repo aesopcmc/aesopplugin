@@ -18,16 +18,11 @@ import java.util.Map;
  */
 //设定的时间间隔为3秒,但job执行时间是5秒,设置@DisallowConcurrentExecution以后程序会等任务执行完毕以后再去执行,否则会在3秒时再启用新的线程执行
 //@DisallowConcurrentExecution
-public class BroadcastJob extends AbstractJob {
+public class BroadcastJob extends AbstractJob<BroadcastConfig> {
     private static int nextOrder=0;
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void run(JobExecutionContext context, BroadcastConfig config) {
         try {
-            log(context, "执行任务");
-            JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-            Map<String, Object> wrappedMap = jobDataMap.getWrappedMap();
-            BroadcastConfig config = BeanMapUtil.mapToBean(wrappedMap, BroadcastConfig.class);
-
             // 没有玩家时不进行广播
             if(Bukkit.getOnlinePlayers().size()<1) return;
 
@@ -47,8 +42,13 @@ public class BroadcastJob extends AbstractJob {
             }
         }catch (Throwable e) {
             e.printStackTrace();
-            log(context, "执行任务出错", ConsoleLogger.Level.ERROR);
+            log("执行任务出错", ConsoleLogger.Level.ERROR);
         }
+    }
+
+    @Override
+    protected Object getSonObject() {
+        return this;
     }
 
 

@@ -1,5 +1,7 @@
 package top.mcos.scheduler;
 
+import top.mcos.business.regen.config.RgConfig;
+import top.mcos.business.regen.config.sub.RgWorldConfig;
 import top.mcos.util.epiclib.logger.ConsoleLogger;
 import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.*;
@@ -91,6 +93,12 @@ public final class SchedulerHandler {
             allJob.add(config);
             registerJob(config);
         }
+        //
+        //// 注册世界重置执行任务
+        //for (RgWorldConfig config : ConfigLoader.rgConfig.getRgWorldConfigs()) {
+        //    allJob.add(config);
+        //    registerJob(config);
+        //}
     }
 
     public static synchronized void shutdown() {

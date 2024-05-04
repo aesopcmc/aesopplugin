@@ -1,14 +1,14 @@
 package top.mcos.business;
 
 import top.mcos.business.gbclear.GbClearBus;
+import top.mcos.business.regen.RegenBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class BusRegister {
     public static GbClearBus clearBus;
+    public static RegenBus regenBus;
 
     private static List<Bus> busList = new ArrayList<>();
 
@@ -16,6 +16,10 @@ public final class BusRegister {
         clearBus = new GbClearBus();
         clearBus.load();
         busList.add(clearBus);
+
+        regenBus = new RegenBus();
+        regenBus.load();
+        busList.add(regenBus);
     }
 
     public static void unload() {

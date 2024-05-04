@@ -23,7 +23,7 @@ public final class ChunkyProvider extends Provider<ChunkyAPI> implements HookPro
                 updateTime.set(System.currentTimeMillis());
 
                 chunky.onGenerationComplete(event -> {
-                    AesopPlugin.logger.log(event.world()+"区块已加载完毕");
+                    AesopPlugin.logger.log("&e[chunk] &b世界【" + event.world()+ "】区块已加载完毕。");
                 });
 
                 chunky.onGenerationProgress(event -> {

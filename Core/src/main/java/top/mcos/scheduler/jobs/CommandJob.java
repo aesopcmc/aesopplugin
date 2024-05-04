@@ -22,20 +22,16 @@ import java.util.Map;
  */
 //设定的时间间隔为3秒,但job执行时间是5秒,设置@DisallowConcurrentExecution以后程序会等任务执行完毕以后再去执行,否则会在3秒时再启用新的线程执行
 //@DisallowConcurrentExecution
-public class CommandJob extends AbstractJob {
+public class CommandJob extends AbstractJob<CommandConfig> {
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void run(JobExecutionContext context, CommandConfig config) {
         try {
-            log(context, "执行任务");
-            JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-            Map<String, Object> wrappedMap = jobDataMap.getWrappedMap();
-            CommandConfig config = BeanMapUtil.mapToBean(wrappedMap, CommandConfig.class);
             List<String> commands = config.getCommands();
             if(commands!=null) {
                 Bukkit.getScheduler().runTask(AesopPlugin.getInstance(), ()->{
                     for (String cmdline : commands) {
                         if(StringUtils.isNotBlank(cmdline)) {
-                            log(context, "执行指令：" + cmdline);
+                            log("执行指令：" + cmdline);
                             // 获取控制台身份，以控制台身份执行指令
                             ConsoleCommandSender consoleSender = Bukkit.getServer().getConsoleSender();
                             Bukkit.getServer().dispatchCommand(consoleSender, cmdline);
@@ -45,8 +41,13 @@ public class CommandJob extends AbstractJob {
             }
         }catch (Throwable e) {
             e.printStackTrace();
-            log(context, "执行任务出错", ConsoleLogger.Level.ERROR);
+            log("执行任务出错", ConsoleLogger.Level.ERROR);
         }
+    }
+
+    @Override
+    protected Object getSonObject() {
+        return this;
     }
 
 }
