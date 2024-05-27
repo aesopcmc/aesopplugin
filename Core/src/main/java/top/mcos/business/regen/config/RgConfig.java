@@ -14,6 +14,15 @@ import java.util.List;
 @ConfigFileName("regenworld.yml")
 public final class RgConfig {
 
+    @PathValue("chunky-loading-notice.enable")
+    private boolean chunkyLoadingNoticeEnable;
+
+    @PathValue("chunky-loading-notice.message")
+    private String chunkyLoadingNoticeMessage;
+
+    @PathValue("chunky-loading-notice.delay")
+    private long chunkyLoadingNoticeDelay;
+
     @PathList("worlds")
     private List<RgWorldConfig> rgWorldConfigs;
 

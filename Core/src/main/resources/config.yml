@@ -13,7 +13,7 @@
 #   时（0 - 23）
 #   日（1 - 31）
 #   月（1 - 12 或 JAN-DEC）
-#   周（0 - 7 或 SUN-SAT）
+#   周（1-7 1=SUN 或 SUN，MON，TUE，WED，THU，FRI，SAT 或 SUN-SAT）
 #   （可选）年份
 #
 #   特殊符号：
@@ -35,13 +35,6 @@
 config:
   # 是否开启debug,输出日志
   debug: false
-  # 重置世界配置
-  regen-world:
-    # chunky-check-loading: true # 检查是否有未完成的区块加载任务，继续执行加载
-    chunky-loading-notice:
-      enable: true # 地图预加载进行中提醒开关
-      message: '&e【{world-name}】&c正在进行地图预加载，请勿进入服务器，以免影响加载进度！当前进度&e{per}%，&c剩余时间&e{remain-times}'
-      delay: 60 # 消息推送间隔，单位秒，建议不要低于30
   # 消息通知配置
   notice:
     actionbar:
@@ -74,7 +67,7 @@ config:
 
 #定时任务
 tasks:
-  # 重置世界定时任务【需要安装多世界插件】
+  # 【废弃】重置世界定时任务【需要安装多世界插件】
   regen-world:
     # 世界名称，指定具体的世界名称，可添加多个世界配置
     zy:

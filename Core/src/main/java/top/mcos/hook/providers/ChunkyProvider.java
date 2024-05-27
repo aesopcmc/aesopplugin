@@ -27,13 +27,13 @@ public final class ChunkyProvider extends Provider<ChunkyAPI> implements HookPro
                 });
 
                 chunky.onGenerationProgress(event -> {
-                    if(ConfigLoader.baseConfig.getSettingConfig().isChunkyLoadingNoticeEnable()) {
+                    if(ConfigLoader.rgConfig.isChunkyLoadingNoticeEnable()) {
                         long currentTime = System.currentTimeMillis();
                         //sender.sendMessagePrefixed(TranslationKey.TASK_DONE, world, chunkCount, String.format("%.2f", percentComplete), String.format("%01d", hours), String.format("%02d", minutes), String.format("%02d", seconds));
                         final boolean updateIntervalElapsed = ((currentTime - updateTime.get()) / 1e3) >
-                                ConfigLoader.baseConfig.getSettingConfig().getChunkyLoadingNoticeDelay();
+                                ConfigLoader.rgConfig.getChunkyLoadingNoticeDelay();
                         if (updateIntervalElapsed) {
-                            String msg = ConfigLoader.baseConfig.getSettingConfig().getChunkyLoadingNoticeMessage();
+                            String msg = ConfigLoader.rgConfig.getChunkyLoadingNoticeMessage();
                             msg = msg.replace("{world-name}", event.world())
                                     .replace("{per}", String.format("%.2f", event.progress()))
                                     .replace("{remain-times}",

@@ -2,15 +2,29 @@
 # 世界重置
 # 强依赖于Multiverse-Core插件
 #############################
+
+chunky-loading-notice:
+  enable: true # 地图预加载进行中提醒开关
+  message: '&e【{world-name}】&c正在进行地图预加载，请勿进入服务器，以免影响加载进度！当前进度&e{per}%，&c剩余时间&e{remain-times}'
+  delay: 60 # 消息推送间隔，单位秒，建议不要低于30
+
 worlds:
   zy:
     enable: false
+    # 世界别名
+    alias-name: "&2资源世界"
+    # 执行时间
     delete-cron: "0 0 5 * * ?"
-    delete-region: true # 删除世界守卫WorldGuard区域
-    # NOW立即创建RESTART服务器启动完毕后创建:NORMAL NETHER THE_END:指定种子(null):指定生成器(null)
+    # 是否删除世界守卫WorldGuard区域 true删除 false不删除（安装了世界守卫才生效）
+    delete-region: true
+    # （创建时机）NOW立即创建、RESTART服务器重启后创建 : （世界类型）NORMAL、NETHER、THE_END : （指定种子）null : (指定生成器)null
     create-at: "RESTART:NORMAL:null:null"
-    # 设置游戏规则：org.bukkit.GameRule -> name
-    created-gamerules:
+    # 世界难度: PEACEFUL、EASY、NORMAL、HARD
+    difficulty: "HARD"
+    # 配置参考：设置游戏规则：org.bukkit.GameRule -> name
+    gamerules:
       - "keepInventory:true"
-    created-commands: [] # 创建完成后执行命令
-    chunky-load-radius: 0 # 预加载地图半径（方块数） 等于0表示关闭预加载
+    # 创建完成后执行命令
+    created-commands: []
+    # 预加载地图半径（方块格数）。 等于0表示关闭预加载
+    chunky-load-radius: 0

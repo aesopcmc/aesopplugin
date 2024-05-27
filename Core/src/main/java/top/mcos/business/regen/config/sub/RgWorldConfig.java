@@ -18,15 +18,20 @@ import java.util.List;
 public class RgWorldConfig implements JobConfig {
     @PathKey
     private String key;
-
     @PathValue("worlds.{key}.enable")
     private boolean enable;
+
+    @PathValue("worlds.{key}.alias-name")
+    private String aliasName;
 
     @PathValue("worlds.{key}.delete-cron")
     private String cron;
 
     @PathValue("worlds.{key}.create-at")
     private String createAt;
+
+    @PathValue("worlds.{key}.difficulty")
+    private String difficulty;
 
     // 这两暂时没用
     private Date start;
@@ -35,8 +40,8 @@ public class RgWorldConfig implements JobConfig {
     @PathValue("worlds.{key}.delete-region")
     private boolean deleteRegion;
 
-    @PathValue("worlds.{key}.created-gamerules")
-    private List<String> createdGamerules;
+    @PathValue("worlds.{key}.gamerules")
+    private List<String> gamerules;
 
     @PathValue("worlds.{key}.created-commands")
     private List<String> createdCommands;

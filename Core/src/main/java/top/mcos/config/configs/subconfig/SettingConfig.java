@@ -16,12 +16,6 @@ import java.util.List;
 public class SettingConfig {
     @PathValue("config.debug")
     private boolean debug;
-    @PathValue("config.regen-world.chunky-loading-notice.enable")
-    private boolean chunkyLoadingNoticeEnable;
-    @PathValue("config.regen-world.chunky-loading-notice.message")
-    private String chunkyLoadingNoticeMessage;
-    @PathValue("config.regen-world.chunky-loading-notice.delay")
-    private long chunkyLoadingNoticeDelay;
     @PathValue("config.notice.actionbar.enable")
     private boolean noticeActionbarEnabled;
     @PathValue("config.notice.actionbar.delay-times")

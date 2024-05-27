@@ -6,10 +6,10 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.RemovalStrategy;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -25,6 +25,7 @@ import top.mcos.hook.providers.MultiverseProvider;
 import top.mcos.hook.providers.WorldGuardProvider;
 import top.mcos.message.MessageHandler;
 import top.mcos.scheduler.SchedulerHandler;
+import top.mcos.util.epiclib.logger.ConsoleLogger;
 
 import java.util.List;
 import java.util.Map;
@@ -110,31 +111,29 @@ public class RegenBus implements Bus {
             if("NOW".equals(split[0])) {
                 createWorld(config);
             } else if ("RESTART".equals(split[0])) {
-                AesopPlugin.logger.log("&a世界【" + config.getKey() + "】将在服务器重启后开始创建");
+                AesopPlugin.logger.log("&a世界【" + config.getKey() + "&a】将在服务器重启后开始创建");
             } else {
                 ///
             }
             return;
         }
-
-        String aliasWorldName = mvWorldManager.getMVWorld(config.getKey()).getAlias();
-
+        //String aliasWorldName = mvWorldManager.getMVWorld(config.getKey()).getAlias();
         // 准备删除世界消息
         Bukkit.getScheduler().runTask(AesopPlugin.getInstance(), () -> {
             // 执行删除
-            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&e>>>>>开始删除世界【"+config.getKey()+"】.", null);
+            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&e====>开始删除世界【"+config.getAliasName()+"&e】.", null);
 
             World world = Bukkit.getWorld(config.getKey());
-            removeRegion(world, config.isDeleteRegion());
+            removeRegion(world, config);
             mvWorldManager.deleteWorld(config.getKey(), true, true);
 
             // 世界已删除消息
-            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&e世界【"+config.getKey()+"】已删除.", null);
+            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&e世界【"+config.getAliasName()+"&e】已删除.", null);
 
             if("NOW".equals(split[0])) {
                 createWorld(config);
             } else if ("RESTART".equals(split[0])) {
-                AesopPlugin.logger.log("&c世界【" + aliasWorldName + "】将在服务器重启后开始创建");
+                MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&e世界【" + config.getAliasName() + "&e】将在服务器重启后开始创建", null);
             } else {
                 ///
             }
@@ -152,24 +151,35 @@ public class RegenBus implements Bus {
             return;
         }
         Bukkit.getScheduler().runTask(AesopPlugin.getInstance(), () -> {
-            String createAt = config.getCreateAt();
-            String[] split = createAt.split(":");
+            try {
+                String createAt = config.getCreateAt();
+                String[] split = createAt.split(":");
 
-            World.Environment env = World.Environment.valueOf(split[1]);
-            String seedString = "null".equalsIgnoreCase(split[2]) ? null : split[2];
-            String generator = "null".equalsIgnoreCase(split[3]) ? null : split[3];
-            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&a>>>>>开始创建世界【"+config.getKey()+"】.", null);
-            // mvWorldManager.regenWorld();需要在同步环境中执行，故此使用bukkit的同步任务方法runTask执行
-            mvWorldManager.addWorld(config.getKey(), env, seedString, WorldType.NORMAL, true, generator, true);
-            World world = Bukkit.getServer().getWorld(config.getKey());
-            setGameRues(world, config.getCreatedGamerules());
-            runCommand(config.getCreatedCommands());
-            chunkLoad(config.getKey(), config.getChunkyLoadRadius());
+                World.Environment env = World.Environment.valueOf(split[1]);
+                String seedString = "null".equalsIgnoreCase(split[2]) ? null : split[2];
+                String generator = "null".equalsIgnoreCase(split[3]) ? null : split[3];
 
-            String aliasWorldName = mvWorldManager.getMVWorld(config.getKey()).getAlias();
-            // 世界已完成创建
-            MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&a世界【"+aliasWorldName+"】 已重置完成，快去探索新天地吧~", null);
-
+                MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&a====>开始创建世界【" + config.getAliasName() + "&a】.", null);
+                // 创建世界
+                // mvWorldManager.regenWorld();需要在同步环境中执行，故此使用bukkit的同步任务方法runTask执行
+                mvWorldManager.addWorld(config.getKey(), env, seedString, WorldType.NORMAL, true, generator, true);
+                // 设置世界别名
+                mvWorldManager.getMVWorld(config.getKey()).setAlias(config.getAliasName());
+                World world = Bukkit.getServer().getWorld(config.getKey());
+                // 设置世界难度
+                world.setDifficulty(Difficulty.valueOf(config.getDifficulty()));
+                // 设置世界游戏规则
+                setGameRues(world, config.getGamerules(), config.getAliasName());
+                // 执行后续命令
+                runCommand(config.getCreatedCommands());
+                // 执行区块加载
+                chunkLoad(config.getKey(), config.getChunkyLoadRadius(), config.getAliasName());
+                // 发送消息
+                MessageHandler.sendBroadcast(AesopPlugin.logger.getPrefix(), "&a世界【" + config.getAliasName() + "&a】 已完成重置，快去探索新天地吧~", null);
+            } catch (Exception e) {
+                AesopPlugin.logger.log("&c世界【"+config.getAliasName()+"&c】重置失败，发生未知错误！", ConsoleLogger.Level.ERROR);
+                e.printStackTrace();
+            }
             ///*
             //发送滚动消息提醒
             // */
@@ -200,11 +210,11 @@ public class RegenBus implements Bus {
     /**
      * 删除世界守卫保护区域 WorldGuard
      *
-     * @param world        世界
-     * @param deleteRegion 是否删除保护区域
+     * @param world 世界
+     * @param config 配置
      */
-    private void removeRegion(World world, boolean deleteRegion) {
-        if(worldGuard!=null && deleteRegion) {
+    private void removeRegion(World world, RgWorldConfig config) {
+        if(worldGuard!=null && config.isDeleteRegion()) {
             RegionContainer regionContainer = worldGuard.getPlatform().getRegionContainer();
             RegionManager regionManager = regionContainer.get(new BukkitWorld(world));
             if (regionManager != null) {
@@ -214,8 +224,8 @@ public class RegenBus implements Bus {
                 });
                 try {
                     regionManager.save();
-                    AesopPlugin.logger.log("&9世界【" + world.getName() + "】守卫保护区域已清理");
-                } catch (StorageException e) {
+                    AesopPlugin.logger.log("&9世界【" + config.getAliasName() + "&9】守卫保护区域已清理");
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -226,7 +236,7 @@ public class RegenBus implements Bus {
      * 设置游戏规则
      * @param gameRues 世界游戏规则
      */
-    private void setGameRues(World world, List<String> gameRues) {
+    private void setGameRues(World world, List<String> gameRues, String worldAliasName) {
         if(gameRues!=null && gameRues.size()>0) {
             if(world==null) return;
             for (String ruleLine : gameRues) {
@@ -242,10 +252,10 @@ public class RegenBus implements Bus {
                         GameRule<Integer> rule = (GameRule<Integer>) GameRule.getByName(split[0]);
                         world.setGameRule(rule, value);
                     }
-                    AesopPlugin.logger.log("&a世界【" + world.getName() + "】已设置规则："+ruleLine);
+                    AesopPlugin.logger.log("&a世界【" + worldAliasName + "&a】已设置规则："+ruleLine);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    AesopPlugin.logger.log("&c设置世界规则【"+ruleLine+"】出错，已跳过");
+                    AesopPlugin.logger.log("&c设置世界规则【"+ruleLine+"&c】出错，已跳过");
                 }
             }
         }
@@ -269,7 +279,7 @@ public class RegenBus implements Bus {
     /**
      * 执行区块加载
      */
-    private void chunkLoad(String worldKey, double radius) {
+    private void chunkLoad(String worldKey, double radius, String worldAliasName) {
         if(radius>0) {
             ChunkyProvider chunkyProvider = HookHandler.getChunkyProvider();
             if (chunkyProvider.isLoaded()) {
@@ -277,7 +287,7 @@ public class RegenBus implements Bus {
                 chunky.cancelTask(worldKey);
                 // 调用异步，不阻塞 任务执行区块预加载，并由ChunkyProvider监听区块加载进度
                 chunky.startTask(worldKey, "square", 0, 0, radius, radius, "concentric");
-                AesopPlugin.logger.log("&e[chunk] &b世界【" + worldKey + "】开始执行区块加载 >");
+                AesopPlugin.logger.log("&e[chunk] &b世界【" + worldAliasName + "&b】开始执行区块加载 >");
             } else {
                 // 未检测到区块加载插件，已跳过区块加载
                 AesopPlugin.logger.log("&e未检测到Chunky插件，已跳过区块加载");
