@@ -34,7 +34,7 @@ public class RegenWorldJob extends AbstractJob<RegenWorldConfig> {
             /*
             重置世界
              */
-            MultiverseProvider multiverseProvider = HookHandler.getMultiverseProvider();
+            MultiverseProvider multiverseProvider = HookHandler.multiverseProvider;
             if(!multiverseProvider.isLoaded()) {
                 // 未检测到多世界插件，已跳过世界重置
                 log("未检测到MultiverseCore插件，已跳过世界重置");
@@ -80,7 +80,7 @@ public class RegenWorldJob extends AbstractJob<RegenWorldConfig> {
                 执行区块加载
                  */
                 if(config.isLoadedChunky()) {
-                    ChunkyProvider chunkyProvider = HookHandler.getChunkyProvider();
+                    ChunkyProvider chunkyProvider = HookHandler.chunkyProvider;
                     if(chunkyProvider.isLoaded()) {
                         ChunkyAPI chunky = chunkyProvider.getAPI();
                         chunky.cancelTask(config.getKey());

@@ -58,12 +58,28 @@ config:
   # 玩家加入、离开消息
   join-message:
     enable: false
-    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    sound: "BLOCK_NOTE_BLOCK_HARP" # ENTITY_EXPERIENCE_ORB_PICKUP
     message: "&6[&a+&6] &7&l玩家 &a&l{player} &7&l加入了游戏！"
   leave-message:
     enable: false
     sound: ""
     message: "&6[&4-&6] &7&l玩家 &c&l{player} &7&l离开了游戏."
+  # 玩家在线时长统计
+  # 开启后，可以使用如下变量
+  # %aep_time_played_top_1% （时长排行）
+  # %aep_time_played_name_top_1% （时长玩家排行）
+  # %aep_time_played%
+  # %aep_time_played:seconds%
+  # %aep_time_played:minutes%
+  # %aep_time_played:hours%
+  # %aep_seconds_played%
+  # %aep_minutes_played%
+  # %aep_hours_played%
+  # %aep_days_played%
+  player-timeplayed-statistics:
+    enable: false
+    top-count: 20 # 最多统计前N个玩家
+    cache-period: 30 # 更新缓存时间，单位分钟 （重启服务器或重载插件都会更新缓存）
 
 #定时任务
 tasks:

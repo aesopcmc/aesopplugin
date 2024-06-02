@@ -2,24 +2,15 @@ package top.mcos.hook.providers;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
-import top.mcos.AesopPlugin;
-import top.mcos.hook.HookProviderLoader;
+import top.mcos.hook.HookProvider;
 
-public final class MultiverseProvider extends Provider<MultiverseCore> implements HookProviderLoader {
+public final class MultiverseProvider implements HookProvider<MultiverseCore> {
     private MultiverseCore multiverseCore;
 
     @Override
-    public void load() {
-        try {
-            multiverseCore = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-            if(multiverseCore!=null) {
-                AesopPlugin.logger.log("&aMultiverseCore已挂钩");
-            } else {
-                AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过加载");
-            }
-        }catch (Throwable e) {
-            AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过加载");
-        }
+    public MultiverseProvider load() throws Exception {
+        multiverseCore = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        return this;
     }
 
     @Override
@@ -30,5 +21,10 @@ public final class MultiverseProvider extends Provider<MultiverseCore> implement
     @Override
     public MultiverseCore getAPI() {
         return multiverseCore;
+    }
+
+    @Override
+    public String getAPIName() {
+        return "MultiverseCore";
     }
 }

@@ -1,5 +1,8 @@
 package top.mcos.command.subcommands;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
+import top.mcos.util.PlayerUtil;
 import top.mcos.util.epiclib.command.Command;
 import top.mcos.util.epiclib.command.CommandRunnable;
 import top.mcos.util.epiclib.command.TabCompleteRunnable;
@@ -68,8 +71,15 @@ public final class TestSubCommand extends Command implements Helpable {
                     possibleCompletions.add("");
                 }
                 if("sound".equals(args[1])) {
+
                     for (Sound sound : Sound.values()) {
-                        possibleCompletions.add(sound.name());
+                        if(args[2].trim().isBlank()) {
+                            possibleCompletions.add(sound.name());
+                        } else {
+                            if(sound.name().contains(args[2])) {
+                                possibleCompletions.add(sound.name());
+                            }
+                        }
                     }
                 }
             }
@@ -90,6 +100,14 @@ public final class TestSubCommand extends Command implements Helpable {
                 player.playSound(player, Sound.valueOf(args[2]), 50, 1);
             }
         } else if("test".equals(args[1])){
+            if (sender instanceof Player player) {
+                // 获取离线玩家的UUID
+                OfflinePlayer[] offlinePlayers = Bukkit.getServer().getOfflinePlayers();
+                for (OfflinePlayer offlinePlayer : offlinePlayers) {
+                    int secondPlayed = offlinePlayer.getStatistic(Statistic.PLAY_ONE_MINUTE)/20;
+                    AesopPlugin.logger.log(player, "&a玩家“"+offlinePlayer.getName()+"”已玩了"+secondPlayed+"秒");
+                }
+            }
             //double pro = Double.parseDouble(args[2]);
             //MessageHandler.sendBossBar(ConfigLoader.gbClearConfig.getPrefix(), "&e即将清理掉落物"+pro*100 +"%", pro);
         } else {

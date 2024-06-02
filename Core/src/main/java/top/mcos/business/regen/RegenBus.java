@@ -54,7 +54,7 @@ public class RegenBus implements Bus {
 
     @Override
     public boolean load() {
-        MultiverseProvider multiverseProvider = HookHandler.getMultiverseProvider();
+        MultiverseProvider multiverseProvider = HookHandler.multiverseProvider;
         if(!multiverseProvider.isLoaded()) {
             AesopPlugin.logger.log("&e未检测到MultiverseCore插件，已跳过世界重置");
             return false;
@@ -63,7 +63,7 @@ public class RegenBus implements Bus {
         MultiverseCore core = multiverseProvider.getAPI();
         this.mvWorldManager = core.getMVWorldManager();
 
-        WorldGuardProvider worldGuardProvider = HookHandler.getWorldGuardProvider();
+        WorldGuardProvider worldGuardProvider = HookHandler.worldGuardProvider;
         if(worldGuardProvider.isLoaded()) {
             worldGuard = worldGuardProvider.getAPI();
         }
@@ -281,7 +281,7 @@ public class RegenBus implements Bus {
      */
     private void chunkLoad(String worldKey, double radius, String worldAliasName) {
         if(radius>0) {
-            ChunkyProvider chunkyProvider = HookHandler.getChunkyProvider();
+            ChunkyProvider chunkyProvider = HookHandler.chunkyProvider;
             if (chunkyProvider.isLoaded()) {
                 ChunkyAPI chunky = chunkyProvider.getAPI();
                 chunky.cancelTask(worldKey);

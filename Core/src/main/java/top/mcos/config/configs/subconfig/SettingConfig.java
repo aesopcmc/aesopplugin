@@ -51,6 +51,15 @@ public class SettingConfig {
     @PathValue("config.leave-message.message")
     private String leaveMessageMessage;
 
+    @PathValue("config.player-timeplayed-statistics.enable")
+    private boolean timeplayedStatisticsEnable;
+
+    @PathValue("config.player-timeplayed-statistics.top-count")
+    private int timeplayedStatisticsTopCount;
+
+    @PathValue("config.player-timeplayed-statistics.cache-period")
+    private int timeplayedStatisticsCachePeriod;
+
     //@PathValue("config.activity.claimed-sound")
     //private String claimedSound;
     //@PathValue("config.activity.handle-block-locations")

@@ -7,12 +7,15 @@ import lombok.Getter;
 import top.mcos.database.dao.GiftClaimRecordDao;
 import top.mcos.database.dao.GiftItemDao;
 import top.mcos.database.dao.PlayerFireworkDao;
+import top.mcos.database.dao.PlayerStatisticDao;
 import top.mcos.database.dao.impl.GiftClaimRecordDaoImpl;
 import top.mcos.database.dao.impl.GiftItemDaoImpl;
 import top.mcos.database.dao.impl.PlayerFireworkDaoImpl;
+import top.mcos.database.dao.impl.PlayerStatisticDaoImpl;
 import top.mcos.database.domain.GiftClaimRecord;
 import top.mcos.database.domain.GiftItem;
 import top.mcos.database.domain.PlayerFirework;
+import top.mcos.database.domain.PlayerStatistic;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -26,6 +29,7 @@ public class SqliteDatabase {
     private GiftClaimRecordDao giftClaimRecordDao;
     private GiftItemDao giftItemDao;
     private PlayerFireworkDao playerFireworkDao;
+    private PlayerStatisticDao playerStatisticDao;
 
     public SqliteDatabase(String dataFolder) {
         // this uses h2 by default but change to match your database
@@ -53,11 +57,13 @@ public class SqliteDatabase {
             giftClaimRecordDao = new GiftClaimRecordDaoImpl(connectionSource, GiftClaimRecord.class);
             giftItemDao = new GiftItemDaoImpl(connectionSource, GiftItem.class);
             playerFireworkDao = new PlayerFireworkDaoImpl(connectionSource, PlayerFirework.class);
+            playerStatisticDao = new PlayerStatisticDaoImpl(connectionSource, PlayerStatistic.class);
 
             // 如果表不存在，创建默认的表
             TableUtils.createTableIfNotExists(connectionSource, GiftClaimRecord.class);
             TableUtils.createTableIfNotExists(connectionSource, GiftItem.class);
             TableUtils.createTableIfNotExists(connectionSource, PlayerFirework.class);
+            TableUtils.createTableIfNotExists(connectionSource, PlayerStatistic.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
