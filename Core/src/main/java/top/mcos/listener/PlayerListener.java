@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -52,8 +53,6 @@ public class PlayerListener implements Listener {
             // 粒子特效缓存
             String uniqueId = event.getPlayer().getUniqueId().toString();
             FireWorkManage.getInstance().putPlayerFireworkToCache(uniqueId);
-
-
         });
 
         // 玩家加入游戏 ，发送消息提醒
@@ -143,6 +142,14 @@ public class PlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
+        // 特殊处理 菜单 的交互事件，阻止菜单物品在游戏中的交互行为，例如使用左键打开菜单禁止破坏方块等
+        if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getItem() != null && event.getItem().getItemMeta() != null) {
+                if ("menu".equals(event.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(AesopPlugin.getInstance(), ItemEvent.persistentKeyPrefix), PersistentDataType.STRING))) {
+                    event.setCancelled(true);
+                }
+            }
+        }
         // 禁止物品的使用
         //event.setUseItemInHand(Event.Result.DENY);
         //event.setUseInteractedBlock(Event.Result.DENY);

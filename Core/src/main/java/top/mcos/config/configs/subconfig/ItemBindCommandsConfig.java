@@ -38,6 +38,9 @@ public class ItemBindCommandsConfig {
     @PathValue("item-bind-event.commands.{key}.execute-type")
     private int executeType;
 
+    @PathValue("item-bind-event.commands.{key}.limit-count")
+    private int limitCount=0;
+
     @PathValue("item-bind-event.commands.{key}.locations")
     private List<String> locations;
 }

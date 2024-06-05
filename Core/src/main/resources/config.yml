@@ -169,14 +169,15 @@ item-bind-event:
   commands:
     # 自定义唯一key 。
     # op可以通过命令 /aep itembind give key1获取该物品
-    # 特殊key: menu。菜单命令。普通玩家可通过命令获取菜单（ /aep givemenu）
+    # 特殊key: menu。菜单命令。普通玩家可通过命令获取菜单（ /aep givemenu），并且默认阻止了游戏内的交互事件
     menu:
       enable: true # 是否启用
       material: 'clock' # 物品材质
-      display-name: '&#2796e7&l[系统菜单]'
+      display-name: '&6&l[服务器菜单]'
       lore:
         - ''
-        - '&7右键打开系统菜单'
+        - '&7手持右击打开服务器菜单'
+        - '&7快捷命令：&e/cd'
       # 执行命令格式： 前缀+空格+命令
       # 前缀：[player] 、[console]
       # 占位符：{player} 玩家名称
@@ -184,4 +185,5 @@ item-bind-event:
         - '[player] cd'
       execute-delay: 0 # 执行延迟（针对所有玩家）TODO 暂时没用
       execute-type: 0 # 交互类型： 0物品 1方块按钮（放置方块后交互）
+      limit-count: 0 # 数量限制（背包内），默认0表示不限制
       locations: [] # 方块位置

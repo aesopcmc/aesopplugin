@@ -46,27 +46,28 @@ public final class ItemEvent {
                     }
                 }
             }
+            if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                // 右键物品 （物品类型）
+                ItemStack itemStack = event.getItem();
+                if (itemStack == null) return;
+                if (itemStack.getItemMeta() == null) return;
 
-            // 右键物品 （物品类型）
-            ItemStack itemStack = event.getItem();
-            if (itemStack == null) return;
-            if (itemStack.getItemMeta()==null) return;
+                PersistentDataContainer pdc = itemStack.getItemMeta().getPersistentDataContainer();
+                Set<NamespacedKey> keys = pdc.getKeys();
 
-            PersistentDataContainer pdc = itemStack.getItemMeta().getPersistentDataContainer();
-            Set<NamespacedKey> keys = pdc.getKeys();
+                for (NamespacedKey key : keys) {
+                    if (persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
+                        String ibKey = pdc.get(key, PersistentDataType.STRING);
+                        // 处理命令事件
+                        ItemBindCommandsConfig config = getConfigByKey(ibKey);
+                        if (config != null && config.getExecuteType() == 0) {
+                            //System.out.println("处理物品命令事件。。。");
+                            CommandUtil.executeCommand(config.getCommands(), player);
+                        }
 
-            for (NamespacedKey key : keys) {
-                if (persistentKeyPrefix.equalsIgnoreCase(key.getKey())) {
-                    String ibKey = pdc.get(key, PersistentDataType.STRING);
-                    // 处理命令事件
-                    ItemBindCommandsConfig config = getConfigByKey(ibKey);
-                    if(config!=null && config.getExecuteType()==0) {
-                        //System.out.println("处理物品命令事件。。。");
-                        CommandUtil.executeCommand(config.getCommands(), player);
+                        // 处理其它事件 (例如数据库交互、缓存等待)
+                        // ...
                     }
-
-                    // 处理其它事件 (例如数据库交互、缓存等待)
-                    // ...
                 }
             }
         } catch (Throwable e) {
@@ -163,6 +164,12 @@ public final class ItemEvent {
             }
             itemMeta.setLore(lines);
             itemStack.setItemMeta(itemMeta);
+
+            // 判断玩家背包是否有该物品，如果有则跳过添加
+            if(config.getLimitCount()>0 && player.getInventory().containsAtLeast(itemStack, config.getLimitCount())) {
+                AesopPlugin.logger.log(player, "&c领取失败，“"+itemMeta.getDisplayName()+"”&c仅限领取&b"+config.getLimitCount()+"&c个");
+                return;
+            }
 
             player.getInventory().addItem(itemStack);
         }
