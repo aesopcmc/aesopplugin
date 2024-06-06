@@ -252,8 +252,9 @@ public final class ConfigLoader {
                             AesopPlugin.logger.log(annotationValue + "日期【" + v + "】转换出错，格式有误！", ConsoleLogger.Level.ERROR);
                         }
                     } else {
-
-                        field.set(object, v);
+                        if(v!=null) {
+                            field.set(object, v);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
