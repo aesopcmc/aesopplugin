@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Deprecated
 //@DisallowConcurrentExecution
 public class RegenWorldJob extends AbstractJob<RegenWorldConfig> {
     @Override
